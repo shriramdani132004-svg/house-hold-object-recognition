@@ -75,7 +75,7 @@ on the 1,965-image test split (no training, no fine-tuning). Full report:
   **0.3914**, F1 **0.5001**, mAP@0.5 **0.5485**, mAP@0.5:0.95 **0.3961**
   (TP 3,591 / FP 1,595 / FN 5,583).
 - **Speed** (CPU, no CUDA GPU): 416 ms/image average (418 ms warm),
-  817.71 s total for 1,965 images, 2.4 images/s.
+  816.63 s total for 1,965 images, 2.41 images/s.
 - Class-restricted evaluation with an explicit name-based COCO -> 19-class
   mapping; metric conventions are documented in report section 4.
 - Companion documents: `reports/baseline_confidence_analysis.md`,
