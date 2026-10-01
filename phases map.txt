@@ -1,3 +1,7 @@
+```text
+HOUSEHOLD OBJECT RECOGNITION — COMPLETE PROJECT ROADMAP
+========================================================
+
 PHASE 1 — PROJECT SETUP
 Create project structure, Python environment, Git, configuration,
 basic README, and AGENTS.md.
@@ -7,59 +11,310 @@ Select a suitable public household-object detection dataset,
 download/acquire it, and document the dataset and license.
 
 PHASE 3 — DATA PREPARATION
-Clean the dataset, select classes, convert annotations if needed,
-create train/validation/test splits, and validate the data.
+Clean the dataset, select final household-object classes,
+convert annotations if needed, create train/validation/test splits,
+and validate the prepared dataset.
 
 PHASE 4 — DATASET ANALYSIS
 Generate class distribution, sample annotated images,
-object statistics, and identify dataset problems.
+object-size statistics, annotation visualizations,
+and identify dataset quality or imbalance problems.
 
 PHASE 5 — BASELINE MODEL
-Load a pretrained lightweight YOLO model and test it before
-custom training.
+Load a pretrained lightweight YOLO model and test it on sample
+images before custom training.
 
 PHASE 6 — MODEL TRAINING
 Train the custom household-object detection model and save
-checkpoints, logs, and metrics.
+checkpoints, logs, training curves, and metrics.
 
 PHASE 7 — MODEL EVALUATION
-Evaluate on validation/test data using precision, recall,
-mAP50, mAP50-95, confusion matrix, and inference speed.
+Evaluate the trained model on validation/test data using:
+precision, recall, mAP50, mAP50-95, confusion matrix,
+per-class metrics, and inference speed.
 
 PHASE 8 — ERROR ANALYSIS & IMPROVEMENT
-Find missed objects, false positives, wrong classes, bad boxes,
-and improve the dataset/training setup.
+Find missed objects, false positives, wrong classifications,
+poor bounding boxes, small-object failures, occlusion problems,
+and other real-world errors. Improve the dataset or training
+configuration based on the observed failures.
 
 PHASE 9 — FINAL MODEL
-Run the improved training experiment, compare results,
-select the final model, and freeze the model version.
+Run the improved training experiment, compare experiments,
+select the final model based on actual test performance,
+model size, and inference speed, and freeze/document the
+final model version.
 
 PHASE 10 — INFERENCE SYSTEM
-Build clean Python inference code for image prediction,
-bounding boxes, confidence scores, and object summaries.
+Build clean reusable Python inference code for:
+- image prediction
+- bounding boxes
+- class names
+- confidence scores
+- object counts
+- inference time
+- configurable confidence threshold
 
-PHASE 11 — WEB APP
-Build a Gradio interface where a user uploads an image and
-gets household-object detections.
+Support reusable inference for both static images
+and camera/video frames.
+
+PHASE 11 — WEB APP + LIVE CAMERA
+Build a professional Gradio application with:
+
+1. IMAGE UPLOAD MODE
+Upload an image and receive:
+- annotated image
+- detected object names
+- confidence scores
+- bounding boxes
+- object count
+- inference time
+
+2. PC/LAPTOP WEBCAM MODE
+Allow the user to access the computer's webcam and perform
+live household-object detection.
+
+3. PHONE LIVE CAMERA MODE
+Design the web application so it can be opened from a phone
+browser and use the phone's camera for live detection.
+
+Target experience:
+
+Phone Camera
+      ↓
+Phone Browser
+      ↓
+Gradio Web App
+      ↓
+YOLO Model
+      ↓
+Live Detection
+      ↓
+Bounding Boxes + Labels + Confidence
+      ↓
+Phone Screen
+
+The application should work through a normal mobile browser
+without requiring Python, model installation, or a separate
+mobile application.
+
+Include:
+- camera permission handling
+- live camera input
+- start/stop camera controls where supported
+- confidence threshold
+- detection count
+- inference time/FPS where practical
+- clear error messages
+- mobile-friendly UI
+- example images
+- image upload fallback
+
+IMPORTANT:
+The live-camera implementation must be tested for both:
+- desktop/laptop webcam
+- phone browser camera
 
 PHASE 12 — TESTING
-Add automated tests and test the complete inference application
-with different image types and edge cases.
+Add automated tests and test the complete system with:
+
+- normal images
+- PNG/JPG/JPEG
+- large images
+- small images
+- blurry images
+- images containing multiple objects
+- images containing no supported objects
+- invalid inputs
+- inference engine
+- result formatting
+- application startup
+
+Also test camera functionality where automated testing is
+technically possible.
+
+Verify:
+- no crashes
+- correct output format
+- correct labels
+- correct bounding boxes
+- reasonable confidence handling
 
 PHASE 13 — GITHUB
-Clean the repository, write the professional README,
-add examples, documentation, .gitignore, LICENSE, and GitHub Actions.
+Clean the repository and prepare it as a professional portfolio
+project.
+
+Include:
+- professional README
+- project architecture
+- setup instructions
+- training instructions
+- inference instructions
+- sample predictions
+- model metrics
+- error analysis
+- dataset information
+- screenshots/GIFs where useful
+- live demo link
+- .gitignore
+- LICENSE
+- GitHub Actions
+- reproducibility instructions
+
+Document clearly that the project supports:
+- image detection
+- desktop webcam detection
+- phone-camera detection
 
 PHASE 14 — DEPLOYMENT
-Prepare and deploy the Gradio application to Hugging Face Spaces,
-including model storage and deployment configuration.
+Prepare and deploy the Gradio application to Hugging Face Spaces.
+
+Deployment must support:
+
+1. Desktop browser access
+2. Phone browser access
+3. Image upload
+4. Live camera input where the deployed Gradio/browser
+   environment supports it
+
+Prepare:
+- deployment configuration
+- requirements
+- model loading
+- portable paths
+- model storage
+- environment configuration
+
+Verify the application from a remote browser.
+
+Verify the phone-camera workflow separately.
+
+Target final architecture:
+
+LAPTOP / PHONE
+      ↓
+WEB BROWSER
+      ↓
+HUGGING FACE SPACE
+      ↓
+GRADIO
+      ↓
+YOLO MODEL
+      ↓
+DETECTION RESULT
+
+Do not claim phone-camera support until it has actually
+been tested.
 
 PHASE 15 — FINAL POLISH
-Verify the complete project from start to finish, fix broken paths,
-remove unnecessary files, verify metrics, and make the repository
-portfolio-ready.
+Verify the complete project from start to finish.
+
+Check:
+- clean installation
+- dataset pipeline
+- training pipeline
+- evaluation
+- inference
+- image upload
+- laptop webcam
+- phone live camera
+- deployment
+- tests
+- Git repository
+- documentation
+- model loading
+- portable paths
+- absence of secrets
+- correct metrics
+
+Fix broken paths, unnecessary files, configuration problems,
+UI issues, deployment problems, and other defects.
+
+Perform a complete end-to-end demonstration test.
 
 PHASE 16 — FINAL PROJECT DOCUMENTATION
-Create the final project report covering dataset, architecture,
-training, evaluation, error analysis, deployment, limitations,
-and future improvements.
+Create the final project report covering:
+
+1. Problem statement
+2. Motivation
+3. Dataset
+4. Dataset preparation
+5. Selected classes
+6. Model architecture
+7. Training methodology
+8. Evaluation metrics
+9. Error analysis
+10. Final model
+11. Inference system
+12. Image detection
+13. Laptop webcam detection
+14. Phone live-camera detection
+15. Web application
+16. Deployment
+17. GitHub repository
+18. Limitations
+19. Future improvements
+
+Include actual screenshots/results from the completed system.
+
+FINAL PROJECT EXPERIENCE
+========================
+
+A user should be able to:
+
+OPTION 1 — IMAGE
+Upload household photo
+        ↓
+Model detects objects
+        ↓
+Boxes + labels + confidence
+
+OPTION 2 — LAPTOP CAMERA
+Open webcam
+        ↓
+Point camera at household objects
+        ↓
+Live detection
+
+OPTION 3 — PHONE CAMERA
+Open deployed web app on phone
+        ↓
+Allow camera permission
+        ↓
+Point phone at household objects
+        ↓
+Live detection
+        ↓
+Boxes + labels + confidence
+
+FINAL DEMONSTRATION
+===================
+
+For the final presentation:
+
+1. Show the GitHub repository.
+2. Explain the dataset and model.
+3. Show actual evaluation metrics.
+4. Open the deployed web application.
+5. Demonstrate image upload.
+6. Demonstrate laptop webcam detection.
+7. Open the same application on a phone.
+8. Give camera permission.
+9. Point the phone at supported household objects.
+10. Show the model detecting them live.
+
+FINAL STACK
+===========
+
+Python
+PyTorch
+Ultralytics YOLO
+OpenCV
+NumPy
+Pillow
+Matplotlib
+Gradio
+Git
+GitHub
+Hugging Face Spaces
+```
