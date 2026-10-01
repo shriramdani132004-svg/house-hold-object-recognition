@@ -60,6 +60,8 @@ examples/output/*
 !examples/output/.gitkeep
 reports/figures/*
 !reports/figures/.gitkeep
+reports/phase3_samples/*
+!reports/phase3_samples/.gitkeep
 runs/
 wandb/
 lightning_logs/

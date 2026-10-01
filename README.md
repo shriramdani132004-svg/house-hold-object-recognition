@@ -20,13 +20,36 @@ verification are handled by `scripts/download_dataset.py` and
 `scripts/verify_dataset.py`. Verified metadata is recorded in
 `data/raw/DATASET_INFO.txt`.
 
+## Data Preparation (Phase 3)
+
+The prepared YOLO-format dataset lives in `data/processed/household_objects/`
+(git-ignored, regenerable):
+
+- **19 household classes** (IDs 0–18) defined in `configs/classes.yaml`;
+  selection rationale in `reports/phase3_class_selection.md`.
+- **47,399 images / 214,983 instances** — train 40,890 · val 4,544 ·
+  test 1,965 (COCO train2017 split 90/10 with seed 42; COCO val2017 → test).
+- Validation report: `reports/phase3_dataset_validation.md` (PASS).
+- Statistics and figures: `reports/phase3_dataset_statistics.md`,
+  `reports/figures/phase3_*.png`.
+
+Rebuild everything from the project root (project venv on Windows):
+
+```bash
+.\.venv\Scripts\python.exe scripts/analyze_categories.py
+.\.venv\Scripts\python.exe scripts/prepare_dataset.py
+.\.venv\Scripts\python.exe scripts/validate_prepared_dataset.py
+.\.venv\Scripts\python.exe scripts/visualize_prepared_dataset.py
+.\.venv\Scripts\python.exe scripts/dataset_statistics.py
+```
+
 ## Project Status
 
-**In progress — Phase 1 (Project Setup) and Phase 2 (Dataset) complete.**
+**In progress — Phases 1 (Setup), 2 (Dataset) and 3 (Preparation) complete.**
 
 - [x] Project structure, virtual environment, Git, documentation
 - [x] Dataset selection, acquisition & documentation
-- [ ] Data preparation, class selection & splits
+- [x] Data preparation, class selection & splits
 - [ ] Baseline & model training
 - [ ] Evaluation & improvement
 - [ ] Inference system & web app

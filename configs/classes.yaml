@@ -1,0 +1,26 @@
+# Final household-object class mapping (Phase 3).
+# IDs are consecutive from 0. Order = descending COCO 2017 train instance
+# count (statistics: reports/phase3_category_analysis.md).
+
+dataset: household_objects
+source: COCO 2017
+classes:
+  0: chair
+  1: book
+  2: bottle
+  3: cup
+  4: dining table
+  5: bowl
+  6: potted plant
+  7: wine glass
+  8: cell phone
+  9: clock
+  10: tv
+  11: couch
+  12: remote
+  13: sink
+  14: laptop
+  15: bed
+  16: keyboard
+  17: refrigerator
+  18: mouse

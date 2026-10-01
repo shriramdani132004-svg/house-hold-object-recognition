@@ -1,0 +1,87 @@
+# Phase 3 data-preparation configuration (all paths relative to project root)
+
+source:
+  name: COCO 2017 detection release
+  raw_dir: data/raw/coco
+  train_split: train2017
+  val_split: val2017
+  train_annotations: annotations/instances_train2017.json
+  val_annotations: annotations/instances_val2017.json
+
+output:
+  dir: data/processed/household_objects
+  layout: yolo   # images/<split>/ + labels/<split>/ + dataset.yaml
+
+classes_config: configs/classes.yaml
+
+selection:
+  candidate_categories:
+    - bottle
+    - wine glass
+    - cup
+    - fork
+    - knife
+    - spoon
+    - bowl
+    - chair
+    - couch
+    - potted plant
+    - bed
+    - dining table
+    - toilet
+    - tv
+    - laptop
+    - mouse
+    - remote
+    - keyboard
+    - cell phone
+    - microwave
+    - oven
+    - toaster
+    - sink
+    - refrigerator
+    - book
+    - clock
+    - vase
+    - scissors
+    - teddy bear
+    - hair drier
+    - toothbrush
+    - backpack
+    - handbag
+    - suitcase
+  min_instances_per_class: 2000
+  min_images_per_class: 1000
+  selected_categories:
+    - chair
+    - book
+    - bottle
+    - cup
+    - dining table
+    - bowl
+    - potted plant
+    - wine glass
+    - cell phone
+    - clock
+    - tv
+    - couch
+    - remote
+    - sink
+    - laptop
+    - bed
+    - keyboard
+    - refrigerator
+    - mouse
+
+split:
+  # COCO train2017 -> project train + project validation (image-level).
+  # COCO val2017    -> project test (official validation kept unseen).
+  strategy: coco_official_val_as_test
+  train_fraction: 0.9
+  val_fraction: 0.1
+  seed: 42
+
+annotations:
+  include_iscrowd: false
+  min_box_size_px: 1.0
+  drop_segmentation: true

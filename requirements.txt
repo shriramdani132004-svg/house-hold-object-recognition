@@ -10,3 +10,6 @@ PyYAML>=6.0
 
 # Image handling (needed by scripts/tests early on)
 Pillow>=10.0
+
+# Charts (required Phase 3/4 reports and figures)
+matplotlib>=3.9

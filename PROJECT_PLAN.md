@@ -26,7 +26,7 @@ verified before moving to the next.
 
 - [x] Phase 1 — Setup
 - [x] Phase 2 — Dataset
-- [ ] Phase 3 — Preparation
+- [x] Phase 3 — Preparation
 - [ ] Phase 4 — Analysis
 - [ ] Phase 5 — Baseline
 - [ ] Phase 6 — Training
