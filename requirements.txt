@@ -13,3 +13,6 @@ Pillow>=10.0
 
 # Charts (required Phase 3/4 reports and figures)
 matplotlib>=3.9
+
+# Progress bars (long Phase 4 scans)
+tqdm>=4.66

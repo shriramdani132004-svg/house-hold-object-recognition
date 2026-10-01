@@ -60,6 +60,7 @@ examples/output/*
 !examples/output/.gitkeep
 reports/figures/*
 !reports/figures/.gitkeep
+!reports/figures/phase4/
 reports/phase3_samples/*
 !reports/phase3_samples/.gitkeep
 runs/

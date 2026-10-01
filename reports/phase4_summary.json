@@ -1,0 +1,1436 @@
+{
+  "generated_by": "scripts/analyze_dataset.py",
+  "dataset": {
+    "path": "data/processed/household_objects",
+    "classes": 19,
+    "names": [
+      "chair",
+      "book",
+      "bottle",
+      "cup",
+      "dining table",
+      "bowl",
+      "potted plant",
+      "wine glass",
+      "cell phone",
+      "clock",
+      "tv",
+      "couch",
+      "remote",
+      "sink",
+      "laptop",
+      "bed",
+      "keyboard",
+      "refrigerator",
+      "mouse"
+    ],
+    "splits": {
+      "train": {
+        "images": 40890,
+        "labels": 40890,
+        "instances": 184709
+      },
+      "val": {
+        "images": 4544,
+        "labels": 4544,
+        "instances": 21100
+      },
+      "test": {
+        "images": 1965,
+        "labels": 1965,
+        "instances": 9174
+      }
+    }
+  },
+  "totals": {
+    "images": 47399,
+    "instances": 214983,
+    "labels": 47399
+  },
+  "matches_phase3_verified_counts": true,
+  "classes": [
+    {
+      "id": 0,
+      "name": "chair",
+      "instances": 39842,
+      "share_of_instances_pct": 18.53,
+      "images_containing": 13354,
+      "share_of_images_pct": 28.17,
+      "split_instances": {
+        "train": 34192,
+        "val": 3879,
+        "test": 1771
+      },
+      "split_images": {
+        "train": 11520,
+        "val": 1254,
+        "test": 580
+      },
+      "small_boxes": 18045
+    },
+    {
+      "id": 1,
+      "name": "book",
+      "instances": 25204,
+      "share_of_instances_pct": 11.72,
+      "images_containing": 5562,
+      "share_of_images_pct": 11.73,
+      "split_instances": {
+        "train": 21502,
+        "val": 2573,
+        "test": 1129
+      },
+      "split_images": {
+        "train": 4819,
+        "val": 513,
+        "test": 230
+      },
+      "small_boxes": 19736
+    },
+    {
+      "id": 2,
+      "name": "bottle",
+      "instances": 25083,
+      "share_of_instances_pct": 11.67,
+      "images_containing": 8880,
+      "share_of_images_pct": 18.73,
+      "split_instances": {
+        "train": 21523,
+        "val": 2547,
+        "test": 1013
+      },
+      "split_images": {
+        "train": 7631,
+        "val": 870,
+        "test": 379
+      },
+      "small_boxes": 18421
+    },
+    {
+      "id": 3,
+      "name": "cup",
+      "instances": 21469,
+      "share_of_instances_pct": 9.99,
+      "images_containing": 9579,
+      "share_of_images_pct": 20.21,
+      "split_instances": {
+        "train": 18594,
+        "val": 1980,
+        "test": 895
+      },
+      "split_images": {
+        "train": 8317,
+        "val": 872,
+        "test": 390
+      },
+      "small_boxes": 13393
+    },
+    {
+      "id": 4,
+      "name": "dining table",
+      "instances": 16390,
+      "share_of_instances_pct": 7.62,
+      "images_containing": 12338,
+      "share_of_images_pct": 26.03,
+      "split_instances": {
+        "train": 14119,
+        "val": 1576,
+        "test": 695
+      },
+      "split_images": {
+        "train": 10697,
+        "val": 1140,
+        "test": 501
+      },
+      "small_boxes": 2484
+    },
+    {
+      "id": 5,
+      "name": "bowl",
+      "instances": 14945,
+      "share_of_instances_pct": 6.95,
+      "images_containing": 7424,
+      "share_of_images_pct": 15.66,
+      "split_instances": {
+        "train": 12818,
+        "val": 1504,
+        "test": 623
+      },
+      "split_images": {
+        "train": 6381,
+        "val": 729,
+        "test": 314
+      },
+      "small_boxes": 6483
+    },
+    {
+      "id": 6,
+      "name": "potted plant",
+      "instances": 8973,
+      "share_of_instances_pct": 4.17,
+      "images_containing": 4624,
+      "share_of_images_pct": 9.76,
+      "split_instances": {
+        "train": 7697,
+        "val": 934,
+        "test": 342
+      },
+      "split_images": {
+        "train": 3986,
+        "val": 466,
+        "test": 172
+      },
+      "small_boxes": 3600
+    },
+    {
+      "id": 7,
+      "name": "wine glass",
+      "instances": 8180,
+      "share_of_instances_pct": 3.8,
+      "images_containing": 2643,
+      "share_of_images_pct": 5.58,
+      "split_instances": {
+        "train": 6938,
+        "val": 901,
+        "test": 341
+      },
+      "split_images": {
+        "train": 2264,
+        "val": 269,
+        "test": 110
+      },
+      "small_boxes": 4918
+    },
+    {
+      "id": 8,
+      "name": "cell phone",
+      "instances": 6682,
+      "share_of_instances_pct": 3.11,
+      "images_containing": 5015,
+      "share_of_images_pct": 10.58,
+      "split_instances": {
+        "train": 5772,
+        "val": 648,
+        "test": 262
+      },
+      "split_images": {
+        "train": 4325,
+        "val": 476,
+        "test": 214
+      },
+      "small_boxes": 4446
+    },
+    {
+      "id": 9,
+      "name": "clock",
+      "instances": 6587,
+      "share_of_instances_pct": 3.06,
+      "images_containing": 4863,
+      "share_of_images_pct": 10.26,
+      "split_instances": {
+        "train": 5718,
+        "val": 602,
+        "test": 267
+      },
+      "split_images": {
+        "train": 4184,
+        "val": 475,
+        "test": 204
+      },
+      "small_boxes": 4123
+    },
+    {
+      "id": 10,
+      "name": "tv",
+      "instances": 6091,
+      "share_of_instances_pct": 2.83,
+      "images_containing": 4768,
+      "share_of_images_pct": 10.06,
+      "split_instances": {
+        "train": 5199,
+        "val": 604,
+        "test": 288
+      },
+      "split_images": {
+        "train": 4104,
+        "val": 457,
+        "test": 207
+      },
+      "small_boxes": 940
+    },
+    {
+      "id": 11,
+      "name": "couch",
+      "instances": 6040,
+      "share_of_instances_pct": 2.81,
+      "images_containing": 4618,
+      "share_of_images_pct": 9.74,
+      "split_instances": {
+        "train": 5212,
+        "val": 567,
+        "test": 261
+      },
+      "split_images": {
+        "train": 3986,
+        "val": 437,
+        "test": 195
+      },
+      "small_boxes": 138
+    },
+    {
+      "id": 12,
+      "name": "remote",
+      "instances": 5983,
+      "share_of_instances_pct": 2.78,
+      "images_containing": 3221,
+      "share_of_images_pct": 6.8,
+      "split_instances": {
+        "train": 5119,
+        "val": 581,
+        "test": 283
+      },
+      "split_images": {
+        "train": 2767,
+        "val": 309,
+        "test": 145
+      },
+      "small_boxes": 4524
+    },
+    {
+      "id": 13,
+      "name": "sink",
+      "instances": 5834,
+      "share_of_instances_pct": 2.71,
+      "images_containing": 4865,
+      "share_of_images_pct": 10.26,
+      "split_instances": {
+        "train": 5063,
+        "val": 546,
+        "test": 225
+      },
+      "split_images": {
+        "train": 4220,
+        "val": 458,
+        "test": 187
+      },
+      "small_boxes": 1908
+    },
+    {
+      "id": 14,
+      "name": "laptop",
+      "instances": 5191,
+      "share_of_instances_pct": 2.41,
+      "images_containing": 3707,
+      "share_of_images_pct": 7.82,
+      "split_instances": {
+        "train": 4499,
+        "val": 461,
+        "test": 231
+      },
+      "split_images": {
+        "train": 3189,
+        "val": 335,
+        "test": 183
+      },
+      "small_boxes": 846
+    },
+    {
+      "id": 15,
+      "name": "bed",
+      "instances": 4355,
+      "share_of_instances_pct": 2.03,
+      "images_containing": 3831,
+      "share_of_images_pct": 8.08,
+      "split_instances": {
+        "train": 3811,
+        "val": 381,
+        "test": 163
+      },
+      "split_images": {
+        "train": 3339,
+        "val": 343,
+        "test": 149
+      },
+      "small_boxes": 59
+    },
+    {
+      "id": 16,
+      "name": "keyboard",
+      "instances": 3007,
+      "share_of_instances_pct": 1.4,
+      "images_containing": 2221,
+      "share_of_images_pct": 4.69,
+      "split_instances": {
+        "train": 2543,
+        "val": 311,
+        "test": 153
+      },
+      "split_images": {
+        "train": 1875,
+        "val": 240,
+        "test": 106
+      },
+      "small_boxes": 666
+    },
+    {
+      "id": 17,
+      "name": "refrigerator",
+      "instances": 2760,
+      "share_of_instances_pct": 1.28,
+      "images_containing": 2461,
+      "share_of_images_pct": 5.19,
+      "split_instances": {
+        "train": 2362,
+        "val": 272,
+        "test": 126
+      },
+      "split_images": {
+        "train": 2116,
+        "val": 244,
+        "test": 101
+      },
+      "small_boxes": 86
+    },
+    {
+      "id": 18,
+      "name": "mouse",
+      "instances": 2367,
+      "share_of_instances_pct": 1.1,
+      "images_containing": 1964,
+      "share_of_images_pct": 4.14,
+      "split_instances": {
+        "train": 2028,
+        "val": 233,
+        "test": 106
+      },
+      "split_images": {
+        "train": 1683,
+        "val": 193,
+        "test": 88
+      },
+      "small_boxes": 1681
+    }
+  ],
+  "imbalance": {
+    "most_class_id": 0,
+    "most_class_name": "chair",
+    "most_class_instances": 39842,
+    "least_class_id": 18,
+    "least_class_name": "mouse",
+    "least_class_instances": 2367,
+    "max_min_ratio": 16.83,
+    "median_instances": 6587.0,
+    "mean_instances": 11314.9
+  },
+  "objects_per_image": {
+    "all": {
+      "count": 47399,
+      "min": 1.0,
+      "max": 56.0,
+      "mean": 4.535602,
+      "median": 2.0,
+      "p25": 1.0,
+      "p75": 6.0,
+      "p90": 12.0,
+      "p95": 15.0,
+      "p99": 24.0
+    },
+    "train": {
+      "count": 40890,
+      "min": 1.0,
+      "max": 52.0,
+      "mean": 4.517217,
+      "median": 2.0,
+      "p25": 1.0,
+      "p75": 6.0,
+      "p90": 11.0,
+      "p95": 15.0,
+      "p99": 24.0
+    },
+    "val": {
+      "count": 4544,
+      "min": 1.0,
+      "max": 56.0,
+      "mean": 4.643486,
+      "median": 2.0,
+      "p25": 1.0,
+      "p75": 6.0,
+      "p90": 12.0,
+      "p95": 16.0,
+      "p99": 25.0
+    },
+    "test": {
+      "count": 1965,
+      "min": 1.0,
+      "max": 38.0,
+      "mean": 4.668702,
+      "median": 2.0,
+      "p25": 1.0,
+      "p75": 6.0,
+      "p90": 12.0,
+      "p95": 16.0,
+      "p99": 25.0
+    },
+    "buckets": {
+      "0": 0,
+      "1": 15288,
+      "2": 8645,
+      "3-5": 11163,
+      ">5": 12303
+    }
+  },
+  "multi_object": {
+    "total_images": 47399,
+    "single_object_images": 15288,
+    "multi_object_images": 32111,
+    "images_2plus": 32111,
+    "images_3plus": 23466,
+    "max_objects_in_image": 56,
+    "multi_share_pct": 67.75
+  },
+  "bounding_boxes": {
+    "area": {
+      "count": 214983,
+      "min": 6e-06,
+      "max": 1.0,
+      "mean": 0.0792,
+      "median": 0.010277,
+      "p25": 0.002476,
+      "p75": 0.051367,
+      "p90": 0.21087,
+      "p95": 0.473395,
+      "p99": 0.981034
+    },
+    "width": {
+      "count": 214983,
+      "min": 0.001656,
+      "max": 1.0,
+      "mean": 0.188123,
+      "median": 0.09096,
+      "p25": 0.040299,
+      "p75": 0.216812,
+      "p90": 0.500948,
+      "p95": 0.894686,
+      "p99": 1.0
+    },
+    "height": {
+      "count": 214983,
+      "min": 0.001969,
+      "max": 1.0,
+      "mean": 0.203401,
+      "median": 0.121167,
+      "p25": 0.059297,
+      "p75": 0.263087,
+      "p90": 0.487123,
+      "p95": 0.714293,
+      "p99": 0.985185
+    },
+    "size_bands": {
+      "very small": {
+        "range": [
+          0.0,
+          0.001
+        ],
+        "count": 24650,
+        "pct": 11.47
+      },
+      "small": {
+        "range": [
+          0.001,
+          0.01
+        ],
+        "count": 81847,
+        "pct": 38.07
+      },
+      "medium": {
+        "range": [
+          0.01,
+          0.1
+        ],
+        "count": 72398,
+        "pct": 33.68
+      },
+      "large": {
+        "range": [
+          0.1,
+          null
+        ],
+        "count": 36088,
+        "pct": 16.79
+      }
+    }
+  },
+  "small_objects": {
+    "area_limit": 0.01,
+    "count": 106497,
+    "pct_of_instances": 49.54,
+    "by_split": {
+      "train": 91278,
+      "val": 10673,
+      "test": 4546
+    },
+    "by_class": {
+      "chair": 18045,
+      "book": 19736,
+      "bottle": 18421,
+      "cup": 13393,
+      "dining table": 2484,
+      "bowl": 6483,
+      "potted plant": 3600,
+      "wine glass": 4918,
+      "cell phone": 4446,
+      "clock": 4123,
+      "tv": 940,
+      "couch": 138,
+      "remote": 4524,
+      "sink": 1908,
+      "laptop": 846,
+      "bed": 59,
+      "keyboard": 666,
+      "refrigerator": 86,
+      "mouse": 1681
+    }
+  },
+  "cooccurrence": {
+    "top_pairs": [
+      {
+        "class_a_id": 0,
+        "class_a": "chair",
+        "class_b_id": 4,
+        "class_b": "dining table",
+        "images": 5365,
+        "pct_of_images": 11.32
+      },
+      {
+        "class_a_id": 3,
+        "class_a": "cup",
+        "class_b_id": 4,
+        "class_b": "dining table",
+        "images": 4873,
+        "pct_of_images": 10.28
+      },
+      {
+        "class_a_id": 4,
+        "class_a": "dining table",
+        "class_b_id": 5,
+        "class_b": "bowl",
+        "images": 3545,
+        "pct_of_images": 7.48
+      },
+      {
+        "class_a_id": 2,
+        "class_a": "bottle",
+        "class_b_id": 3,
+        "class_b": "cup",
+        "images": 3102,
+        "pct_of_images": 6.54
+      },
+      {
+        "class_a_id": 0,
+        "class_a": "chair",
+        "class_b_id": 3,
+        "class_b": "cup",
+        "images": 3076,
+        "pct_of_images": 6.49
+      },
+      {
+        "class_a_id": 2,
+        "class_a": "bottle",
+        "class_b_id": 4,
+        "class_b": "dining table",
+        "images": 2985,
+        "pct_of_images": 6.3
+      },
+      {
+        "class_a_id": 3,
+        "class_a": "cup",
+        "class_b_id": 5,
+        "class_b": "bowl",
+        "images": 2934,
+        "pct_of_images": 6.19
+      },
+      {
+        "class_a_id": 0,
+        "class_a": "chair",
+        "class_b_id": 2,
+        "class_b": "bottle",
+        "images": 2480,
+        "pct_of_images": 5.23
+      },
+      {
+        "class_a_id": 2,
+        "class_a": "bottle",
+        "class_b_id": 5,
+        "class_b": "bowl",
+        "images": 2283,
+        "pct_of_images": 4.82
+      },
+      {
+        "class_a_id": 0,
+        "class_a": "chair",
+        "class_b_id": 11,
+        "class_b": "couch",
+        "images": 2236,
+        "pct_of_images": 4.72
+      },
+      {
+        "class_a_id": 0,
+        "class_a": "chair",
+        "class_b_id": 1,
+        "class_b": "book",
+        "images": 2198,
+        "pct_of_images": 4.64
+      },
+      {
+        "class_a_id": 0,
+        "class_a": "chair",
+        "class_b_id": 10,
+        "class_b": "tv",
+        "images": 2075,
+        "pct_of_images": 4.38
+      },
+      {
+        "class_a_id": 0,
+        "class_a": "chair",
+        "class_b_id": 5,
+        "class_b": "bowl",
+        "images": 1863,
+        "pct_of_images": 3.93
+      },
+      {
+        "class_a_id": 2,
+        "class_a": "bottle",
+        "class_b_id": 13,
+        "class_b": "sink",
+        "images": 1848,
+        "pct_of_images": 3.9
+      },
+      {
+        "class_a_id": 0,
+        "class_a": "chair",
+        "class_b_id": 6,
+        "class_b": "potted plant",
+        "images": 1797,
+        "pct_of_images": 3.79
+      }
+    ],
+    "matrix": [
+      [
+        0,
+        2198,
+        2480,
+        3076,
+        5365,
+        1863,
+        1797,
+        1045,
+        991,
+        799,
+        2075,
+        2236,
+        1151,
+        664,
+        1433,
+        854,
+        727,
+        738,
+        740
+      ],
+      [
+        2198,
+        0,
+        962,
+        1155,
+        1116,
+        619,
+        769,
+        228,
+        618,
+        487,
+        1537,
+        1423,
+        886,
+        227,
+        1092,
+        790,
+        696,
+        239,
+        711
+      ],
+      [
+        2480,
+        962,
+        0,
+        3102,
+        2985,
+        2283,
+        798,
+        1168,
+        651,
+        455,
+        684,
+        611,
+        442,
+        1848,
+        577,
+        297,
+        293,
+        1040,
+        289
+      ],
+      [
+        3076,
+        1155,
+        3102,
+        0,
+        4873,
+        2934,
+        820,
+        1174,
+        870,
+        402,
+        893,
+        752,
+        508,
+        1158,
+        902,
+        231,
+        544,
+        622,
+        517
+      ],
+      [
+        5365,
+        1116,
+        2985,
+        4873,
+        0,
+        3545,
+        1248,
+        1714,
+        777,
+        450,
+        795,
+        1085,
+        454,
+        536,
+        591,
+        170,
+        168,
+        602,
+        160
+      ],
+      [
+        1863,
+        619,
+        2283,
+        2934,
+        3545,
+        0,
+        662,
+        791,
+        318,
+        301,
+        354,
+        485,
+        189,
+        1036,
+        216,
+        84,
+        81,
+        742,
+        63
+      ],
+      [
+        1797,
+        769,
+        798,
+        820,
+        1248,
+        662,
+        0,
+        293,
+        193,
+        367,
+        665,
+        973,
+        384,
+        498,
+        285,
+        176,
+        138,
+        295,
+        132
+      ],
+      [
+        1045,
+        228,
+        1168,
+        1174,
+        1714,
+        791,
+        293,
+        0,
+        189,
+        121,
+        149,
+        231,
+        102,
+        184,
+        100,
+        23,
+        28,
+        137,
+        18
+      ],
+      [
+        991,
+        618,
+        651,
+        870,
+        777,
+        318,
+        193,
+        189,
+        0,
+        165,
+        511,
+        298,
+        285,
+        96,
+        755,
+        174,
+        453,
+        79,
+        455
+      ],
+      [
+        799,
+        487,
+        455,
+        402,
+        450,
+        301,
+        367,
+        121,
+        165,
+        0,
+        354,
+        364,
+        193,
+        196,
+        163,
+        217,
+        98,
+        182,
+        84
+      ],
+      [
+        2075,
+        1537,
+        684,
+        893,
+        795,
+        354,
+        665,
+        149,
+        511,
+        354,
+        0,
+        1328,
+        1172,
+        156,
+        1069,
+        435,
+        1317,
+        153,
+        1120
+      ],
+      [
+        2236,
+        1423,
+        611,
+        752,
+        1085,
+        485,
+        973,
+        231,
+        298,
+        364,
+        1328,
+        0,
+        1510,
+        133,
+        607,
+        334,
+        140,
+        187,
+        133
+      ],
+      [
+        1151,
+        886,
+        442,
+        508,
+        454,
+        189,
+        384,
+        102,
+        285,
+        193,
+        1172,
+        1510,
+        0,
+        43,
+        399,
+        261,
+        255,
+        67,
+        231
+      ],
+      [
+        664,
+        227,
+        1848,
+        1158,
+        536,
+        1036,
+        498,
+        184,
+        96,
+        196,
+        156,
+        133,
+        43,
+        0,
+        68,
+        82,
+        16,
+        843,
+        9
+      ],
+      [
+        1433,
+        1092,
+        577,
+        902,
+        591,
+        216,
+        285,
+        100,
+        755,
+        163,
+        1069,
+        607,
+        399,
+        68,
+        0,
+        422,
+        1031,
+        76,
+        1126
+      ],
+      [
+        854,
+        790,
+        297,
+        231,
+        170,
+        84,
+        176,
+        23,
+        174,
+        217,
+        435,
+        334,
+        261,
+        82,
+        422,
+        0,
+        96,
+        49,
+        88
+      ],
+      [
+        727,
+        696,
+        293,
+        544,
+        168,
+        81,
+        138,
+        28,
+        453,
+        98,
+        1317,
+        140,
+        255,
+        16,
+        1031,
+        96,
+        0,
+        23,
+        1354
+      ],
+      [
+        738,
+        239,
+        1040,
+        622,
+        602,
+        742,
+        295,
+        137,
+        79,
+        182,
+        153,
+        187,
+        67,
+        843,
+        76,
+        49,
+        23,
+        0,
+        21
+      ],
+      [
+        740,
+        711,
+        289,
+        517,
+        160,
+        63,
+        132,
+        18,
+        455,
+        84,
+        1120,
+        133,
+        231,
+        9,
+        1126,
+        88,
+        1354,
+        21,
+        0
+      ]
+    ]
+  },
+  "split_distribution": {
+    "instance_counts": {
+      "train": 184709,
+      "val": 21100,
+      "test": 9174
+    },
+    "instance_shares_pct": {
+      "train": 85.92,
+      "val": 9.81,
+      "test": 4.27
+    },
+    "image_shares_pct": {
+      "train": 86.27,
+      "val": 9.59,
+      "test": 4.15
+    }
+  },
+  "image_dimensions": {
+    "count": 47399,
+    "width": {
+      "count": 47399,
+      "min": 119.0,
+      "max": 640.0,
+      "mean": 572.646301,
+      "median": 640.0,
+      "p25": 500.0,
+      "p75": 640.0,
+      "p90": 640.0,
+      "p95": 640.0,
+      "p99": 640.0
+    },
+    "height": {
+      "count": 47399,
+      "min": 102.0,
+      "max": 640.0,
+      "mean": 490.453575,
+      "median": 480.0,
+      "p25": 427.0,
+      "p75": 612.0,
+      "p90": 640.0,
+      "p95": 640.0,
+      "p99": 640.0
+    },
+    "aspect_ratio": {
+      "count": 47399,
+      "min": 0.24375,
+      "max": 4.901961,
+      "mean": 1.225678,
+      "median": 1.333333,
+      "p25": 0.957812,
+      "p75": 1.498829,
+      "p90": 1.502347,
+      "p95": 1.538462,
+      "p99": 1.797753
+    },
+    "landscape": 33248,
+    "portrait": 11919,
+    "square": 2232,
+    "top_widths": [
+      [
+        640,
+        28353
+      ],
+      [
+        500,
+        5136
+      ],
+      [
+        480,
+        4416
+      ],
+      [
+        427,
+        1663
+      ],
+      [
+        612,
+        1264
+      ]
+    ],
+    "top_heights": [
+      [
+        480,
+        11819
+      ],
+      [
+        640,
+        10683
+      ],
+      [
+        427,
+        4837
+      ],
+      [
+        375,
+        2833
+      ],
+      [
+        500,
+        1863
+      ]
+    ],
+    "top_resolutions": [
+      {
+        "width": 640,
+        "height": 480,
+        "count": 11791
+      },
+      {
+        "width": 640,
+        "height": 427,
+        "count": 4833
+      },
+      {
+        "width": 480,
+        "height": 640,
+        "count": 4358
+      },
+      {
+        "width": 500,
+        "height": 375,
+        "count": 2825
+      },
+      {
+        "width": 640,
+        "height": 426,
+        "count": 1837
+      }
+    ],
+    "extremes": [
+      {
+        "label": "min width",
+        "value": 119,
+        "split": "train",
+        "stem": "000000142298"
+      },
+      {
+        "label": "max width",
+        "value": 640,
+        "split": "train",
+        "stem": "000000000009"
+      },
+      {
+        "label": "min height",
+        "value": 102,
+        "split": "train",
+        "stem": "000000369973"
+      },
+      {
+        "label": "max height",
+        "value": 640,
+        "split": "train",
+        "stem": "000000000064"
+      },
+      {
+        "label": "min aspect (tallest)",
+        "value": 0.2437,
+        "split": "train",
+        "stem": "000000040109"
+      },
+      {
+        "label": "max aspect (widest)",
+        "value": 4.902,
+        "split": "train",
+        "stem": "000000369973"
+      }
+    ]
+  },
+  "annotation_quality": {
+    "empty_label_files": 0,
+    "missing_label_files": 0,
+    "label_without_image": 0,
+    "malformed_lines": {
+      "wrong_field_count": 0,
+      "non_numeric": 0,
+      "class_id_out_of_range": 0,
+      "non_finite": 0,
+      "non_positive_size": 0,
+      "out_of_normalized_range": 0
+    },
+    "zero_object_images": 0,
+    "large_boxes": 10189,
+    "large_boxes_pct": 4.74,
+    "tiny_boxes": 768,
+    "tiny_boxes_pct": 0.36,
+    "objects_p99": 24.0,
+    "images_at_or_above_p99": 524,
+    "max_objects_in_image": 56,
+    "least_supported_classes": [
+      {
+        "id": 18,
+        "instances": 2367
+      },
+      {
+        "id": 17,
+        "instances": 2760
+      },
+      {
+        "id": 16,
+        "instances": 3007
+      }
+    ]
+  },
+  "duplicates": {
+    "filename_overlap_across_splits": {
+      "train-val": 0,
+      "train-test": 0,
+      "val-test": 0
+    },
+    "content_hash": {
+      "hashed_files": 47399,
+      "hashed_bytes": 7240445419,
+      "duplicate_pairs": 6,
+      "cross_split_pairs": 0,
+      "within_split_pairs": 6,
+      "details": [
+        {
+          "sha1": "a0a3873edeb40ee2ffce9e2b354112d8459018d4",
+          "first": {
+            "split": "train",
+            "stem": "000000137715"
+          },
+          "duplicate": {
+            "split": "train",
+            "stem": "000000242807"
+          }
+        },
+        {
+          "sha1": "c2739e9a94ce2e4303f04498eea2c88dd041e9b0",
+          "first": {
+            "split": "train",
+            "stem": "000000019665"
+          },
+          "duplicate": {
+            "split": "train",
+            "stem": "000000279522"
+          }
+        },
+        {
+          "sha1": "9c80f3ced8759233fba5553d4971ca427f0c8717",
+          "first": {
+            "split": "train",
+            "stem": "000000278029"
+          },
+          "duplicate": {
+            "split": "train",
+            "stem": "000000407259"
+          }
+        },
+        {
+          "sha1": "9a6cd73af24af29c196e274692543af57208c622",
+          "first": {
+            "split": "train",
+            "stem": "000000373251"
+          },
+          "duplicate": {
+            "split": "train",
+            "stem": "000000410810"
+          }
+        },
+        {
+          "sha1": "9c80f3ced8759233fba5553d4971ca427f0c8717",
+          "first": {
+            "split": "train",
+            "stem": "000000278029"
+          },
+          "duplicate": {
+            "split": "train",
+            "stem": "000000446141"
+          }
+        },
+        {
+          "sha1": "2603ee374dae68e5bbd1b8dd5e67fe4475e0f390",
+          "first": {
+            "split": "train",
+            "stem": "000000438867"
+          },
+          "duplicate": {
+            "split": "train",
+            "stem": "000000531721"
+          }
+        }
+      ]
+    }
+  },
+  "samples": {
+    "count": 27,
+    "files": [
+      "class00_chair__train__000000530394.jpg",
+      "class01_book__train__000000114726.jpg",
+      "class02_bottle__train__000000031135.jpg",
+      "class03_cup__train__000000320707.jpg",
+      "class04_dining_table__train__000000218603.jpg",
+      "class05_bowl__train__000000165555.jpg",
+      "class06_potted_plant__train__000000159952.jpg",
+      "class07_wine_glass__train__000000106804.jpg",
+      "class08_cell_phone__val__000000160273.jpg",
+      "class09_clock__train__000000096693.jpg",
+      "class10_tv__train__000000486383.jpg",
+      "class11_couch__train__000000037367.jpg",
+      "class12_remote__train__000000027424.jpg",
+      "class13_sink__train__000000107922.jpg",
+      "class14_laptop__train__000000166653.jpg",
+      "class15_bed__train__000000163575.jpg",
+      "class16_keyboard__val__000000465825.jpg",
+      "class17_refrigerator__train__000000030932.jpg",
+      "class18_mouse__train__000000402364.jpg",
+      "crowded_56obj__val__000000451513.jpg",
+      "multi_object_4obj__train__000000197568.jpg",
+      "small_box_0.000006__train__000000383564.jpg",
+      "large_box_1.000__train__000000003992.jpg",
+      "aspect_wide_500x102__train__000000369973.jpg",
+      "aspect_tall_156x640__train__000000040109.jpg",
+      "split_val__val__000000572001.jpg",
+      "split_test__test__000000247806.jpg"
+    ]
+  }
+}

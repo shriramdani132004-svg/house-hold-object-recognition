@@ -43,13 +43,36 @@ Rebuild everything from the project root (project venv on Windows):
 .\.venv\Scripts\python.exe scripts/dataset_statistics.py
 ```
 
+## Dataset Analysis (Phase 4)
+
+Read-only analysis of the prepared dataset produced by
+`scripts/analyze_dataset.py` (a few minutes: label scan, image-header scan,
+SHA-1 duplicate check):
+
+- **Full report:** `reports/phase4_dataset_analysis.md` — 17 sections covering
+  class distribution, imbalance, objects per image, box sizes, co-occurrence,
+  split proportions, dimensions, annotation quality, and concerns;
+  machine-readable summary in `reports/phase4_summary.json`.
+- **Key findings:** class imbalance 16.8x (chair 39,842 vs mouse 2,367
+  instances); 49.5% of boxes are small (< 1% of image area); 67.8% of images
+  contain 2+ target objects; zero malformed or missing annotations; no
+  cross-split duplicates (6 within-train duplicate pairs).
+- **Figures:** `reports/figures/phase4/` (8 charts).
+- **Samples:** `reports/phase4_samples/` — 27 annotated examples (one per
+  class plus crowded, small/large box, extreme-aspect, and split cases).
+
+```bash
+.\.venv\Scripts\python.exe scripts/analyze_dataset.py
+```
+
 ## Project Status
 
-**In progress — Phases 1 (Setup), 2 (Dataset) and 3 (Preparation) complete.**
+**In progress — Phases 1–4 complete.**
 
 - [x] Project structure, virtual environment, Git, documentation
 - [x] Dataset selection, acquisition & documentation
 - [x] Data preparation, class selection & splits
+- [x] Dataset analysis & reporting
 - [ ] Baseline & model training
 - [ ] Evaluation & improvement
 - [ ] Inference system & web app
