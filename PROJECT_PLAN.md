@@ -25,7 +25,7 @@ verified before moving to the next.
 ## Status
 
 - [x] Phase 1 — Setup
-- [ ] Phase 2 — Dataset
+- [x] Phase 2 — Dataset
 - [ ] Phase 3 — Preparation
 - [ ] Phase 4 — Analysis
 - [ ] Phase 5 — Baseline

@@ -122,19 +122,54 @@ def test_check_zip_image_count(tmp_path: Path) -> None:
         )
 
 
-def test_download_skips_already_complete_file(tmp_path: Path) -> None:
+def _write_zip(path: Path, members: dict[str, bytes]) -> int:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(path, "w") as zf:
+        for name, payload in members.items():
+            zf.writestr(name, payload)
+    return path.stat().st_size
+
+
+def test_download_skips_already_verified_file(tmp_path: Path) -> None:
+    destination = tmp_path / "zips" / "tiny.zip"
+    size = _write_zip(destination, {"folder/file.txt": b"hello"})
     archive = download_dataset.Archive(
         name="tiny.zip",
         relative_path="zips/tiny.zip",
         url_path="/zips/tiny.zip",
-        size_bytes=5,
+        size_bytes=size,
     )
-    destination = tmp_path / archive.relative_path
-    destination.parent.mkdir(parents=True)
-    destination.write_bytes(b"12345")
     result = download_dataset.download_archive(archive, tmp_path)
     assert result == destination
-    assert destination.read_bytes() == b"12345"
+    assert destination.stat().st_size == size
+
+
+def test_download_redownloads_corrupt_complete_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    destination = tmp_path / "zips" / "broken.zip"
+    valid_payload = tmp_path / "source.zip"
+    size = _write_zip(valid_payload, {"folder/file.txt": b"hello world"})
+    destination.parent.mkdir(parents=True)
+    destination.write_bytes(b"x" * size)
+
+    archive = download_dataset.Archive(
+        name="broken.zip",
+        relative_path="zips/broken.zip",
+        url_path="/zips/broken.zip",
+        size_bytes=size,
+    )
+    valid_bytes = valid_payload.read_bytes()
+
+    def fake_stream(url, dest, offset, expected, **kwargs):
+        dest.write_bytes(valid_bytes)
+
+    monkeypatch.setattr(download_dataset, "_stream_to_file", fake_stream)
+    result = download_dataset.download_archive(
+        archive, tmp_path, max_attempts=2, sleep=lambda _seconds: None
+    )
+    assert result == destination
+    assert destination.read_bytes() == valid_bytes
 
 
 def test_download_fails_clearly_after_network_errors(
@@ -148,13 +183,27 @@ def test_download_fails_clearly_after_network_errors(
     )
 
     def broken_stream(*args, **kwargs):
-        raise download_dataset.DatasetError("simulated network failure")
+        raise download_dataset.ConnectionInterrupted("simulated network failure")
 
     monkeypatch.setattr(download_dataset, "_stream_to_file", broken_stream)
     with pytest.raises(download_dataset.DatasetError, match="simulated network failure"):
         download_dataset.download_archive(
             archive, tmp_path, max_attempts=2, sleep=lambda _seconds: None
         )
+
+
+def test_connection_interrupted_is_retryable_dataset_error() -> None:
+    assert issubclass(
+        download_dataset.ConnectionInterrupted, download_dataset.DatasetError
+    )
+
+
+def test_train_archive_constants_match_acquisition_spec() -> None:
+    train = download_dataset.TRAIN2017
+    assert train.size_bytes == 19_336_861_798
+    assert train.image_count == 118_287
+    assert train.image_prefix == "train2017/"
+    assert train.url_path == "/zips/train2017.zip"
 
 
 def test_extract_produces_expected_layout(tmp_path: Path) -> None:
@@ -199,8 +248,8 @@ def _build_synthetic_dataset(root: Path) -> tuple[object, object]:
             "annotations/instances_train2017.json",
             json.dumps(
                 {
-                    "images": [{"id": 3}],
-                    "annotations": [{"id": 3}],
+                    "images": [{"id": 3}, {"id": 4}],
+                    "annotations": [{"id": 3}, {"id": 4}],
                     "categories": [{"id": 1, "name": "cup"}],
                 }
             ),
@@ -249,6 +298,65 @@ def test_verify_passes_on_synthetic_dataset(tmp_path: Path) -> None:
 def test_verify_reports_missing_components(tmp_path: Path) -> None:
     problems, _stats = verify_dataset.verify(tmp_path)
     assert problems
+
+
+def test_default_archives_detects_train_archive(tmp_path: Path) -> None:
+    archives = verify_dataset.default_archives(tmp_path)
+    assert download_dataset.TRAIN2017 not in archives
+    train_zip = tmp_path / download_dataset.TRAIN2017.relative_path
+    train_zip.parent.mkdir(parents=True)
+    train_zip.write_bytes(b"placeholder")
+    archives = verify_dataset.default_archives(tmp_path)
+    assert download_dataset.TRAIN2017 in archives
+
+
+def test_verify_includes_train_images_when_present(tmp_path: Path) -> None:
+    ann_archive, val_archive = _build_synthetic_dataset(tmp_path)
+    train_zip = tmp_path / "zips" / "train.zip"
+    _write_zip(
+        train_zip,
+        {
+            "train2017/000000000003.jpg": b"\xff\xd8\xff",
+            "train2017/000000000004.jpg": b"\xff\xd8\xff",
+        },
+    )
+    train_archive = download_dataset.Archive(
+        name="train.zip",
+        relative_path="zips/train.zip",
+        url_path="/zips/train.zip",
+        size_bytes=train_zip.stat().st_size,
+        image_prefix="train2017/",
+        image_count=2,
+    )
+    download_dataset.extract_archive(train_archive, tmp_path)
+
+    problems, stats = verify_dataset.verify(
+        tmp_path, archives=(ann_archive, val_archive, train_archive)
+    )
+    assert problems == []
+    assert stats["image_files:train2017"] == 2
+
+
+def test_verify_reports_train_image_count_mismatch(tmp_path: Path) -> None:
+    ann_archive, val_archive = _build_synthetic_dataset(tmp_path)
+    train_zip = tmp_path / "zips" / "train.zip"
+    _write_zip(train_zip, {"train2017/000000000003.jpg": b"\xff\xd8\xff"})
+    train_archive = download_dataset.Archive(
+        name="train.zip",
+        relative_path="zips/train.zip",
+        url_path="/zips/train.zip",
+        size_bytes=train_zip.stat().st_size,
+        image_prefix="train2017/",
+        image_count=2,
+    )
+    train_dir = tmp_path / "train2017"
+    train_dir.mkdir(exist_ok=True)
+    (train_dir / "000000000003.jpg").write_bytes(b"\xff\xd8\xff")
+
+    problems, _stats = verify_dataset.verify(
+        tmp_path, archives=(ann_archive, val_archive, train_archive)
+    )
+    assert any("train2017" in problem for problem in problems)
 
 
 def test_verify_main_exits_nonzero_for_missing_dir(tmp_path: Path) -> None:

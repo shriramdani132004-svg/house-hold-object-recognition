@@ -5,9 +5,9 @@
 **COCO — Common Objects in Context (COCO 2017 release)**
 
 The dataset for this project is the COCO 2017 object-detection release:
-the `val2017` image split plus the official `annotations_trainval2017`
-annotation archive (which contains the annotations for both the train and
-val splits).
+the `train2017` and `val2017` image splits plus the official
+`annotations_trainval2017` annotation archive (which contains the
+annotations for both splits).
 
 ## Official Source
 
@@ -24,8 +24,8 @@ val splits).
   `test2017`).
 - Annotation archive: `annotations_trainval2017.zip`
   (server `Last-Modified: 2018-07-10`).
-- Image archives used: `val2017.zip`
-  (server `Last-Modified: 2018-07-11`).
+- Image archives used: `train2017.zip` and `val2017.zip`
+  (both server `Last-Modified: 2018-07-11`).
 
 ## License
 
@@ -65,8 +65,8 @@ best on the project's selection criteria:
 5. **Diversity:** 118K train / 5K val real-world scenes (COCO: 330K
    images overall, 80 categories per the official site).
 6. **Reasonable size:** official splits are downloadable individually;
-   the practical subset for this project is ≈1.07 GB of archives
-   (see *Dataset Size*).
+   the complete detection data is ≈19 GiB of archives (see
+   *Dataset Size*) and fits comfortably on disk.
 7. **Ease of automated acquisition:** single zip files with published
    byte sizes; resumable range requests.
 8. **YOLO compatibility:** COCO format is natively supported by the
@@ -85,28 +85,27 @@ page, verified via HTTP HEAD against the official host):**
 | `annotations/annotations_trainval2017.zip` | annotations for train **and** val | 252,907,541 (~241 MiB) |
 
 **What this project acquires (the documented acquisition
-specification for Phase 2):**
+specification for Phase 2 — all three archives):**
 
 - `annotations_trainval2017.zip` — **acquired** (full annotations for
   both splits: instances, captions, person keypoints).
 - `val2017.zip` — **acquired** (the complete official 5,000-image
   validation split).
-- `train2017.zip` (18 GiB) — **deferred, not acquired in Phase 2.**
-  Throughput on the official endpoint from this machine measured between
-  ≈0.4 and ≈5.5 MB/s across sessions (≈1.6 MB/s in a steady 60-second
-  sample, i.e. ≈3.3 hours for that file), and the planned training is
-  CPU-only (no CUDA detected), which cannot make practical use of 118K
-  images. It remains one command away
-  (`python scripts/download_dataset.py --include-train`) and will be
-  acquired if a later phase requires it.
+- `train2017.zip` — **acquired** (the complete official 118,287-image
+  training split; 18.01 GiB, fetched in resumable chunks — throughput
+  on the official endpoint from this machine measured between ≈0.4 and
+  ≈5.5 MB/s across sessions).
 
 **Verified after acquisition** (`scripts/verify_dataset.py`, PASS):
 
-- Archives: 1,068,492,871 bytes total (both files byte-exact vs official
-  host; annotations MD5 matches official ETag; full ZIP CRC passed).
-- Extracted: annotations 834,416,290 bytes + 5,000 val JPEGs
-  814,705,164 bytes → **2,717,614,325 bytes (~2.53 GiB)** total under
-  `data/raw/coco/`.
+- Archives: 20,405,354,669 bytes total (all three files byte-exact vs
+  official host; annotations MD5 matches official ETag; full ZIP CRC
+  passed for every archive).
+- Extracted: annotations 834,416,290 bytes + 118,287 train JPEGs
+  19,314,466,396 bytes + 5,000 val JPEGs 814,705,164 bytes →
+  **41,368,942,519 bytes (~38.53 GiB)** total under `data/raw/coco/`.
+- Image counts on disk: 118,287 train and 5,000 val JPEGs (each
+  exactly matches the corresponding annotation file).
 - Annotation content: 118,287 train images / 860,001 train instances,
   5,000 val images / 36,781 val instances, 80 categories (identical
   across splits).
@@ -172,12 +171,14 @@ Phase 2.
   ```
   data/raw/coco/
   ├── zips/annotations_trainval2017.zip
+  ├── zips/train2017.zip
   ├── zips/val2017.zip
   ├── annotations/instances_train2017.json
   ├── annotations/instances_val2017.json
   ├── annotations/captions_*.json
   ├── annotations/person_keypoints_*.json
-  └── val2017/000000xxxx.jpg   (5,000 images)
+  ├── train2017/000000xxxx.jpg   (118,287 images)
+  └── val2017/000000xxxx.jpg     (5,000 images)
   ```
 
 - Verification utility: `scripts/verify_dataset.py`.
@@ -213,10 +214,9 @@ Consortium (annotations, CC BY 4.0) and the original image sources
   original Flickr licenses; the official Terms of Use shift
   responsibility to the user. Fine for research/portfolio use with
   attribution; do not redistribute raw images as our own.
-- **`train2017` not acquired in Phase 2** (18 GiB, ≈3.3 h at measured
-  speed; CPU-only training cannot use it anyway). Any later phase that
-  needs the full training split must run
-  `python scripts/download_dataset.py --include-train` first.
+- **Large footprint:** the complete acquired dataset occupies ≈38.53
+  GiB on disk (archives + extracted images). It is git-ignored, so
+  losing `data/raw/coco/` means re-downloading ≈19 GiB.
 - **No official published checksums:** COCO publishes byte sizes and
   ETags, not MD5/SHA manifests. Verification therefore uses exact
   byte-size matching, the S3 ETag MD5 where available, and full ZIP CRC
@@ -242,7 +242,7 @@ Consortium (annotations, CC BY 4.0) and the original image sources
 | Household relevance | **High** — ~40/80 classes are household objects | High — 600 classes incl. many household items | **Low** — only ~6 household classes (bottle, chair, diningtable, pottedplant, sofa, tvmonitor) |
 | License (official) | Annotations: **CC BY 4.0** (COCO Consortium); images: Flickr Terms of Use | Annotations: **CC BY 4.0** (Google LLC); images: CC BY 2.0 as listed, with official disclaimer to verify each image | Homepage reviewed does not state a clear annotation license; images are from Flickr with their own licenses |
 | Download method | Official HTTP zips / gsutil (no auth) | Manual per-image downloads, TFDS, or FiftyOne (full dataset ≈ **0.5 TiB** per official page) | Official tar files from Oxford servers (no auth) |
-| Approx. size | 18.8 GiB complete; **1.07 GB practical subset acquired** | ~0.5 TiB full; class subsets via tooling | ~0.87 GiB (2007), ~3.59 GiB (2012) per TFDS catalog of official files |
+| Approx. size | 19 GiB of archives; **fully acquired (all three archives)** | ~0.5 TiB full; class subsets via tooling | ~0.87 GiB (2007), ~3.59 GiB (2012) per TFDS catalog of official files |
 | Portfolio/commercial notes | Annotations free with attribution; images individually licensed | Annotations free with attribution; image-license disclaimer | Research-site origins; licensing less explicit |
 | YOLO pipeline fit | **Native** (`coco.yaml`, auto-conversion) | Needs custom CSV→YOLO conversion + image fetch tooling | Needs VOC→YOLO conversion |
 | Documentation quality | Very good (official site, tools, API, community) | Very good (official site, papers, tooling) | Good (official site, devkit) |

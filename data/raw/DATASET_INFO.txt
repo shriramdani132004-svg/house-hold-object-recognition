@@ -9,7 +9,8 @@ Acquired from        : https://s3.amazonaws.com/images.cocodataset.org
                        standard S3 REST endpoint; same objects/bytes)
 Dataset version      : COCO 2017 detection release
                        (annotations_trainval2017, server Last-Modified 2018-07-10;
-                       val2017 images, server Last-Modified 2018-07-11)
+                       train2017 and val2017 images, server Last-Modified
+                       2018-07-11)
 Acquisition date     : 2026-10-01
 Acquisition method   : scripts/download_dataset.py
                        (resumable HTTP range download; byte-size, MD5 and
@@ -27,23 +28,23 @@ Files acquired (byte sizes verified against the official host)
 --------------------------------------------------------------
   data/raw/coco/zips/annotations_trainval2017.zip   252,907,541 bytes
       MD5 f4bbac642086de4f52a3fdda2de5fa2c (matches official S3 ETag)
-  data/raw/coco/zips/val2017.zip                    815,585,330 bytes
+  data/raw/coco/zips/train2017.zip                 19,336,861,798 bytes
+      S3 ETag 62ff7d7fbcc7e0c0604cbb0f9047ce77-2306 (multipart)
+  data/raw/coco/zips/val2017.zip                      815,585,330 bytes
       S3 ETag d366be60d3dc737327160d62453e3973-98 (multipart)
-  NOT acquired: train2017.zip                       19,336,861,798 bytes
-      Deferred (18 GiB; measured 0.4-5.5 MB/s on this network). Fetch later with:
-      python scripts/download_dataset.py --include-train
 
 Approximate size on disk (measured 2026-10-01)
 ----------------------------------------------
-  archives                1,068,492,871 bytes
-  extracted annotations     834,416,290 bytes
-  extracted images           814,705,164 bytes
-  total                   2,717,614,325 bytes (~2.53 GiB)
+  archives                20,405,354,669 bytes
+  extracted annotations      834,416,290 bytes
+  extracted train images  19,314,466,396 bytes (118,287 files)
+  extracted val images       814,705,164 bytes (5,000 files)
+  total                   41,368,942,519 bytes (~38.53 GiB)
 
 Images acquired
 ---------------
-  5,000 JPEG images (val2017 split) + full COCO JSON annotations for both
-  the train and val splits (annotations for 118,287 train images included).
+  118,287 JPEG images (train2017 split) + 5,000 JPEG images (val2017
+  split) + full COCO JSON annotations for both splits.
 
 Annotation format
 -----------------
@@ -54,11 +55,11 @@ absolute pixels; segmentation polygons/RLE; area; iscrowd.
 
 Verified content statistics (from the annotation files)
 -------------------------------------------------------
-  images in train annotations : 118,287   (train images themselves not downloaded)
-  images in val               : 5,000
-  instances in train          : 860,001
-  instances in val            : 36,781
-  categories                  : 80 (identical train/val)
+  images in train           : 118,287   (matches 118,287 files on disk)
+  images in val             : 5,000     (matches 5,000 files on disk)
+  instances in train        : 860,001
+  instances in val          : 36,781
+  categories                : 80 (identical train/val)
 
 Relevant categories (household candidates - final subset decided in Phase 3)
 ---------------------------------------------------------------------------

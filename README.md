@@ -25,7 +25,8 @@ verification are handled by `scripts/download_dataset.py` and
 **In progress — Phase 1 (Project Setup) and Phase 2 (Dataset) complete.**
 
 - [x] Project structure, virtual environment, Git, documentation
-- [ ] Dataset acquisition & preparation
+- [x] Dataset selection, acquisition & documentation
+- [ ] Data preparation, class selection & splits
 - [ ] Baseline & model training
 - [ ] Evaluation & improvement
 - [ ] Inference system & web app

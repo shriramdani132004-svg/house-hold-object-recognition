@@ -5,9 +5,10 @@ Run from the project root:
     python scripts/verify_dataset.py [--dest data/raw/coco]
 
 Checks that every expected archive and extracted file exists, that image
-counts match the acquisition specification, and that the COCO instance
-annotation JSONs parse and are internally consistent. Prints the dataset
-statistics it measured. Exit code 0 means everything checks out.
+counts match the acquisition specification (including train2017 when it
+has been acquired), and that the COCO instance annotation JSONs parse and
+are internally consistent. Prints the dataset statistics it measured.
+Exit code 0 means everything checks out.
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from typing import Sequence
 from download_dataset import (
     ANNOTATIONS,
     RAW_DIR,
+    TRAIN2017,
     VAL2017,
     Archive,
     DatasetError,
@@ -28,6 +30,13 @@ from download_dataset import (
 )
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
+
+
+def default_archives(dest_dir: Path) -> list[Archive]:
+    archives: list[Archive] = [ANNOTATIONS, VAL2017]
+    if (dest_dir / TRAIN2017.relative_path).is_file():
+        archives.append(TRAIN2017)
+    return archives
 
 
 def _load_json(path: Path) -> dict:
@@ -129,6 +138,23 @@ def verify(
                     f"category count differs between val ({len(categories)}) "
                     f"and train ({len(cats)})"
                 )
+            expected = next(
+                (
+                    a.image_count
+                    for a in archives
+                    if a.image_prefix == "train2017/"
+                ),
+                None,
+            )
+            if (
+                expected is not None
+                and isinstance(images, list)
+                and len(images) != expected
+            ):
+                problems.append(
+                    f"instances_train2017.json lists {len(images)} images, "
+                    f"expected {expected}"
+                )
 
     return problems, stats
 
@@ -147,7 +173,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"[FAIL] dataset directory does not exist: {args.dest}", file=sys.stderr)
         return 1
 
-    problems, stats = verify(args.dest)
+    archives = default_archives(args.dest)
+    problems, stats = verify(args.dest, archives)
 
     for key in sorted(stats):
         if key == "category_names":

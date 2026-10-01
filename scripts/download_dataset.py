@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.client
 import shutil
 import sys
 import time
@@ -38,6 +39,10 @@ MB = 1024 * 1024
 
 class DatasetError(RuntimeError):
     """Raised when acquisition or verification of dataset files fails."""
+
+
+class ConnectionInterrupted(DatasetError):
+    """Raised for retryable transfer failures (partial/interrupted downloads)."""
 
 
 @dataclass(frozen=True)
@@ -79,6 +84,7 @@ TRAIN2017 = Archive(
     url_path="/zips/train2017.zip",
     size_bytes=19_336_861_798,
     image_prefix="train2017/",
+    image_count=118_287,
 )
 
 
@@ -199,7 +205,7 @@ def _stream_to_file(
     except urllib.error.HTTPError as exc:
         if exc.code == 416 and dest.exists():
             dest.unlink()
-            raise DatasetError(
+            raise ConnectionInterrupted(
                 "server rejected resume range (HTTP 416); partial file removed"
             ) from exc
         raise
@@ -207,7 +213,7 @@ def _stream_to_file(
     with response:
         status = getattr(response, "status", None) or response.getcode()
         if status not in (200, 206):
-            raise DatasetError(f"unexpected HTTP status {status} from {url}")
+            raise ConnectionInterrupted(f"unexpected HTTP status {status} from {url}")
         mode = "ab" if (status == 206 and offset > 0) else "wb"
         written = offset if mode == "ab" else 0
         started = time.monotonic()
@@ -225,7 +231,7 @@ def _stream_to_file(
                     last_print = now
 
     if written != expected:
-        raise DatasetError(
+        raise ConnectionInterrupted(
             f"connection ended early for {dest.name}: {written} / {expected} bytes"
         )
     print(_progress_line(dest.name, written, expected, started, time.monotonic()))
@@ -244,8 +250,20 @@ def download_archive(
     dest.parent.mkdir(parents=True, exist_ok=True)
 
     if dest.is_file() and dest.stat().st_size == archive.size_bytes:
-        print(f"[skip] {archive.name}: already downloaded ({human_bytes(archive.size_bytes)})")
-        return dest
+        try:
+            verify_archive(dest, archive, deep=True)
+        except DatasetError as exc:
+            print(
+                f"[warn] {archive.name}: existing file failed verification "
+                f"({exc}); downloading it again"
+            )
+            dest.unlink()
+        else:
+            print(
+                f"[skip] {archive.name}: already downloaded and verified "
+                f"({human_bytes(archive.size_bytes)})"
+            )
+            return dest
 
     print(f"[get ] {archive.name}: target {human_bytes(archive.size_bytes)}")
     last_error: Exception | None = None
@@ -270,10 +288,13 @@ def download_archive(
                 timeout=timeout,
                 progress_interval=progress_interval,
             )
-            verify_archive(dest, archive, deep=True)
-            print(f"[ ok ] {archive.name}: verified ({human_bytes(archive.size_bytes)})")
-            return dest
-        except (DatasetError, urllib.error.URLError, TimeoutError, OSError) as exc:
+        except (
+            ConnectionInterrupted,
+            urllib.error.URLError,
+            http.client.HTTPException,
+            TimeoutError,
+            OSError,
+        ) as exc:
             last_error = exc
             delay = min(30.0, 2.0**attempt)
             print(
@@ -282,6 +303,10 @@ def download_archive(
             )
             if attempt < max_attempts:
                 sleep(delay)
+            continue
+        verify_archive(dest, archive, deep=True)
+        print(f"[ ok ] {archive.name}: verified ({human_bytes(archive.size_bytes)})")
+        return dest
 
     raise DatasetError(f"could not acquire {archive.name}: {last_error}")
 
