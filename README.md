@@ -65,15 +65,41 @@ SHA-1 duplicate check):
 .\.venv\Scripts\python.exe scripts/analyze_dataset.py
 ```
 
+## Baseline Model (Phase 5)
+
+Zero-shot baseline: the official COCO-pretrained **YOLO26n** checkpoint run
+on the 1,965-image test split (no training, no fine-tuning). Full report:
+`reports/baseline_report.md`.
+
+- **Metrics** (conf >= 0.25, IoU >= 0.5): precision **0.6924**, recall
+  **0.3914**, F1 **0.5001**, mAP@0.5 **0.5485**, mAP@0.5:0.95 **0.3961**
+  (TP 3,591 / FP 1,595 / FN 5,583).
+- **Speed** (CPU, no CUDA GPU): 416 ms/image average (418 ms warm),
+  817.71 s total for 1,965 images, 2.4 images/s.
+- Class-restricted evaluation with an explicit name-based COCO -> 19-class
+  mapping; metric conventions are documented in report section 4.
+- Companion documents: `reports/baseline_confidence_analysis.md`,
+  `reports/baseline_error_examples.md`, `reports/baseline_commands.md`,
+  machine-readable `reports/baseline_results.json`, and 20 annotated
+  samples in `reports/baseline_samples/`.
+- Weights `models/baseline/yolo26n.pt` are git-ignored and auto-downloaded
+  on first run; model card: `models/baseline/README.md`.
+
+```bash
+.\.venv\Scripts\python.exe scripts/evaluate_baseline.py
+.\.venv\Scripts\python.exe scripts/baseline_inference.py --source <image> --save
+```
+
 ## Project Status
 
-**In progress — Phases 1–4 complete.**
+**In progress — Phases 1–5 complete.**
 
 - [x] Project structure, virtual environment, Git, documentation
 - [x] Dataset selection, acquisition & documentation
 - [x] Data preparation, class selection & splits
 - [x] Dataset analysis & reporting
-- [ ] Baseline & model training
+- [x] Baseline model (zero-shot evaluation)
+- [ ] Custom model training
 - [ ] Evaluation & improvement
 - [ ] Inference system & web app
 - [ ] Testing, deployment, final documentation
@@ -94,7 +120,7 @@ SHA-1 duplicate check):
 | Layer | Technology |
 |-------|------------|
 | Language | Python 3.14 |
-| Deep learning | PyTorch + Ultralytics YOLO (added in training phase) |
+| Deep learning | PyTorch + Ultralytics YOLO (CPU, added in Phase 5) |
 | Data handling | NumPy, Pillow, pandas |
 | Visualization | Matplotlib, seaborn |
 | Web app | Gradio |

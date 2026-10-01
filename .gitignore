@@ -49,6 +49,8 @@ data/splits/*
 # Models & checkpoints
 models/*
 !models/.gitkeep
+!models/baseline/
+!models/baseline/README.md
 *.pt
 *.pth
 *.onnx
@@ -63,6 +65,7 @@ reports/figures/*
 !reports/figures/phase4/
 reports/phase3_samples/*
 !reports/phase3_samples/.gitkeep
+reports/baseline_detections.json
 runs/
 wandb/
 lightning_logs/

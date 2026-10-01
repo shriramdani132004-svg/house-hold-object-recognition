@@ -1,0 +1,46 @@
+# Phase 5 baseline configuration (all paths relative to project root)
+# Baseline = official COCO-pretrained YOLO26n evaluated zero-shot on the
+# project test split. No training, no fine-tuning.
+
+model:
+  path: models/baseline/yolo26n.pt
+  name: yolo26n
+  pretrained: coco_80
+
+data:
+  test_images: data/processed/household_objects/images/test
+  test_labels: data/processed/household_objects/labels/test
+  classes_config: configs/classes.yaml
+  dataset_yaml: data/processed/household_objects/dataset.yaml
+
+inference:
+  imgsz: 640
+  device: cpu
+  batch_size: 1
+  conf_floor: 0.01        # keep near-all raw detections for offline analysis
+  max_dets_per_image: 100
+
+evaluation:
+  primary_conf: 0.25
+  confidence_thresholds: [0.25, 0.50, 0.75]
+  match_iou: 0.5
+  map_iou_thresholds: [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
+  class_mapping: name_based_coco_to_project
+
+expected:
+  test_image_count: 1965
+  test_instance_count: 9174
+  class_count: 19
+
+samples:
+  count: 20
+  seed: 42
+
+output:
+  report: reports/baseline_report.md
+  results_json: reports/baseline_results.json
+  confidence_analysis: reports/baseline_confidence_analysis.md
+  error_examples: reports/baseline_error_examples.md
+  commands: reports/baseline_commands.md
+  samples_dir: reports/baseline_samples
+  detections_cache: reports/baseline_detections.json

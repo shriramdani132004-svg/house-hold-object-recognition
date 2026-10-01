@@ -16,3 +16,11 @@ matplotlib>=3.9
 
 # Progress bars (long Phase 4 scans)
 tqdm>=4.66
+
+# --- Phase 5: baseline model (CPU-only inference/evaluation) ---
+# torch/torchvision were installed from the CPU wheel index
+# (https://download.pytorch.org/whl/cpu); ultralytics pulls in
+# opencv-python, polars, numpy, etc.
+torch>=2.5
+torchvision>=0.20
+ultralytics>=8.4

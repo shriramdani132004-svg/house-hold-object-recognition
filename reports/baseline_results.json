@@ -1,0 +1,764 @@
+{
+  "model": "models/baseline/yolo26n.pt",
+  "model_version": "checkpoint saved 2025-12-15 (ultralytics 8.3.222)",
+  "ultralytics_version": "8.4.171",
+  "pytorch_version": "2.14.1+cpu",
+  "device": "cpu",
+  "test_image_count": 1965,
+  "test_instance_count": 9174,
+  "metrics": {
+    "primary_conf": 0.25,
+    "match_iou": 0.5,
+    "tp": 3591,
+    "fp": 1595,
+    "fn": 5583,
+    "precision": 0.6924411878133436,
+    "recall": 0.39143230869849577,
+    "f1": 0.5001392757660168,
+    "map50": 0.548459,
+    "map50_95": 0.396136
+  },
+  "per_class_metrics": [
+    {
+      "class_id": 0,
+      "class_name": "chair",
+      "ground_truth": 1771,
+      "tp": 590,
+      "fp": 277,
+      "fn": 1181,
+      "precision": 0.6805074971164936,
+      "recall": 0.3331451157538114,
+      "f1": 0.4473085670962851,
+      "ap50": 0.4344961921794639,
+      "ap50_95": 0.27858561018543926
+    },
+    {
+      "class_id": 1,
+      "class_name": "book",
+      "ground_truth": 1129,
+      "tp": 93,
+      "fp": 77,
+      "fn": 1036,
+      "precision": 0.5470588235294118,
+      "recall": 0.08237378210806023,
+      "f1": 0.14318706697459585,
+      "ap50": 0.21551027960617947,
+      "ap50_95": 0.10797410029137186
+    },
+    {
+      "class_id": 2,
+      "class_name": "bottle",
+      "ground_truth": 1013,
+      "tp": 371,
+      "fp": 164,
+      "fn": 642,
+      "precision": 0.6934579439252336,
+      "recall": 0.36623889437314905,
+      "f1": 0.47932816537467693,
+      "ap50": 0.4572383158031826,
+      "ap50_95": 0.3064334002120933
+    },
+    {
+      "class_id": 3,
+      "class_name": "cup",
+      "ground_truth": 895,
+      "tp": 385,
+      "fp": 212,
+      "fn": 510,
+      "precision": 0.644891122278057,
+      "recall": 0.4301675977653631,
+      "f1": 0.5160857908847185,
+      "ap50": 0.491360687610911,
+      "ap50_95": 0.3541883360411246
+    },
+    {
+      "class_id": 4,
+      "class_name": "dining table",
+      "ground_truth": 695,
+      "tp": 316,
+      "fp": 185,
+      "fn": 379,
+      "precision": 0.6307385229540918,
+      "recall": 0.4546762589928058,
+      "f1": 0.528428093645485,
+      "ap50": 0.4885565473601489,
+      "ap50_95": 0.35353142197394394
+    },
+    {
+      "class_id": 5,
+      "class_name": "bowl",
+      "ground_truth": 623,
+      "tp": 298,
+      "fp": 141,
+      "fn": 325,
+      "precision": 0.6788154897494305,
+      "recall": 0.478330658105939,
+      "f1": 0.5612052730696798,
+      "ap50": 0.5467234120363171,
+      "ap50_95": 0.4056858900029958
+    },
+    {
+      "class_id": 6,
+      "class_name": "potted plant",
+      "ground_truth": 342,
+      "tp": 122,
+      "fp": 80,
+      "fn": 220,
+      "precision": 0.6039603960396039,
+      "recall": 0.3567251461988304,
+      "f1": 0.44852941176470584,
+      "ap50": 0.4357442810341984,
+      "ap50_95": 0.2671251401672152
+    },
+    {
+      "class_id": 7,
+      "class_name": "wine glass",
+      "ground_truth": 341,
+      "tp": 124,
+      "fp": 43,
+      "fn": 217,
+      "precision": 0.7425149700598802,
+      "recall": 0.36363636363636365,
+      "f1": 0.4881889763779528,
+      "ap50": 0.43727937564638275,
+      "ap50_95": 0.28561891745617224
+    },
+    {
+      "class_id": 8,
+      "class_name": "cell phone",
+      "ground_truth": 262,
+      "tp": 89,
+      "fp": 37,
+      "fn": 173,
+      "precision": 0.7063492063492064,
+      "recall": 0.33969465648854963,
+      "f1": 0.4587628865979382,
+      "ap50": 0.4433382068867115,
+      "ap50_95": 0.3040604221026563
+    },
+    {
+      "class_id": 9,
+      "class_name": "clock",
+      "ground_truth": 267,
+      "tp": 170,
+      "fp": 25,
+      "fn": 97,
+      "precision": 0.8717948717948718,
+      "recall": 0.6367041198501873,
+      "f1": 0.7359307359307359,
+      "ap50": 0.6943759565317834,
+      "ap50_95": 0.49120825575365223
+    },
+    {
+      "class_id": 10,
+      "class_name": "tv",
+      "ground_truth": 288,
+      "tp": 188,
+      "fp": 45,
+      "fn": 100,
+      "precision": 0.8068669527896996,
+      "recall": 0.6527777777777778,
+      "f1": 0.7216890595009597,
+      "ap50": 0.7238356116640039,
+      "ap50_95": 0.5567233614539965
+    },
+    {
+      "class_id": 11,
+      "class_name": "couch",
+      "ground_truth": 261,
+      "tp": 154,
+      "fp": 65,
+      "fn": 107,
+      "precision": 0.7031963470319634,
+      "recall": 0.5900383141762452,
+      "f1": 0.6416666666666666,
+      "ap50": 0.6165709776434067,
+      "ap50_95": 0.4502324376379697
+    },
+    {
+      "class_id": 12,
+      "class_name": "remote",
+      "ground_truth": 283,
+      "tp": 73,
+      "fp": 53,
+      "fn": 210,
+      "precision": 0.5793650793650794,
+      "recall": 0.2579505300353357,
+      "f1": 0.35696821515892424,
+      "ap50": 0.3444704477306204,
+      "ap50_95": 0.2110148300398528
+    },
+    {
+      "class_id": 13,
+      "class_name": "sink",
+      "ground_truth": 225,
+      "tp": 112,
+      "fp": 42,
+      "fn": 113,
+      "precision": 0.7272727272727273,
+      "recall": 0.49777777777777776,
+      "f1": 0.5910290237467019,
+      "ap50": 0.5643578157500716,
+      "ap50_95": 0.37458930269146135
+    },
+    {
+      "class_id": 14,
+      "class_name": "laptop",
+      "ground_truth": 231,
+      "tp": 158,
+      "fp": 37,
+      "fn": 73,
+      "precision": 0.8102564102564103,
+      "recall": 0.683982683982684,
+      "f1": 0.7417840375586855,
+      "ap50": 0.7218047213571223,
+      "ap50_95": 0.6032923781870331
+    },
+    {
+      "class_id": 15,
+      "class_name": "bed",
+      "ground_truth": 163,
+      "tp": 100,
+      "fp": 38,
+      "fn": 63,
+      "precision": 0.7246376811594203,
+      "recall": 0.6134969325153374,
+      "f1": 0.6644518272425248,
+      "ap50": 0.6663042186259883,
+      "ap50_95": 0.49869561768493653
+    },
+    {
+      "class_id": 16,
+      "class_name": "keyboard",
+      "ground_truth": 153,
+      "tp": 91,
+      "fp": 38,
+      "fn": 62,
+      "precision": 0.7054263565891473,
+      "recall": 0.5947712418300654,
+      "f1": 0.6453900709219859,
+      "ap50": 0.6450610647413969,
+      "ap50_95": 0.5073789848851962
+    },
+    {
+      "class_id": 17,
+      "class_name": "refrigerator",
+      "ground_truth": 126,
+      "tp": 83,
+      "fp": 18,
+      "fn": 43,
+      "precision": 0.8217821782178217,
+      "recall": 0.6587301587301587,
+      "f1": 0.7312775330396475,
+      "ap50": 0.7555785078882218,
+      "ap50_95": 0.618409317942239
+    },
+    {
+      "class_id": 18,
+      "class_name": "mouse",
+      "ground_truth": 106,
+      "tp": 74,
+      "fp": 18,
+      "fn": 32,
+      "precision": 0.8043478260869565,
+      "recall": 0.6981132075471698,
+      "f1": 0.7474747474747474,
+      "ap50": 0.7381140574181991,
+      "ap50_95": 0.5518455282429953
+    }
+  ],
+  "confidence_threshold_results": {
+    "0.25": {
+      "threshold": 0.25,
+      "tp": 3591,
+      "fp": 1595,
+      "fn": 5583,
+      "precision": 0.6924411878133436,
+      "recall": 0.39143230869849577,
+      "f1": 0.5001392757660168,
+      "predicted": 5186,
+      "ground_truth": 9174
+    },
+    "0.50": {
+      "threshold": 0.5,
+      "tp": 2426,
+      "fp": 367,
+      "fn": 6748,
+      "precision": 0.8686000716075905,
+      "recall": 0.2644429910616961,
+      "f1": 0.40544831620289135,
+      "predicted": 2793,
+      "ground_truth": 9174
+    },
+    "0.75": {
+      "threshold": 0.75,
+      "tp": 1238,
+      "fp": 55,
+      "fn": 7936,
+      "precision": 0.9574632637277649,
+      "recall": 0.13494658818399827,
+      "f1": 0.236552976019872,
+      "predicted": 1293,
+      "ground_truth": 9174
+    }
+  },
+  "timing": {
+    "device": "cpu",
+    "image_count": 1965,
+    "expected_image_count": 1965,
+    "total_inference_s": 816.63,
+    "model_load_ms": 41.3,
+    "first_image_ms": 1640.1,
+    "avg_wall_ms_per_image": 415.6,
+    "warm_avg_wall_ms_per_image": 418.0,
+    "avg_model_ms_per_image": 356.6,
+    "images_per_second": 2.41,
+    "warmup_excluded_images": 20
+  },
+  "timestamp": "2026-10-01T19:41:23+00:00",
+  "class_mapping": {
+    "mechanism": "name_based_coco_to_project",
+    "mapped_classes": 19,
+    "coco_to_project": {
+      "39": 2,
+      "40": 7,
+      "41": 3,
+      "45": 5,
+      "56": 0,
+      "57": 11,
+      "58": 6,
+      "59": 15,
+      "60": 4,
+      "62": 10,
+      "63": 14,
+      "64": 18,
+      "65": 12,
+      "66": 16,
+      "67": 8,
+      "71": 13,
+      "72": 17,
+      "73": 1,
+      "74": 9
+    }
+  },
+  "failure_analysis": {
+    "categories": {
+      "low_confidence": 2856,
+      "poor_localization": 2183,
+      "missed_detection": 1001,
+      "false_positive": 901,
+      "cluttered_scene": 634,
+      "wrong_class": 119
+    },
+    "examples": {
+      "poor_localization": [
+        "000000000139",
+        "000000000632",
+        "000000000776",
+        "000000001503",
+        "000000002157"
+      ],
+      "low_confidence": [
+        "000000000139",
+        "000000000632",
+        "000000001268",
+        "000000001993",
+        "000000002157"
+      ],
+      "missed_detection": [
+        "000000000139",
+        "000000000632",
+        "000000001296",
+        "000000001503",
+        "000000002685"
+      ],
+      "false_positive": [
+        "000000000139",
+        "000000000632",
+        "000000001425",
+        "000000003845",
+        "000000004795"
+      ],
+      "cluttered_scene": [
+        "000000000139",
+        "000000000632",
+        "000000001503",
+        "000000002157",
+        "000000002685"
+      ],
+      "wrong_class": [
+        "000000001675",
+        "000000002157",
+        "000000002431",
+        "000000003501",
+        "000000007818"
+      ]
+    },
+    "confusion": [
+      {
+        "ground_truth": "bottle",
+        "predicted": "cup",
+        "count": 18
+      },
+      {
+        "ground_truth": "cup",
+        "predicted": "bottle",
+        "count": 10
+      },
+      {
+        "ground_truth": "wine glass",
+        "predicted": "cup",
+        "count": 9
+      },
+      {
+        "ground_truth": "chair",
+        "predicted": "couch",
+        "count": 8
+      },
+      {
+        "ground_truth": "cup",
+        "predicted": "bowl",
+        "count": 7
+      },
+      {
+        "ground_truth": "bowl",
+        "predicted": "cup",
+        "count": 7
+      },
+      {
+        "ground_truth": "dining table",
+        "predicted": "chair",
+        "count": 6
+      },
+      {
+        "ground_truth": "couch",
+        "predicted": "chair",
+        "count": 6
+      },
+      {
+        "ground_truth": "cup",
+        "predicted": "wine glass",
+        "count": 5
+      },
+      {
+        "ground_truth": "cell phone",
+        "predicted": "remote",
+        "count": 4
+      },
+      {
+        "ground_truth": "book",
+        "predicted": "laptop",
+        "count": 4
+      },
+      {
+        "ground_truth": "keyboard",
+        "predicted": "laptop",
+        "count": 3
+      },
+      {
+        "ground_truth": "bottle",
+        "predicted": "wine glass",
+        "count": 3
+      },
+      {
+        "ground_truth": "bed",
+        "predicted": "couch",
+        "count": 3
+      },
+      {
+        "ground_truth": "bowl",
+        "predicted": "dining table",
+        "count": 2
+      },
+      {
+        "ground_truth": "couch",
+        "predicted": "bed",
+        "count": 2
+      },
+      {
+        "ground_truth": "wine glass",
+        "predicted": "bottle",
+        "count": 1
+      },
+      {
+        "ground_truth": "remote",
+        "predicted": "cell phone",
+        "count": 1
+      },
+      {
+        "ground_truth": "refrigerator",
+        "predicted": "chair",
+        "count": 1
+      },
+      {
+        "ground_truth": "laptop",
+        "predicted": "chair",
+        "count": 1
+      },
+      {
+        "ground_truth": "remote",
+        "predicted": "mouse",
+        "count": 1
+      },
+      {
+        "ground_truth": "book",
+        "predicted": "bed",
+        "count": 1
+      },
+      {
+        "ground_truth": "cell phone",
+        "predicted": "book",
+        "count": 1
+      },
+      {
+        "ground_truth": "sink",
+        "predicted": "bowl",
+        "count": 1
+      },
+      {
+        "ground_truth": "cell phone",
+        "predicted": "laptop",
+        "count": 1
+      },
+      {
+        "ground_truth": "cup",
+        "predicted": "book",
+        "count": 1
+      },
+      {
+        "ground_truth": "bed",
+        "predicted": "dining table",
+        "count": 1
+      },
+      {
+        "ground_truth": "chair",
+        "predicted": "laptop",
+        "count": 1
+      },
+      {
+        "ground_truth": "keyboard",
+        "predicted": "remote",
+        "count": 1
+      },
+      {
+        "ground_truth": "bed",
+        "predicted": "bowl",
+        "count": 1
+      },
+      {
+        "ground_truth": "dining table",
+        "predicted": "bowl",
+        "count": 1
+      },
+      {
+        "ground_truth": "laptop",
+        "predicted": "tv",
+        "count": 1
+      },
+      {
+        "ground_truth": "couch",
+        "predicted": "dining table",
+        "count": 1
+      },
+      {
+        "ground_truth": "clock",
+        "predicted": "tv",
+        "count": 1
+      },
+      {
+        "ground_truth": "wine glass",
+        "predicted": "bowl",
+        "count": 1
+      },
+      {
+        "ground_truth": "tv",
+        "predicted": "laptop",
+        "count": 1
+      },
+      {
+        "ground_truth": "bed",
+        "predicted": "chair",
+        "count": 1
+      },
+      {
+        "ground_truth": "bowl",
+        "predicted": "sink",
+        "count": 1
+      }
+    ],
+    "total_fn": 5583,
+    "small_object_fn": 3674,
+    "images_with_failures": 1587,
+    "image_count": 1965
+  },
+  "samples": [
+    {
+      "category": "crowded",
+      "image_id": "000000031296",
+      "note": "most ground-truth objects (38)",
+      "file": "01_crowded_000000031296.jpg",
+      "ground_truth": 38,
+      "predicted": 12
+    },
+    {
+      "category": "single_object",
+      "image_id": "000000000776",
+      "note": "exactly one ground-truth object",
+      "file": "02_single_object_000000000776.jpg",
+      "ground_truth": 1,
+      "predicted": 0
+    },
+    {
+      "category": "small_object",
+      "image_id": "000000522393",
+      "note": "smallest ground-truth box (area 0.000023)",
+      "file": "03_small_object_000000522393.jpg",
+      "ground_truth": 1,
+      "predicted": 0
+    },
+    {
+      "category": "large_object",
+      "image_id": "000000010583",
+      "note": "largest ground-truth box (area 1.000)",
+      "file": "04_large_object_000000010583.jpg",
+      "ground_truth": 1,
+      "predicted": 2
+    },
+    {
+      "category": "class_chair",
+      "image_id": "000000000139",
+      "note": "contains 'chair'",
+      "file": "05_class_chair_000000000139.jpg",
+      "ground_truth": 13,
+      "predicted": 11
+    },
+    {
+      "category": "class_book",
+      "image_id": "000000000632",
+      "note": "contains 'book'",
+      "file": "06_class_book_000000000632.jpg",
+      "ground_truth": 17,
+      "predicted": 4
+    },
+    {
+      "category": "class_bottle",
+      "image_id": "000000002685",
+      "note": "contains 'bottle'",
+      "file": "07_class_bottle_000000002685.jpg",
+      "ground_truth": 12,
+      "predicted": 0
+    },
+    {
+      "category": "class_cup",
+      "image_id": "000000002157",
+      "note": "contains 'cup'",
+      "file": "08_class_cup_000000002157.jpg",
+      "ground_truth": 12,
+      "predicted": 10
+    },
+    {
+      "category": "class_dining_table",
+      "image_id": "000000001993",
+      "note": "contains 'dining table'",
+      "file": "09_class_dining_table_000000001993.jpg",
+      "ground_truth": 4,
+      "predicted": 3
+    },
+    {
+      "category": "class_bowl",
+      "image_id": "000000001425",
+      "note": "contains 'bowl'",
+      "file": "10_class_bowl_000000001425.jpg",
+      "ground_truth": 1,
+      "predicted": 2
+    },
+    {
+      "category": "class_potted_plant",
+      "image_id": "000000013923",
+      "note": "contains 'potted plant'",
+      "file": "11_class_potted_plant_000000013923.jpg",
+      "ground_truth": 17,
+      "predicted": 10
+    },
+    {
+      "category": "class_wine_glass",
+      "image_id": "000000002431",
+      "note": "contains 'wine glass'",
+      "file": "12_class_wine_glass_000000002431.jpg",
+      "ground_truth": 4,
+      "predicted": 5
+    },
+    {
+      "category": "class_cell_phone",
+      "image_id": "000000001268",
+      "note": "contains 'cell phone'",
+      "file": "13_class_cell_phone_000000001268.jpg",
+      "ground_truth": 1,
+      "predicted": 0
+    },
+    {
+      "category": "class_clock",
+      "image_id": "000000001296",
+      "note": "contains 'clock'",
+      "file": "14_class_clock_000000001296.jpg",
+      "ground_truth": 2,
+      "predicted": 1
+    },
+    {
+      "category": "random",
+      "image_id": "000000021503",
+      "note": "seeded random pick (seed 42)",
+      "file": "15_random_000000021503.jpg",
+      "ground_truth": 3,
+      "predicted": 2
+    },
+    {
+      "category": "random",
+      "image_id": "000000355325",
+      "note": "seeded random pick (seed 42)",
+      "file": "16_random_000000355325.jpg",
+      "ground_truth": 6,
+      "predicted": 6
+    },
+    {
+      "category": "random",
+      "image_id": "000000507893",
+      "note": "seeded random pick (seed 42)",
+      "file": "17_random_000000507893.jpg",
+      "ground_truth": 1,
+      "predicted": 1
+    },
+    {
+      "category": "random",
+      "image_id": "000000513041",
+      "note": "seeded random pick (seed 42)",
+      "file": "18_random_000000513041.jpg",
+      "ground_truth": 6,
+      "predicted": 5
+    },
+    {
+      "category": "random",
+      "image_id": "000000507235",
+      "note": "seeded random pick (seed 42)",
+      "file": "19_random_000000507235.jpg",
+      "ground_truth": 3,
+      "predicted": 3
+    },
+    {
+      "category": "random",
+      "image_id": "000000323151",
+      "note": "seeded random pick (seed 42)",
+      "file": "20_random_000000323151.jpg",
+      "ground_truth": 4,
+      "predicted": 4
+    }
+  ],
+  "detections": {
+    "raw_total": 87186,
+    "project_class_total": 45926,
+    "ignored_non_project_total": 41260,
+    "conf_floor": 0.01,
+    "imgsz": 640
+  },
+  "cache_used": true
+}

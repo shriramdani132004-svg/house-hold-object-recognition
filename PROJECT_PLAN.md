@@ -28,7 +28,7 @@ verified before moving to the next.
 - [x] Phase 2 — Dataset
 - [x] Phase 3 — Preparation
 - [x] Phase 4 — Analysis
-- [ ] Phase 5 — Baseline
+- [x] Phase 5 — Baseline
 - [ ] Phase 6 — Training
 - [ ] Phase 7 — Evaluation
 - [ ] Phase 8 — Improvement

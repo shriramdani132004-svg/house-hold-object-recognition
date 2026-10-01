@@ -47,12 +47,14 @@ def test_required_files_exist() -> None:
     assert not missing, f"Missing files: {missing}"
 
 
-def test_requirements_contains_no_heavy_ml_deps() -> None:
+def test_requirements_ml_deps_match_project_stack() -> None:
     lines = (PROJECT_ROOT / "requirements.txt").read_text(encoding="utf-8").lower()
     active = [ln for ln in lines.splitlines() if ln.strip() and not ln.strip().startswith("#")]
     text = "\n".join(active)
-    for forbidden in ("torch", "ultralytics", "tensorflow"):
-        assert forbidden not in text, f"Unexpected heavy dependency: {forbidden}"
+    assert "torch" in text, "Phase 5 baseline needs torch"
+    assert "ultralytics" in text, "Phase 5 baseline needs ultralytics"
+    for forbidden in ("tensorflow", "keras"):
+        assert forbidden not in text, f"Unexpected dependency: {forbidden}"
 
 
 def test_project_plan_lists_all_phases() -> None:
