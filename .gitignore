@@ -42,6 +42,7 @@ data/raw/*
 data/processed/*
 data/splits/*
 !data/raw/.gitkeep
+!data/raw/DATASET_INFO.txt
 !data/processed/.gitkeep
 !data/splits/.gitkeep
 

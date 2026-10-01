@@ -5,9 +5,24 @@ images — from dataset preparation and custom model training to a Gradio web
 app where you upload a photo and get labeled bounding boxes with confidence
 scores.
 
+## Dataset
+
+- **Selected dataset:** COCO — Common Objects in Context (COCO 2017 release)
+- **Official source:** <https://cocodataset.org/> (download page & Terms of Use)
+- **Purpose:** real-world images with professional bounding-box annotations
+  for training and evaluating the household-object detector. The
+  household-relevant class subset is finalized during data preparation.
+- **Full details** (license, size, classes, annotation format, acquisition
+  method, citation): see [DATASET.md](DATASET.md).
+
+Raw data lives under `data/raw/coco/` (git-ignored); acquisition and
+verification are handled by `scripts/download_dataset.py` and
+`scripts/verify_dataset.py`. Verified metadata is recorded in
+`data/raw/DATASET_INFO.txt`.
+
 ## Project Status
 
-**In progress — Phase 1 (Project Setup) complete.**
+**In progress — Phase 1 (Project Setup) and Phase 2 (Dataset) complete.**
 
 - [x] Project structure, virtual environment, Git, documentation
 - [ ] Dataset acquisition & preparation
