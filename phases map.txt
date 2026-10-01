@@ -1,0 +1,65 @@
+PHASE 1 — PROJECT SETUP
+Create project structure, Python environment, Git, configuration,
+basic README, and AGENTS.md.
+
+PHASE 2 — DATASET
+Select a suitable public household-object detection dataset,
+download/acquire it, and document the dataset and license.
+
+PHASE 3 — DATA PREPARATION
+Clean the dataset, select classes, convert annotations if needed,
+create train/validation/test splits, and validate the data.
+
+PHASE 4 — DATASET ANALYSIS
+Generate class distribution, sample annotated images,
+object statistics, and identify dataset problems.
+
+PHASE 5 — BASELINE MODEL
+Load a pretrained lightweight YOLO model and test it before
+custom training.
+
+PHASE 6 — MODEL TRAINING
+Train the custom household-object detection model and save
+checkpoints, logs, and metrics.
+
+PHASE 7 — MODEL EVALUATION
+Evaluate on validation/test data using precision, recall,
+mAP50, mAP50-95, confusion matrix, and inference speed.
+
+PHASE 8 — ERROR ANALYSIS & IMPROVEMENT
+Find missed objects, false positives, wrong classes, bad boxes,
+and improve the dataset/training setup.
+
+PHASE 9 — FINAL MODEL
+Run the improved training experiment, compare results,
+select the final model, and freeze the model version.
+
+PHASE 10 — INFERENCE SYSTEM
+Build clean Python inference code for image prediction,
+bounding boxes, confidence scores, and object summaries.
+
+PHASE 11 — WEB APP
+Build a Gradio interface where a user uploads an image and
+gets household-object detections.
+
+PHASE 12 — TESTING
+Add automated tests and test the complete inference application
+with different image types and edge cases.
+
+PHASE 13 — GITHUB
+Clean the repository, write the professional README,
+add examples, documentation, .gitignore, LICENSE, and GitHub Actions.
+
+PHASE 14 — DEPLOYMENT
+Prepare and deploy the Gradio application to Hugging Face Spaces,
+including model storage and deployment configuration.
+
+PHASE 15 — FINAL POLISH
+Verify the complete project from start to finish, fix broken paths,
+remove unnecessary files, verify metrics, and make the repository
+portfolio-ready.
+
+PHASE 16 — FINAL PROJECT DOCUMENTATION
+Create the final project report covering dataset, architecture,
+training, evaluation, error analysis, deployment, limitations,
+and future improvements.

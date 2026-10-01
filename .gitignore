@@ -1,0 +1,69 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Secrets / local config (never commit) ---
+.env
+.env.*
+*.key
+*.pem
+secrets.*
+credentials.*
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- OS / editor ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# --- Project artifacts (large / generated) ---
+# Datasets
+data/raw/*
+data/processed/*
+data/splits/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/splits/.gitkeep
+
+# Models & checkpoints
+models/*
+!models/.gitkeep
+*.pt
+*.pth
+*.onnx
+*.engine
+*.ckpt
+
+# Generated outputs
+examples/output/*
+!examples/output/.gitkeep
+reports/figures/*
+!reports/figures/.gitkeep
+runs/
+wandb/
+lightning_logs/
+mlruns/
+
+# Logs
+*.log
+logs/

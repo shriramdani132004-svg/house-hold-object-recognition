@@ -1,0 +1,12 @@
+# --- Phase 1: project foundation (lightweight only) ---
+# Heavy ML dependencies (torch, ultralytics, etc.) are added in later
+# training phases on demand.
+
+# Testing
+pytest>=8.0
+
+# Config handling
+PyYAML>=6.0
+
+# Image handling (needed by scripts/tests early on)
+Pillow>=10.0
