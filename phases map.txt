@@ -148,6 +148,9 @@ Rules:
 - preserve experience ordering
 - make experiments reproducible
 
+STATUS:
+✅ COMPLETE
+
 
 ==============================================================
 PHASE 4 — NAIVE CONTINUAL-LEARNING BASELINE
@@ -810,8 +813,8 @@ These remain available as prototype work.
 FINAL CORe50 ASSIGNMENT:
 
 ✅ PHASE 2 — CORe50 Dataset
-▶ PHASE 3 — Continual Data Pipeline
-🔜 PHASE 4 — Naive Continual Baseline
+✅ PHASE 3 — Continual Data Pipeline
+▶ PHASE 4 — Naive Continual Baseline
 🔜 PHASE 5 — Experience Replay
 🔜 PHASE 6 — Continual Experiment
 🔜 PHASE 7 — Continual Evaluation

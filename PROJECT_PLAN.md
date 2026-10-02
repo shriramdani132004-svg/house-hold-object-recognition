@@ -57,7 +57,7 @@ CORe50**:
 |---|-------|------|--------|
 | 1 | **Setup** | Project foundation: structure, venv, Git, docs, tests | [x] Complete |
 | 2 | **CORe50 Dataset** | Acquire + verify the official CORe50 dataset, session structure, object mapping, NI/NC/NIC resources, documentation | [x] Complete (2026-10-02) |
-| 3 | **Continual Data Pipeline** | Session/experience loading, sequential experiences, official filelists, no leakage | [ ] |
+| 3 | **Continual Data Pipeline** | Session/experience loading, sequential experiences, official filelists, no leakage | [x] Complete (2026-10-02) |
 | 4 | **Naive + Experience Replay** | Sequential baseline and the one required anti-forgetting method | [ ] |
 | 5 | **Main NIC Experiment + Evaluation** | Naive vs Replay with accuracy / forgetting measurements | [ ] |
 | 6 | **Error Analysis + Final Model** | Focused forgetting/error analysis, freeze the selected checkpoint | [ ] |
@@ -71,6 +71,39 @@ Phase 2 deliverables recorded: `data/raw/core50/DATASET_INFO.md`,
 `reports/phase2_core50_samples/`, `scripts/download_core50.py`,
 `scripts/extract_core50.py`, `scripts/validate_core50.py`,
 `tests/test_phase2_core50.py`.
+
+### PHASE 3 — CONTINUAL DATA PIPELINE
+
+STATUS: IMPLEMENTED (2026-10-02)
+
+- **Scenario-based data loading**: `load_scenario(scenario, variant, run)`
+  in `src/data/continual/` provides SCENARIO → EXPERIENCES → train +
+  evaluation samples for later training phases
+  (`for experience in scenario.experiences: ...`).
+- **Official filelist usage**: scenarios are read from the official
+  `data/raw/core50/filelists/{NI,NC,NIC}_{inc,cum}/run{N}/` tree (plus the
+  official `NIC_v2_{79,196,391}` variants); no splits are invented.
+- **Sequential experiences**: official batch order preserved, experience 0
+  first, no shuffling, no future experience visible to an earlier one.
+- **Train/evaluation separation**: the fixed official test set
+  (sessions s3/s7/s10, 44,972 samples) is disjoint from all training data.
+- **Leakage safeguards** (`src/data/continual/validation.py`): train/eval
+  overlap, future-data leakage (disjoint incremental batches; monotone
+  cumulative chains), experience ordering, duplicate references, unresolved
+  image paths, unknown object/session/class ids, label ranges.
+- **Reproducibility**: explicit scenario/variant/run selection, deterministic
+  loading (repeat loads compare equal), cached re-parsing, and only
+  project-relative paths in persisted metadata.
+- **NI/NC/NIC support**: all 9 official variants are discovered and
+  validated; official NC per-run label remapping is reported as a fact
+  (`label_equals_object_minus_one: false`).
+- **Primary future scenario**: NIC (Phase 4+ experiments).
+- **Artifacts**: `reports/phase3_continual_pipeline_manifest.json`,
+  `scripts/inspect_core50_scenarios.py`, `scripts/build_phase3_manifest.py`,
+  `configs/continual.yaml`, `tests/test_phase3_continual_pipeline.py`.
+
+Phase 3 does **not** train models, implement replay, or compute accuracy —
+those belong to later phases.
 
 ## Notes
 

@@ -1,0 +1,11 @@
+# Phase 3 — continual data pipeline defaults (project-relative paths).
+# CLI flags override these values; the library API never reads this file
+# implicitly (scripts wire configuration -> explicit loader arguments).
+scenario: NIC
+variant: inc
+run: 0
+filelist_root: data/raw/core50/filelists
+images_root: data/raw/core50/dataset/core50_128x128
+object_mapping: data/raw/core50/metadata/object_mapping.json
+manifest: reports/phase3_continual_pipeline_manifest.json
+check_paths_exist: true
