@@ -1,0 +1,37 @@
+# Phase 6 training configuration (all paths relative to project root).
+# ONE controlled custom-training experiment: fine-tune the COCO-pretrained
+# YOLO26n detector on the prepared 19-class household-object dataset.
+# The test split is NEVER used for training, validation or checkpoint
+# selection - it stays held out for the final evaluation in Phase 7.
+
+model:
+  base: yolo26n.pt            # COCO-pretrained weights (auto-downloaded if absent)
+  task: detect
+
+data: configs/train_data.yaml  # train/val only; NO test key (held out)
+
+output:
+  project: models/training    # run directory root (weights git-ignored)
+  name: household_yolo26n
+
+training:
+  epochs: 2                  # measured ~6.9 h/epoch on this CPU (see report); 2 epochs ~14 h; never extended automatically
+  warmup_epochs: 0.5         # default 3.0 would consume the entire short schedule
+  patience: 15               # early stop if validation fitness stalls (>=16 epochs only)
+  imgsz: 640
+  batch: 16                  # conservative CPU batch; reduced on memory pressure
+  seed: 42
+  deterministic: true
+  workers: 0                 # Ultralytics forces 0 on CPU; bench-confirmed fastest
+  device: cpu                # XPU probe: torch.xpu.is_available() == False here
+  optimizer: auto
+  val: true                  # validate every epoch on the val split
+  amp: true                  # auto-managed by Ultralytics on CPU (disabled: FP32)
+  close_mosaic: 10           # disable mosaic for the final 10 epochs (not reached here)
+  save_period: -1            # rely on best.pt / last.pt checkpoints
+  plots: true
+
+splits:
+  train: images/train         # 40,890 images
+  val: images/val             # 4,544 images (checkpoint selection only)
+  test: images/test           # 1,965 images - HELD OUT, never used here

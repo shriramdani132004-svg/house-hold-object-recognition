@@ -29,7 +29,7 @@ verified before moving to the next.
 - [x] Phase 3 — Preparation
 - [x] Phase 4 — Analysis
 - [x] Phase 5 — Baseline
-- [ ] Phase 6 — Training
+- [x] Phase 6 — Training
 - [ ] Phase 7 — Evaluation
 - [ ] Phase 8 — Improvement
 - [ ] Phase 9 — Final Model

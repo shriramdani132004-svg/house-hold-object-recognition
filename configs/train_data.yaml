@@ -1,0 +1,29 @@
+# Ultralytics dataset descriptor for Phase 6 training ONLY.
+# Paths are relative to the project root (all commands run from there).
+# Deliberately contains NO `test:` key - the 1,965-image test split is
+# held out and must never be used for training, validation or checkpoint
+# selection. Class order must match configs/classes.yaml (tested).
+path: data/processed/household_objects
+train: images/train
+val: images/val
+nc: 19
+names:
+  - chair
+  - book
+  - bottle
+  - cup
+  - dining table
+  - bowl
+  - potted plant
+  - wine glass
+  - cell phone
+  - clock
+  - tv
+  - couch
+  - remote
+  - sink
+  - laptop
+  - bed
+  - keyboard
+  - refrigerator
+  - mouse

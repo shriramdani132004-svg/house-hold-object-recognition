@@ -63,6 +63,7 @@ examples/output/*
 reports/figures/*
 !reports/figures/.gitkeep
 !reports/figures/phase4/
+!reports/figures/phase6/
 reports/phase3_samples/*
 !reports/phase3_samples/.gitkeep
 reports/baseline_detections.json

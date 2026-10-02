@@ -1,0 +1,818 @@
+{
+  "phase": 6,
+  "status": "completed",
+  "label": "VALIDATION RESULT - validation split only; test split untouched",
+  "generated_at": "2026-10-02T13:46:57+00:00",
+  "experiment": {
+    "design": "ONE controlled experiment: fine-tune COCO-pretrained yolo26n on the prepared 19-class train split",
+    "config": {
+      "model": {
+        "base": "yolo26n.pt",
+        "task": "detect"
+      },
+      "data": "configs/train_data.yaml",
+      "output": {
+        "project": "models/training",
+        "name": "household_yolo26n"
+      },
+      "training": {
+        "epochs": 2,
+        "warmup_epochs": 0.5,
+        "patience": 15,
+        "imgsz": 640,
+        "batch": 16,
+        "seed": 42,
+        "deterministic": true,
+        "workers": 0,
+        "device": "cpu",
+        "optimizer": "auto",
+        "val": true,
+        "amp": true,
+        "close_mosaic": 10,
+        "save_period": -1,
+        "plots": true
+      },
+      "splits": {
+        "train": "images/train",
+        "val": "images/val",
+        "test": "images/test"
+      }
+    },
+    "epochs_planned": 2,
+    "epochs_completed": 2,
+    "patience": 15,
+    "early_stop_triggered": false,
+    "seed": 42,
+    "deterministic": true,
+    "device": "cpu",
+    "base_model": "C:\\Users\\SHRIRAM\\Desktop\\house_hold_obj\\yolo26n.pt"
+  },
+  "environment": {
+    "python": "3.14.2",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "torch": "2.14.1+cpu",
+    "ultralytics": "8.4.171",
+    "cpu_count": 18,
+    "cuda_available": false,
+    "xpu_available": false,
+    "device_used": "cpu",
+    "mkldnn": true,
+    "amp_enabled": false,
+    "amp_note": "Ultralytics check_amp returns False on CPU; training ran pure FP32"
+  },
+  "integrity": {
+    "pre_state_recorded_at_phase_start": {
+      "train_images": 40890,
+      "train_labels": 40890,
+      "train_instances": 184709,
+      "val_images": 4544,
+      "val_labels": 4544,
+      "val_instances": 21100,
+      "test_images": 1965,
+      "test_labels": 1965,
+      "test_instances": 9174,
+      "instances_total": 214983,
+      "raw_files": 123298,
+      "raw_bytes": 41368946252
+    },
+    "post_state": {
+      "splits": {
+        "train": {
+          "images": 40890,
+          "labels": 40890,
+          "instances": 184709
+        },
+        "val": {
+          "images": 4544,
+          "labels": 4544,
+          "instances": 21100
+        },
+        "test": {
+          "images": 1965,
+          "labels": 1965,
+          "instances": 9174
+        }
+      },
+      "instances_total": 214983,
+      "raw_files": 123298,
+      "raw_bytes": 41368946252
+    },
+    "unchanged": true
+  },
+  "training": {
+    "status": "completed",
+    "wall_s": 46086.5,
+    "console_wall_s": 46086.5,
+    "per_epoch": [
+      {
+        "epoch": 1,
+        "wall_s": 20488.9,
+        "epoch_wall_s": 20488.9,
+        "train_box_loss": 1.43231,
+        "train_cls_loss": 3.25987,
+        "train_l1_loss": 0.01047,
+        "precision": 0.55795,
+        "recall": 0.43298,
+        "map50": 0.45064,
+        "map50_95": 0.29837,
+        "val_box_loss": 1.45064,
+        "val_cls_loss": 2.47885,
+        "lr_pg0": 0.00043466
+      },
+      {
+        "epoch": 2,
+        "wall_s": 45419.3,
+        "epoch_wall_s": 24930.4,
+        "train_box_loss": 1.42024,
+        "train_cls_loss": 2.26288,
+        "train_l1_loss": 0.0103,
+        "precision": 0.62101,
+        "recall": 0.50092,
+        "map50": 0.54058,
+        "map50_95": 0.37784,
+        "val_box_loss": 1.361,
+        "val_cls_loss": 2.01457,
+        "lr_pg0": 0.000219675
+      }
+    ],
+    "train_images": 40890,
+    "val_images_per_epoch": 4544,
+    "loss_trajectory": {
+      "epoch1_box_cls": [
+        1.43231,
+        3.25987
+      ],
+      "epoch2_box_cls": [
+        1.42024,
+        2.26288
+      ]
+    }
+  },
+  "validation_best_pt": {
+    "overall": {
+      "precision": 0.6211351858001343,
+      "recall": 0.500715215715796,
+      "map50": 0.5405548161779998,
+      "map50_95": 0.3778466287773726,
+      "fitness": 0.377847
+    },
+    "per_class": [
+      {
+        "class_id": 0,
+        "class_name": "chair",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.5857444461810337,
+        "recall": 0.4037122969837587,
+        "map50": 0.4547537629874225,
+        "map50_95": 0.2802800988272227
+      },
+      {
+        "class_id": 1,
+        "class_name": "book",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.42314158580529615,
+        "recall": 0.14457831325301204,
+        "map50": 0.20602189245988517,
+        "map50_95": 0.09250871066939935
+      },
+      {
+        "class_id": 2,
+        "class_name": "bottle",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.5826156531530472,
+        "recall": 0.43855516293678837,
+        "map50": 0.4743453252607741,
+        "map50_95": 0.29994812696828566
+      },
+      {
+        "class_id": 3,
+        "class_name": "cup",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.592658127356018,
+        "recall": 0.4762626262626263,
+        "map50": 0.506702500214157,
+        "map50_95": 0.3648850028621794
+      },
+      {
+        "class_id": 4,
+        "class_name": "dining table",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.6340093440066802,
+        "recall": 0.4879441624365482,
+        "map50": 0.502799828303342,
+        "map50_95": 0.3516002145369783
+      },
+      {
+        "class_id": 5,
+        "class_name": "bowl",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.6160070457895768,
+        "recall": 0.48936170212765956,
+        "map50": 0.5332748266217872,
+        "map50_95": 0.3951889303430688
+      },
+      {
+        "class_id": 6,
+        "class_name": "potted plant",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.5584136026099706,
+        "recall": 0.4164882226980728,
+        "map50": 0.4201912940444805,
+        "map50_95": 0.23774703747700907
+      },
+      {
+        "class_id": 7,
+        "class_name": "wine glass",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.650269617704203,
+        "recall": 0.49944506104328523,
+        "map50": 0.5291739741707557,
+        "map50_95": 0.34499393020959096
+      },
+      {
+        "class_id": 8,
+        "class_name": "cell phone",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.601383514496378,
+        "recall": 0.33641975308641975,
+        "map50": 0.39574143700332787,
+        "map50_95": 0.26469250470321437
+      },
+      {
+        "class_id": 9,
+        "class_name": "clock",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.7048524989288035,
+        "recall": 0.6760797342192691,
+        "map50": 0.7034790705396949,
+        "map50_95": 0.4782941990451885
+      },
+      {
+        "class_id": 10,
+        "class_name": "tv",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.7389076621801399,
+        "recall": 0.6572847682119205,
+        "map50": 0.7216640932205465,
+        "map50_95": 0.5470374296192336
+      },
+      {
+        "class_id": 11,
+        "class_name": "couch",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.6118614412432707,
+        "recall": 0.5079365079365079,
+        "map50": 0.5696597076336294,
+        "map50_95": 0.42285523300248606
+      },
+      {
+        "class_id": 12,
+        "class_name": "remote",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.5587940505080485,
+        "recall": 0.32698338796968074,
+        "map50": 0.34817585757323166,
+        "map50_95": 0.21734751211548947
+      },
+      {
+        "class_id": 13,
+        "class_name": "sink",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.5837104918379337,
+        "recall": 0.5110490330056597,
+        "map50": 0.5104433366158998,
+        "map50_95": 0.3235766296639583
+      },
+      {
+        "class_id": 14,
+        "class_name": "laptop",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.644855713913256,
+        "recall": 0.6550976138828634,
+        "map50": 0.6889349162549541,
+        "map50_95": 0.5385595113332313
+      },
+      {
+        "class_id": 15,
+        "class_name": "bed",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.7431749736497837,
+        "recall": 0.6955380577427821,
+        "map50": 0.7839153781151276,
+        "map50_95": 0.5815247216101213
+      },
+      {
+        "class_id": 16,
+        "class_name": "keyboard",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.6213803749699408,
+        "recall": 0.572347266881029,
+        "map50": 0.6153248148256066,
+        "map50_95": 0.4438430623468963
+      },
+      {
+        "class_id": 17,
+        "class_name": "refrigerator",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.7470487351200589,
+        "recall": 0.6176470588235294,
+        "map50": 0.7094667884204826,
+        "map50_95": 0.5536674004411942
+      },
+      {
+        "class_id": 18,
+        "class_name": "mouse",
+        "ground_truth": null,
+        "images": null,
+        "precision": 0.6027396507491118,
+        "recall": 0.6008583690987125,
+        "map50": 0.5964727031168932,
+        "map50_95": 0.4405356909953298
+      }
+    ],
+    "speed_ms_per_image": {
+      "preprocess": 0.968,
+      "inference": 64.296,
+      "loss": 0.0,
+      "postprocess": 2.736
+    },
+    "weights": "C:\\Users\\SHRIRAM\\Desktop\\house_hold_obj\\models\\training\\household_yolo26n\\weights\\best.pt",
+    "split": "val",
+    "image_count": 4544,
+    "instance_count": 21100
+  },
+  "zero_shot_baseline_val": {
+    "overall": {
+      "precision": 0.7366701203474935,
+      "recall": 0.4380568720379147,
+      "map50": 0.6054576729695856,
+      "map50_95": 0.44443492985383126,
+      "f1": 0.5494100514161738
+    },
+    "per_class": [
+      {
+        "class_id": 0,
+        "class_name": "chair",
+        "ground_truth": 3879,
+        "precision": 0.7202572347266881,
+        "recall": 0.40422789378705853,
+        "map50": 0.5067697349196716,
+        "map50_95": 0.33296974744863045,
+        "tp": 1568,
+        "fp": 609,
+        "fn": 2311
+      },
+      {
+        "class_id": 1,
+        "class_name": "book",
+        "ground_truth": 2573,
+        "precision": 0.6068052930056711,
+        "recall": 0.12475709288767975,
+        "map50": 0.27104945313584033,
+        "map50_95": 0.1409293213447057,
+        "tp": 321,
+        "fp": 208,
+        "fn": 2252
+      },
+      {
+        "class_id": 2,
+        "class_name": "bottle",
+        "ground_truth": 2547,
+        "precision": 0.7501794687724336,
+        "recall": 0.41028661170003927,
+        "map50": 0.5169550843744721,
+        "map50_95": 0.34204877265935396,
+        "tp": 1045,
+        "fp": 348,
+        "fn": 1502
+      },
+      {
+        "class_id": 3,
+        "class_name": "cup",
+        "ground_truth": 1980,
+        "precision": 0.6941896024464832,
+        "recall": 0.4585858585858586,
+        "map50": 0.5393323587070585,
+        "map50_95": 0.3999308232955659,
+        "tp": 908,
+        "fp": 400,
+        "fn": 1072
+      },
+      {
+        "class_id": 4,
+        "class_name": "dining table",
+        "ground_truth": 1576,
+        "precision": 0.6783625730994152,
+        "recall": 0.5152284263959391,
+        "map50": 0.5522541527333439,
+        "map50_95": 0.4001473073174561,
+        "tp": 812,
+        "fp": 385,
+        "fn": 764
+      },
+      {
+        "class_id": 5,
+        "class_name": "bowl",
+        "ground_truth": 1504,
+        "precision": 0.733847637415622,
+        "recall": 0.5059840425531915,
+        "map50": 0.5812481244458757,
+        "map50_95": 0.4414791003410497,
+        "tp": 761,
+        "fp": 276,
+        "fn": 743
+      },
+      {
+        "class_id": 6,
+        "class_name": "potted plant",
+        "ground_truth": 934,
+        "precision": 0.6953271028037383,
+        "recall": 0.39828693790149894,
+        "map50": 0.49254485547267385,
+        "map50_95": 0.3017969552759309,
+        "tp": 372,
+        "fp": 163,
+        "fn": 562
+      },
+      {
+        "class_id": 7,
+        "class_name": "wine glass",
+        "ground_truth": 901,
+        "precision": 0.7919847328244275,
+        "recall": 0.46059933407325193,
+        "map50": 0.5510828864776934,
+        "map50_95": 0.37536799568022905,
+        "tp": 415,
+        "fp": 109,
+        "fn": 486
+      },
+      {
+        "class_id": 8,
+        "class_name": "cell phone",
+        "ground_truth": 648,
+        "precision": 0.7492354740061162,
+        "recall": 0.37808641975308643,
+        "map50": 0.47310060756116123,
+        "map50_95": 0.33712847907390997,
+        "tp": 245,
+        "fp": 82,
+        "fn": 403
+      },
+      {
+        "class_id": 9,
+        "class_name": "clock",
+        "ground_truth": 602,
+        "precision": 0.874468085106383,
+        "recall": 0.6827242524916943,
+        "map50": 0.7400049376522815,
+        "map50_95": 0.5338475406976687,
+        "tp": 411,
+        "fp": 59,
+        "fn": 191
+      },
+      {
+        "class_id": 10,
+        "class_name": "tv",
+        "ground_truth": 604,
+        "precision": 0.8531187122736419,
+        "recall": 0.7019867549668874,
+        "map50": 0.7784144913773262,
+        "map50_95": 0.6109537610622586,
+        "tp": 424,
+        "fp": 73,
+        "fn": 180
+      },
+      {
+        "class_id": 11,
+        "class_name": "couch",
+        "ground_truth": 567,
+        "precision": 0.7090163934426229,
+        "recall": 0.6102292768959435,
+        "map50": 0.6597744680717101,
+        "map50_95": 0.5104537567475578,
+        "tp": 346,
+        "fp": 142,
+        "fn": 221
+      },
+      {
+        "class_id": 12,
+        "class_name": "remote",
+        "ground_truth": 581,
+        "precision": 0.6996466431095406,
+        "recall": 0.3407917383820998,
+        "map50": 0.44195085080222063,
+        "map50_95": 0.2863026357830461,
+        "tp": 198,
+        "fp": 85,
+        "fn": 383
+      },
+      {
+        "class_id": 13,
+        "class_name": "sink",
+        "ground_truth": 546,
+        "precision": 0.7336814621409922,
+        "recall": 0.5146520146520146,
+        "map50": 0.5842408199316566,
+        "map50_95": 0.39499178373073485,
+        "tp": 281,
+        "fp": 102,
+        "fn": 265
+      },
+      {
+        "class_id": 14,
+        "class_name": "laptop",
+        "ground_truth": 461,
+        "precision": 0.7928388746803069,
+        "recall": 0.6724511930585684,
+        "map50": 0.7512460249786679,
+        "map50_95": 0.6099422588329299,
+        "tp": 310,
+        "fp": 81,
+        "fn": 151
+      },
+      {
+        "class_id": 15,
+        "class_name": "bed",
+        "ground_truth": 381,
+        "precision": 0.8131868131868132,
+        "recall": 0.7769028871391076,
+        "map50": 0.8361446054651563,
+        "map50_95": 0.6581528942672386,
+        "tp": 296,
+        "fp": 68,
+        "fn": 85
+      },
+      {
+        "class_id": 16,
+        "class_name": "keyboard",
+        "ground_truth": 311,
+        "precision": 0.7701149425287356,
+        "recall": 0.6463022508038585,
+        "map50": 0.7320908775365673,
+        "map50_95": 0.5737459193844805,
+        "tp": 201,
+        "fp": 60,
+        "fn": 110
+      },
+      {
+        "class_id": 17,
+        "class_name": "refrigerator",
+        "ground_truth": 272,
+        "precision": 0.8584474885844748,
+        "recall": 0.6911764705882353,
+        "map50": 0.7979471164759563,
+        "map50_95": 0.6635434607626441,
+        "tp": 188,
+        "fp": 31,
+        "fn": 84
+      },
+      {
+        "class_id": 18,
+        "class_name": "mouse",
+        "ground_truth": 233,
+        "precision": 0.8597560975609756,
+        "recall": 0.6051502145922747,
+        "map50": 0.6975443363027918,
+        "map50_95": 0.5305311535174029,
+        "tp": 141,
+        "fp": 23,
+        "fn": 92
+      }
+    ],
+    "counts": {
+      "tp": 9243,
+      "fp": 3304,
+      "fn": 11857
+    },
+    "confidence_threshold_results": [
+      {
+        "threshold": 0.25,
+        "tp": 9243,
+        "fp": 3304,
+        "fn": 11857,
+        "precision": 0.7366701203474935,
+        "recall": 0.4380568720379147,
+        "f1": 0.5494100514161738,
+        "predicted": 12547,
+        "ground_truth": 21100
+      },
+      {
+        "threshold": 0.5,
+        "tp": 6243,
+        "fp": 686,
+        "fn": 14857,
+        "precision": 0.9009958146918747,
+        "recall": 0.29587677725118483,
+        "f1": 0.44546719469121265,
+        "predicted": 6929,
+        "ground_truth": 21100
+      },
+      {
+        "threshold": 0.75,
+        "tp": 3111,
+        "fp": 80,
+        "fn": 17989,
+        "precision": 0.9749294891883422,
+        "recall": 0.14744075829383887,
+        "f1": 0.2561442509571446,
+        "predicted": 3191,
+        "ground_truth": 21100
+      }
+    ],
+    "split": "val",
+    "image_count": 4544,
+    "instance_count": 21100,
+    "weights": "C:\\Users\\SHRIRAM\\Desktop\\house_hold_obj\\models\\baseline\\yolo26n.pt",
+    "method": "Phase 5 mapping-aware evaluator (name-based COCO->project class mapping), conf_floor from configs/baseline.yaml",
+    "total_inference_s": 401.77,
+    "primary_conf": 0.25
+  },
+  "phase5_baseline_test_reference": {
+    "note": "Phase 5 evaluated the zero-shot baseline on the TEST split; reference only, not comparable like-for-like",
+    "metrics": {
+      "primary_conf": 0.25,
+      "match_iou": 0.5,
+      "tp": 3591,
+      "fp": 1595,
+      "fn": 5583,
+      "precision": 0.6924411878133436,
+      "recall": 0.39143230869849577,
+      "f1": 0.5001392757660168,
+      "map50": 0.548459,
+      "map50_95": 0.396136
+    },
+    "timing": {
+      "device": "cpu",
+      "image_count": 1965,
+      "expected_image_count": 1965,
+      "total_inference_s": 816.63,
+      "model_load_ms": 41.3,
+      "first_image_ms": 1640.1,
+      "avg_wall_ms_per_image": 415.6,
+      "warm_avg_wall_ms_per_image": 418.0,
+      "avg_model_ms_per_image": 356.6,
+      "images_per_second": 2.41,
+      "warmup_excluded_images": 20
+    }
+  },
+  "controlled_comparison_val_split": {
+    "trained_vs_zero_shot": {
+      "precision_trained": 0.6211351858001343,
+      "precision_zero_shot": 0.7366701203474935,
+      "precision_delta": -0.11553493454735919,
+      "recall_trained": 0.500715215715796,
+      "recall_zero_shot": 0.4380568720379147,
+      "recall_delta": 0.06265834367788131,
+      "map50_trained": 0.5405548161779998,
+      "map50_zero_shot": 0.6054576729695856,
+      "map50_delta": -0.0649028567915858,
+      "map50_95_trained": 0.3778466287773726,
+      "map50_95_zero_shot": 0.44443492985383126,
+      "map50_95_delta": -0.06658830107645869
+    }
+  },
+  "speed_benchmark": {
+    "image_count": 1965,
+    "conf": 0.25,
+    "imgsz": 640,
+    "model_load_ms": 66.6,
+    "first_image_ms": 101.1,
+    "total_inference_s": 140.29,
+    "avg_wall_ms_per_image": 71.4,
+    "warm_avg_wall_ms_per_image": 71.3,
+    "avg_model_ms_per_image": 66.1,
+    "images_per_second": 14.01,
+    "warmup_excluded_images": 20,
+    "harness": "per-image model.predict, batch=1, identical to Phase 5 baseline harness"
+  },
+  "benchmark_basis": {
+    "method": "Throwaway probes ran 1 epoch on fraction=0.05 of the train split (2,044 images, 128 iterations, batch=16, val disabled) and reported the median seconds/iteration over the second half of the epoch. The real run then used the full train split with Ultralytics CPU defaults.",
+    "probe_batch16_steady_s_per_iter": 9.6,
+    "probe_epoch_extrapolation_h": 6.9,
+    "variants": {
+      "ultralytics CPU defaults (threads=8, workers=0)": 9.3,
+      "threads=16": 9.6,
+      "workers=4": 9.5,
+      "channels_last=True": 9.2,
+      "torch.compile=True": "no gain (epoch wall-time parity, plus compile overhead)"
+    },
+    "conclusion": "Every CPU tuning lever measured within +/-5% of the default; training is compute/bandwidth-bound, so Ultralytics defaults were kept. The 6.9 h/epoch extrapolation matched the measured 6.93 h second epoch."
+  },
+  "epoch_schedule_rationale": "Measured 6.9 h/epoch on this CPU (XPU unavailable); 2 epochs x ~6.9 h = ~14 h chosen as the schedule that completes within one unattended session while staying under the 50-epoch cap. warmup_epochs reduced from the default 3.0 to 0.5 so warmup does not consume the entire short schedule.",
+  "artifacts": [
+    {
+      "path": "models\\training\\household_yolo26n\\args.yaml",
+      "bytes": 1945
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\BoxF1_curve.png",
+      "bytes": 549088
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\BoxP_curve.png",
+      "bytes": 481824
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\BoxPR_curve.png",
+      "bytes": 540564
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\BoxR_curve.png",
+      "bytes": 524141
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\confusion_matrix.png",
+      "bytes": 510223
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\confusion_matrix_normalized.png",
+      "bytes": 577658
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\labels.jpg",
+      "bytes": 216126
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\results.csv",
+      "bytes": 439
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\results.png",
+      "bytes": 258484
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\train_batch0.jpg",
+      "bytes": 504639
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\train_batch1.jpg",
+      "bytes": 525374
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\train_batch2.jpg",
+      "bytes": 538297
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\val_batch0_labels.jpg",
+      "bytes": 398168
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\val_batch0_pred.jpg",
+      "bytes": 395695
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\val_batch1_labels.jpg",
+      "bytes": 504876
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\val_batch1_pred.jpg",
+      "bytes": 513255
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\val_batch2_labels.jpg",
+      "bytes": 433135
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\val_batch2_pred.jpg",
+      "bytes": 447533
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\weights\\best.pt",
+      "bytes": 5375173
+    },
+    {
+      "path": "models\\training\\household_yolo26n\\weights\\last.pt",
+      "bytes": 5375173
+    },
+    {
+      "path": "reports\\phase6_training_report.md",
+      "bytes": 14379
+    },
+    {
+      "path": "reports\\phase6_training_summary.md",
+      "bytes": 1164
+    },
+    {
+      "path": "reports\\phase6_training_commands.md",
+      "bytes": 1999
+    }
+  ]
+}

@@ -90,16 +90,48 @@ on the 1,965-image test split (no training, no fine-tuning). Full report:
 .\.venv\Scripts\python.exe scripts/baseline_inference.py --source <image> --save
 ```
 
+## Custom Model Training (Phase 6)
+
+One training experiment: **YOLO26n**, fine-tuned on the project's 19-class
+dataset (`train` split only, validation split for model selection, test
+split untouched). Full report: `reports/phase6_training_report.md`.
+
+- **Schedule**: 2 epochs, batch 16, imgsz 640, seed 42, deterministic,
+  warmup 0.5 epochs, patience 15 — chosen up front for the CPU-only
+  machine (~6.9 h/epoch measured; 46,086.5 s total wall time), not tuned
+  against results. Data config `configs/train_data.yaml` contains no
+  `test` key.
+- **Result** (validation split, 4,544 images / 21,100 instances, best.pt):
+  precision **0.621**, recall **0.501**, mAP@0.5 **0.541**,
+  mAP@0.5:0.95 **0.378** — a validation-split result only, not final
+  test performance (Phase 7 does the held-out comparison).
+- Dataset integrity verified pre/post: train 40,890 / val 4,544 /
+  test 1,965 images, 214,983 instances — unchanged.
+- Artifacts: weights `models/training/household_yolo26n/weights/
+  {best,last}.pt` (git-ignored), learning curves and confusion matrix in
+  `reports/figures/phase6/`, machine-readable
+  `reports/phase6_training_results.json`, summary
+  `reports/phase6_training_summary.md`.
+- CPU benchmarks of threads/workers/channels_last/compile were neutral
+  (±5%); Ultralytics CPU defaults kept. Speed levers and probe commands:
+  `reports/phase6_training_commands.md`.
+
+```bash
+.\.venv\Scripts\python.exe scripts/train_model.py
+.\.venv\Scripts\python.exe scripts/validate_training.py
+.\.venv\Scripts\python.exe scripts/benchmark_training_speed.py --tag c
+```
+
 ## Project Status
 
-**In progress — Phases 1–5 complete.**
+**In progress — Phases 1–6 complete.**
 
 - [x] Project structure, virtual environment, Git, documentation
 - [x] Dataset selection, acquisition & documentation
 - [x] Data preparation, class selection & splits
 - [x] Dataset analysis & reporting
 - [x] Baseline model (zero-shot evaluation)
-- [ ] Custom model training
+- [x] Custom model training (validation result only; test split untouched)
 - [ ] Evaluation & improvement
 - [ ] Inference system & web app
 - [ ] Testing, deployment, final documentation
