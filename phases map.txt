@@ -1,314 +1,758 @@
-```text
-HOUSEHOLD OBJECT RECOGNITION — COMPLETE PROJECT ROADMAP
-========================================================
+HOUSEHOLD OBJECT RECOGNITION — CONTINUAL RECOGNITION PROJECT
+==============================================================
 
-PHASE 1 — PROJECT SETUP
-Create project structure, Python environment, Git, configuration,
-basic README, and AGENTS.md.
+PROJECT GOAL
+------------
 
-PHASE 2 — DATASET
-Select a suitable public household-object detection dataset,
-download/acquire it, and document the dataset and license.
+Build a continual household-object recognition system using the
+CORe50 dataset.
 
-PHASE 3 — DATA PREPARATION
-Clean the dataset, select final household-object classes,
-convert annotations if needed, create train/validation/test splits,
-and validate the prepared dataset.
+The system must:
 
-PHASE 4 — DATASET ANALYSIS
-Generate class distribution, sample annotated images,
-object-size statistics, annotation visualizations,
-and identify dataset quality or imbalance problems.
+1. Learn household objects incrementally across sessions/batches.
+2. Learn new object instances and/or new classes over time.
+3. Minimize forgetting of previously learned objects.
+4. Measure accuracy and forgetting after incremental learning.
+5. Compare a naive continual-learning approach with an
+   anti-forgetting approach.
+6. Provide a simple web application.
+7. Allow the user to open a public link on a phone.
+8. Use the phone camera for live object recognition.
+9. Show object name, confidence, and bounding box where supported.
 
-PHASE 5 — BASELINE MODEL
-Load a pretrained lightweight YOLO model and test it on sample
-images before custom training.
 
-PHASE 6 — MODEL TRAINING
-Train the custom household-object detection model and save
-checkpoints, logs, training curves, and metrics.
+==============================================================
+DATASET
+==============================================================
 
-PHASE 7 — MODEL EVALUATION
-Evaluate the trained model on validation/test data using:
-precision, recall, mAP50, mAP50-95, confusion matrix,
-per-class metrics, and inference speed.
+PRIMARY DATASET:
 
-PHASE 8 — ERROR ANALYSIS & IMPROVEMENT
-Find missed objects, false positives, wrong classifications,
-poor bounding boxes, small-object failures, occlusion problems,
-and other real-world errors. Improve the dataset or training
-configuration based on the observed failures.
+CORe50
 
-PHASE 9 — FINAL MODEL
-Run the improved training experiment, compare experiments,
-select the final model based on actual test performance,
-model size, and inference speed, and freeze/document the
-final model version.
+Use the official CORe50 session structure.
 
-PHASE 10 — INFERENCE SYSTEM
-Build clean reusable Python inference code for:
-- image prediction
-- bounding boxes
-- class names
-- confidence scores
-- object counts
-- inference time
-- configurable confidence threshold
+Important dataset characteristics:
 
-Support reusable inference for both static images
-and camera/video frames.
+- 50 domestic object identities
+- 10 object categories
+- 11 sessions
+- changing viewpoints
+- changing backgrounds
+- lighting variation
+- occlusions
+- sequential/session-based data
 
-PHASE 11 — WEB APP + LIVE CAMERA
-Build a professional Gradio application with:
+Do NOT flatten the dataset into an ordinary random train/test
+dataset because the continual-learning structure is required.
 
-1. IMAGE UPLOAD MODE
-Upload an image and receive:
-- annotated image
-- detected object names
-- confidence scores
-- bounding boxes
-- object count
-- inference time
 
-2. PC/LAPTOP WEBCAM MODE
-Allow the user to access the computer's webcam and perform
-live household-object detection.
+==============================================================
+PHASE 1 — PROJECT FOUNDATION
+==============================================================
 
-3. PHONE LIVE CAMERA MODE
-Design the web application so it can be opened from a phone
-browser and use the phone's camera for live detection.
+Create:
 
-Target experience:
-
-Phone Camera
-      ↓
-Phone Browser
-      ↓
-Gradio Web App
-      ↓
-YOLO Model
-      ↓
-Live Detection
-      ↓
-Bounding Boxes + Labels + Confidence
-      ↓
-Phone Screen
-
-The application should work through a normal mobile browser
-without requiring Python, model installation, or a separate
-mobile application.
-
-Include:
-- camera permission handling
-- live camera input
-- start/stop camera controls where supported
-- confidence threshold
-- detection count
-- inference time/FPS where practical
-- clear error messages
-- mobile-friendly UI
-- example images
-- image upload fallback
-
-IMPORTANT:
-The live-camera implementation must be tested for both:
-- desktop/laptop webcam
-- phone browser camera
-
-PHASE 12 — TESTING
-Add automated tests and test the complete system with:
-
-- normal images
-- PNG/JPG/JPEG
-- large images
-- small images
-- blurry images
-- images containing multiple objects
-- images containing no supported objects
-- invalid inputs
-- inference engine
-- result formatting
-- application startup
-
-Also test camera functionality where automated testing is
-technically possible.
+- project directory structure
+- Python virtual environment
+- requirements
+- Git repository
+- .gitignore
+- README.md
+- AGENTS.md
+- PROJECT_PLAN.md
+- source package structure
+- tests structure
+- configuration structure
 
 Verify:
-- no crashes
-- correct output format
-- correct labels
-- correct bounding boxes
-- reasonable confidence handling
 
+- Python environment
+- dependencies
+- project compilation
+- basic tests
+- Git
+
+STATUS:
+✅ COMPLETE
+
+
+==============================================================
+PHASE 2 — CORe50 DATASET
+==============================================================
+
+Tasks:
+
+- acquire CORe50
+- verify dataset integrity
+- document dataset source
+- document dataset structure
+- document classes/object identities
+- preserve session structure
+- document license/usage information
+- document reproducibility
+- keep dataset outside Git
+
+Verify:
+
+- dataset available
+- expected sessions available
+- object mappings correct
+- files readable
+- dataset not corrupted
+
+
+==============================================================
+PHASE 3 — CONTINUAL DATA PIPELINE
+==============================================================
+
+Build a session/experience-based data pipeline.
+
+The data must be presented sequentially.
+
+Support:
+
+1. NI — New Instances
+2. NC — New Classes
+3. NIC — New Instances + Classes
+
+Use official CORe50 filelists/scenario definitions where practical.
+
+The model must receive experiences sequentially.
+
+Example:
+
+Experience 1
+    ↓
+Train
+    ↓
+Evaluate
+    ↓
+Experience 2
+    ↓
+Train from previous model
+    ↓
+Evaluate
+    ↓
+Experience 3
+    ↓
+Continue
+
+Rules:
+
+- do not reset the model between experiences
+- do not train on future experiences early
+- do not leak test data
+- preserve experience ordering
+- make experiments reproducible
+
+
+==============================================================
+PHASE 4 — NAIVE CONTINUAL-LEARNING BASELINE
+==============================================================
+
+Implement the simplest continual-learning baseline.
+
+Method:
+
+Sequential training without replay.
+
+Example:
+
+Experience 1
+    ↓
+Train model
+    ↓
+Evaluate
+
+Experience 2
+    ↓
+Continue training same model
+    ↓
+Evaluate old + new knowledge
+
+Experience 3
+    ↓
+Continue training
+    ↓
+Evaluate again
+
+Measure after each experience:
+
+- overall accuracy
+- old-class accuracy
+- new-class accuracy
+- per-class accuracy
+- forgetting
+
+This establishes the naive continual-learning baseline.
+
+Do NOT train each experience from scratch.
+
+
+==============================================================
+PHASE 5 — ANTI-FORGETTING METHOD
+==============================================================
+
+Implement ONE practical anti-forgetting strategy.
+
+PRIMARY METHOD:
+
+Experience Replay
+
+Concept:
+
+New experience
+      +
+memory of previous examples
+      ↓
+training
+      ↓
+updated model
+
+Maintain a bounded replay memory.
+
+At every experience:
+
+1. load current experience
+2. sample replay examples
+3. combine current + replay data
+4. train
+5. update replay memory
+6. evaluate old + new knowledge
+7. continue to next experience
+
+Do not implement many continual-learning algorithms.
+
+One strong method is enough.
+
+
+==============================================================
+PHASE 6 — CONTINUAL EXPERIMENT
+==============================================================
+
+Run the actual continual-learning experiment.
+
+PRIMARY SCENARIO:
+
+NIC
+
+New classes + new instances.
+
+For every experience:
+
+- train
+- evaluate
+- record metrics
+- update replay memory
+- continue
+
+Important:
+
+- model state must persist between experiences
+- future data must not leak backward
+- test data must remain isolated
+- training order must be documented
+- seed/configuration must be recorded
+
+Also run NI/NC when practical without causing unnecessary
+computational cost.
+
+
+==============================================================
+PHASE 7 — CONTINUAL EVALUATION
+==============================================================
+
+This is the main evaluation phase.
+
+Compare:
+
+NAIVE CONTINUAL LEARNING
+VS
+EXPERIENCE REPLAY
+
+After every experience record:
+
+- overall accuracy
+- old-class accuracy
+- new-class accuracy
+- per-class accuracy
+- average incremental accuracy
+- final accuracy
+- forgetting
+
+Generate:
+
+- accuracy vs experience plot
+- old-class accuracy vs experience
+- new-class accuracy vs experience
+- forgetting vs experience
+- comparison table
+
+Example structure:
+
+                    Exp1   Exp2   Exp3   Exp4
+Naive Accuracy       ...    ...    ...    ...
+Replay Accuracy      ...    ...    ...    ...
+
+Naive Forgetting     ...    ...    ...    ...
+Replay Forgetting    ...    ...    ...    ...
+
+Do not claim that replay is better unless the measured results
+support that conclusion.
+
+
+==============================================================
+PHASE 8 — FOCUSED ERROR + FORGETTING ANALYSIS
+==============================================================
+
+Keep this phase practical.
+
+Analyze:
+
+- previously correct objects becoming incorrect
+- forgotten classes
+- difficult object identities
+- class confusion
+- viewpoint changes
+- lighting changes
+- background changes
+- occlusion
+- low-confidence predictions
+
+Answer:
+
+1. Which objects are forgotten?
+2. After which experience does forgetting increase?
+3. Which classes are hardest?
+4. Does replay reduce forgetting?
+5. What environmental changes cause failures?
+
+Generate representative failure examples.
+
+Do not turn this into a huge research thesis.
+
+
+==============================================================
+PHASE 9 — FINAL MODEL SELECTION
+==============================================================
+
+Do NOT automatically retrain.
+
+Use the models already produced in Phases 4–6.
+
+Compare:
+
+- naive continual model
+- replay continual model
+
+Select the final model using actual measured:
+
+- accuracy
+- forgetting
+- old-class retention
+- new-class performance
+- model size
+- inference speed
+
+Freeze the selected checkpoint.
+
+Additional training is OPTIONAL only when Phase 8 identifies a
+specific problem worth the computational cost.
+
+
+==============================================================
+PHASE 10 — REUSABLE INFERENCE SYSTEM
+==============================================================
+
+Build a lightweight reusable inference layer around the final model.
+
+Support:
+
+- image input
+- camera frames
+- optional video frames
+
+Output:
+
+- object name
+- confidence
+- bounding box where supported
+- object count where applicable
+- inference time
+- optional FPS
+
+Requirements:
+
+- load model once
+- configurable confidence threshold
+- portable paths
+- clean functions
+- error handling
+- reusable by the web application
+
+
+==============================================================
+PHASE 11 — PHONE-FIRST WEB APPLICATION
+==============================================================
+
+Build the simplest useful web application.
+
+PRIMARY FEATURE:
+
+LIVE CAMERA
+
+SECONDARY FEATURE:
+
+IMAGE UPLOAD
+
+Technology:
+
+Gradio
+
+Target architecture:
+
+PHONE
+  ↓
+BROWSER
+  ↓
+PUBLIC HTTPS LINK
+  ↓
+GRADIO
+  ↓
+FINAL CONTINUAL MODEL
+  ↓
+OBJECT RECOGNITION
+  ↓
+OBJECT NAME + CONFIDENCE
+  ↓
+PHONE SCREEN
+
+If detection mode is supported:
+
+- bounding boxes
+- class labels
+- confidence
+
+Also include:
+
+- camera permission
+- live camera input
+- image upload fallback
+- clear errors
+- confidence control
+- simple mobile-friendly interface
+
+Do NOT build unnecessary dashboards or complex UI.
+
+
+==============================================================
+PHASE 12 — PRACTICAL TESTING
+==============================================================
+
+Test the actual final system.
+
+MODEL:
+
+- model loading
+- expected classes
+- prediction
+- confidence
+- invalid input
+- image input
+
+CONTINUAL LEARNING:
+
+- sequential experience processing
+- model state persistence
+- no future-data leakage
+- replay memory behavior
+- forgetting calculation
+
+WEB:
+
+- application startup
+- image upload
+- camera input
+- result rendering
+
+PHONE:
+
+- public URL opens
+- camera permission works
+- camera frames arrive
+- predictions appear
+- labels are correct
+- confidence appears
+- bounding boxes appear where supported
+
+
+==============================================================
 PHASE 13 — GITHUB
-Clean the repository and prepare it as a professional portfolio
-project.
+==============================================================
+
+Prepare a professional but simple GitHub repository.
+
+README should explain:
+
+- problem
+- CORe50
+- continual learning
+- NI / NC / NIC
+- naive baseline
+- experience replay
+- evaluation
+- forgetting
+- final model
+- web app
+- phone demo
+- deployment
+- limitations
 
 Include:
-- professional README
-- project architecture
-- setup instructions
-- training instructions
-- inference instructions
+
+- architecture diagram
+- result plots
 - sample predictions
-- model metrics
-- error analysis
-- dataset information
-- screenshots/GIFs where useful
-- live demo link
-- .gitignore
-- LICENSE
-- GitHub Actions
-- reproducibility instructions
+- phone/app screenshot
+- setup instructions
+- reproduction instructions
+- public demo link
 
-Document clearly that the project supports:
-- image detection
-- desktop webcam detection
-- phone-camera detection
+DO NOT commit:
 
+- raw dataset
+- huge generated files
+- unnecessary caches
+- secrets
+- large model files unless explicitly required
+
+
+==============================================================
 PHASE 14 — DEPLOYMENT
-Prepare and deploy the Gradio application to Hugging Face Spaces.
+==============================================================
 
-Deployment must support:
+Deploy the final application to:
 
-1. Desktop browser access
-2. Phone browser access
-3. Image upload
-4. Live camera input where the deployed Gradio/browser
-   environment supports it
+Hugging Face Spaces
+
+Architecture:
+
+PHONE / DESKTOP
+       ↓
+BROWSER
+       ↓
+HUGGING FACE SPACE
+       ↓
+GRADIO
+       ↓
+FINAL CONTINUAL MODEL
+       ↓
+OBJECT RECOGNITION
 
 Prepare:
-- deployment configuration
+
+- application entry point
 - requirements
 - model loading
 - portable paths
-- model storage
-- environment configuration
+- model storage/download strategy
+- deployment configuration
 
-Verify the application from a remote browser.
+Verify:
 
-Verify the phone-camera workflow separately.
-
-Target final architecture:
-
-LAPTOP / PHONE
-      ↓
-WEB BROWSER
-      ↓
-HUGGING FACE SPACE
-      ↓
-GRADIO
-      ↓
-YOLO MODEL
-      ↓
-DETECTION RESULT
-
-Do not claim phone-camera support until it has actually
-been tested.
-
-PHASE 15 — FINAL POLISH
-Verify the complete project from start to finish.
-
-Check:
-- clean installation
-- dataset pipeline
-- training pipeline
-- evaluation
-- inference
+- desktop browser
+- phone browser
 - image upload
-- laptop webcam
-- phone live camera
-- deployment
-- tests
-- Git repository
-- documentation
-- model loading
-- portable paths
-- absence of secrets
-- correct metrics
+- phone camera
+- model prediction
 
-Fix broken paths, unnecessary files, configuration problems,
-UI issues, deployment problems, and other defects.
+Do not claim phone support until actually tested.
 
-Perform a complete end-to-end demonstration test.
 
+==============================================================
+PHASE 15 — FINAL END-TO-END VERIFICATION
+==============================================================
+
+Perform one complete final audit.
+
+DATA:
+
+- CORe50 available
+- session structure preserved
+- mappings correct
+
+CONTINUAL LEARNING:
+
+- sequential learning works
+- naive baseline works
+- replay works
+- old knowledge evaluated
+- new knowledge evaluated
+- forgetting calculated
+
+MODEL:
+
+- final checkpoint loads
+- class mapping correct
+
+WEB APP:
+
+- application starts
+- image upload works
+- camera works
+
+PHONE:
+
+- public URL works
+- camera permission works
+- live recognition works
+
+DEPLOYMENT:
+
+- Hugging Face Space works
+
+GITHUB:
+
+- README correct
+- results correct
+- no secrets
+- no huge datasets/models tracked
+
+Only report capabilities that were actually tested.
+
+
+==============================================================
 PHASE 16 — FINAL PROJECT DOCUMENTATION
-Create the final project report covering:
+==============================================================
 
-1. Problem statement
+Create the final project report.
+
+Include:
+
+1. Problem Statement
 2. Motivation
-3. Dataset
-4. Dataset preparation
-5. Selected classes
-6. Model architecture
-7. Training methodology
-8. Evaluation metrics
-9. Error analysis
-10. Final model
-11. Inference system
-12. Image detection
-13. Laptop webcam detection
-14. Phone live-camera detection
-15. Web application
-16. Deployment
-17. GitHub repository
-18. Limitations
-19. Future improvements
+3. CORe50 Dataset
+4. Dataset Structure
+5. Continual Learning Scenarios
+6. Data Pipeline
+7. Naive Continual Learning
+8. Experience Replay
+9. Experimental Setup
+10. Incremental Results
+11. Accuracy Analysis
+12. Forgetting Analysis
+13. Error Analysis
+14. Final Model
+15. Inference System
+16. Web Application
+17. Phone Camera Demo
+18. Deployment
+19. Limitations
+20. Future Improvements
 
-Include actual screenshots/results from the completed system.
+Include actual:
 
-FINAL PROJECT EXPERIENCE
-========================
+- result tables
+- accuracy plots
+- forgetting plots
+- example predictions
+- failure examples
+- application screenshots
 
-A user should be able to:
 
-OPTION 1 — IMAGE
-Upload household photo
-        ↓
-Model detects objects
-        ↓
-Boxes + labels + confidence
+==============================================================
+FINAL CONTINUAL-LEARNING FLOW
+==============================================================
 
-OPTION 2 — LAPTOP CAMERA
-Open webcam
-        ↓
-Point camera at household objects
-        ↓
-Live detection
+CORe50
+   ↓
+Session / Experience 1
+   ↓
+Model learns
+   ↓
+Evaluate
+   ↓
+Experience 2
+   ↓
+Continue learning
+   ↓
+Evaluate old + new
+   ↓
+Experience 3
+   ↓
+Continue learning
+   ↓
+...
+   ↓
+Final continual model
+   ↓
+Measure forgetting
+   ↓
+Compare:
+Naive vs Replay
+   ↓
+Freeze final model
 
-OPTION 3 — PHONE CAMERA
-Open deployed web app on phone
-        ↓
-Allow camera permission
-        ↓
-Point phone at household objects
-        ↓
-Live detection
-        ↓
-Boxes + labels + confidence
 
+==============================================================
+FINAL PHONE DEMO FLOW
+==============================================================
+
+Public HTTPS Link
+       ↓
+Phone Browser
+       ↓
+Camera Permission
+       ↓
+Live Camera
+       ↓
+Final Continual Model
+       ↓
+Object Recognition
+       ↓
+Object Name
+       ↓
+Confidence
+       ↓
+Bounding Box where supported
+
+
+==============================================================
 FINAL DEMONSTRATION
-===================
+==============================================================
 
-For the final presentation:
+PART A — CONTINUAL LEARNING
 
-1. Show the GitHub repository.
-2. Explain the dataset and model.
-3. Show actual evaluation metrics.
-4. Open the deployed web application.
-5. Demonstrate image upload.
-6. Demonstrate laptop webcam detection.
-7. Open the same application on a phone.
-8. Give camera permission.
-9. Point the phone at supported household objects.
-10. Show the model detecting them live.
+1. Show CORe50.
+2. Show sequential experiences.
+3. Show naive continual learning.
+4. Show experience replay.
+5. Show accuracy after each experience.
+6. Show forgetting.
+7. Compare naive vs replay.
 
+PART B — REAL USER DEMO
+
+1. Open public link.
+2. Open it on phone.
+3. Allow camera permission.
+4. Point camera at a supported object.
+5. Show object name.
+6. Show confidence.
+7. Show bounding box where supported.
+8. Move to another supported object.
+9. Show live recognition continuing.
+
+
+==============================================================
 FINAL STACK
-===========
+==============================================================
 
 Python
 PyTorch
-Ultralytics YOLO
+CORe50
+Continual Learning
+Experience Replay
 OpenCV
 NumPy
 Pillow
@@ -317,4 +761,89 @@ Gradio
 Git
 GitHub
 Hugging Face Spaces
-```
+
+
+==============================================================
+IMPORTANT SCOPE RULE
+==============================================================
+
+The project does NOT need:
+
+- multiple anti-forgetting algorithms
+- automatic hyperparameter searches
+- repeated large training experiments
+- unnecessary model architectures
+- giant dashboards
+- excessive academic analysis
+- unnecessary second training runs
+- unnecessary UI complexity
+
+The core requirement is:
+
+CONTINUAL LEARNING
++
+FORGETTING MEASUREMENT
++
+ONE ANTI-FORGETTING METHOD
++
+WORKING PHONE WEB DEMO
+
+
+==============================================================
+CURRENT STATUS
+==============================================================
+
+EXISTING COCO/YOLO PROTOTYPE:
+
+✅ Phase 1 project foundation
+✅ COCO dataset
+✅ COCO preparation
+✅ COCO analysis
+✅ COCO baseline
+✅ COCO custom YOLO training
+
+These remain available as prototype work.
+
+FINAL CORe50 ASSIGNMENT:
+
+🔜 PHASE 2 — CORe50 Dataset
+🔜 PHASE 3 — Continual Data Pipeline
+🔜 PHASE 4 — Naive Continual Baseline
+🔜 PHASE 5 — Experience Replay
+🔜 PHASE 6 — Continual Experiment
+🔜 PHASE 7 — Continual Evaluation
+🔜 PHASE 8 — Focused Error/Forgetting Analysis
+🔜 PHASE 9 — Final Model Selection
+🔜 PHASE 10 — Inference System
+🔜 PHASE 11 — Phone Web App
+🔜 PHASE 12 — Practical Testing
+🔜 PHASE 13 — GitHub
+🔜 PHASE 14 — Deployment
+🔜 PHASE 15 — Final Verification
+🔜 PHASE 16 — Final Documentation
+
+
+==============================================================
+FINAL SUCCESS CRITERIA
+==============================================================
+
+The project is complete when it can demonstrate ALL of these:
+
+✅ CORe50 used as the primary assignment dataset
+✅ Sequential continual-learning experiences
+✅ Naive continual-learning baseline
+✅ Experience Replay anti-forgetting method
+✅ Old knowledge evaluated after new learning
+✅ New knowledge evaluated after each experience
+✅ Forgetting measured
+✅ Naive vs Replay comparison
+✅ Final continual model selected
+✅ Final model runs inference
+✅ Public web application deployed
+✅ Phone browser can open public link
+✅ Phone camera can provide live input
+✅ Supported household objects are recognized
+✅ Object name and confidence displayed
+✅ Bounding boxes shown where supported
+✅ GitHub repository documented
+✅ Final end-to-end demonstration works
