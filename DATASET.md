@@ -1,6 +1,82 @@
 # Dataset
 
-## Selected Dataset
+This project now carries **two datasets** with clearly different roles:
+
+| Role | Dataset | Where | Status |
+|---|---|---|---|
+| **PRIMARY ASSIGNMENT DATASET** | **CORe50** (continual recognition, sessions) | `data/raw/core50/` | acquired + verified in Phase 2 |
+| Prototype / previous experiment | COCO 2017 (static detection) | `data/raw/coco/` | completed earlier, untouched since |
+
+The assignment is **continual recognition of household objects**, so the
+session-structured CORe50 benchmark is the dataset the remaining phases build
+on. The COCO/YOLO work below is preserved as the historical prototype
+documentation and is *not* the final assignment dataset.
+
+---
+
+## Primary Assignment Dataset: CORe50 (Phase 2)
+
+**CORe50 — a Dataset and Benchmark for Continual Learning and Object
+Recognition** (Lomonaco & Maltoni, CoRL 2017).
+
+- **Official source:** <https://vlomonaco.github.io/core50/>
+- **Official repository:** <https://github.com/vlomonaco/core50>
+- **Licence:** CC BY 4.0 (official repository `LICENSE` and project page).
+- **Full dataset documentation:** [`data/raw/core50/DATASET_INFO.md`](data/raw/core50/DATASET_INFO.md)
+- **Machine-readable verification:** `reports/phase2_core50_summary.json`
+  (status **PASS**, 2026-10-02).
+
+### Why CORe50
+
+CORe50 is purpose-built for continual learning: the *same 50 household
+objects* are filmed again in **11 different sessions** (changing background,
+lighting, viewpoint, holding hand and occlusion), which is exactly the
+structure needed to measure incremental learning and catastrophic
+forgetting. A randomly split dataset cannot express that.
+
+### Facts (measured from the acquired data)
+
+| Property | Value |
+|---|---|
+| Images | **164,866** PNG, 128x128 RGB (official 128x128 benchmark archive) |
+| Sessions | **11** (`s1`…`s11`); test sessions **s3, s7, s10**, train = the other 8 |
+| Object identities | **50** (`o1`…`o50`), official names preserved |
+| Categories | **10** (plug adapter, mobile phone, scissors, light bulb, can, glass, ball, marker, cup, remote control) |
+| Frames per object/session | ~300 (official `Color128x128.tsv` matched exactly: 550/550 cells) |
+| Filelists | NI / NC / NIC (`*_inc` + `*_cum`) + NICv2 — 8,060 files, 33,895,788 lines, 0 unresolved paths |
+| Layout | `data/raw/core50/dataset/core50_128x128/sN/oM/C_NN_MM_FFF.png` (official structure, never flattened) |
+| Storage | 12.00 GiB total (`downloads/` 5.59, `dataset/` 5.46, `filelists/` 0.81, `metadata/` 0.14) |
+
+### Acquisition
+
+- `scripts/download_core50.py` — resumable download of the 9 official
+  resources (6,005,983,106 bytes) with SHA-256 manifest
+  (`data/raw/core50/downloads/MANIFEST.json`);
+- `scripts/extract_core50.py` — structure-preserving extraction;
+- `scripts/validate_core50.py` — full validation (structure, official dims
+  cross-check, PNG signatures, representative decodes, official `paths.pkl`
+  cross-check, every filelist path, bbox parsing) + summary JSON + the
+  16-image sample in `reports/phase2_core50_samples/`;
+- all raw data is Git-ignored; only scripts, documentation and small
+  manifests are tracked.
+
+### Continual scenarios available for later phases
+
+NI (New Instances, 8 batches/run), NC (New Classes, 9 batches/run) and NIC
+(New Instances + Classes, 79 batches/run) filelists are stored verbatim
+under `data/raw/core50/filelists/`; official experiment configurations live
+in `data/raw/core50/metadata/core50-official/confs/` (`sI`=NI, `sII`=NC,
+`sIII`=NIC). Phase 2 only locates and validates them — no continual training
+is run yet.
+
+---
+
+## Selected Dataset (prototype / previous experiment)
+
+> The section below documents the **earlier COCO-based object-detection
+> prototype** of this project. It remains valid as historical documentation
+> but COCO is **not** the final assignment dataset (see the CORe50 section
+> above).
 
 **COCO — Common Objects in Context (COCO 2017 release)**
 

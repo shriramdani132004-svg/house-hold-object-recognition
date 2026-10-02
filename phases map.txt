@@ -100,6 +100,9 @@ Verify:
 - files readable
 - dataset not corrupted
 
+STATUS:
+✅ COMPLETE
+
 
 ==============================================================
 PHASE 3 — CONTINUAL DATA PIPELINE
@@ -806,8 +809,8 @@ These remain available as prototype work.
 
 FINAL CORe50 ASSIGNMENT:
 
-🔜 PHASE 2 — CORe50 Dataset
-🔜 PHASE 3 — Continual Data Pipeline
+✅ PHASE 2 — CORe50 Dataset
+▶ PHASE 3 — Continual Data Pipeline
 🔜 PHASE 4 — Naive Continual Baseline
 🔜 PHASE 5 — Experience Replay
 🔜 PHASE 6 — Continual Experiment

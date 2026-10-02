@@ -1,0 +1,760 @@
+{
+  "phase": 2,
+  "dataset": "CORe50",
+  "dataset_root": "data/raw/core50/dataset/core50_128x128",
+  "official_source": "https://vlomonaco.github.io/core50/",
+  "repository": "https://github.com/vlomonaco/core50",
+  "sessions": [
+    "s1",
+    "s2",
+    "s3",
+    "s4",
+    "s5",
+    "s6",
+    "s7",
+    "s8",
+    "s9",
+    "s10",
+    "s11"
+  ],
+  "train_sessions": [
+    "s1",
+    "s2",
+    "s4",
+    "s5",
+    "s6",
+    "s8",
+    "s9",
+    "s11"
+  ],
+  "test_sessions": [
+    "s3",
+    "s7",
+    "s10"
+  ],
+  "session_count": 11,
+  "object_identities": [
+    {
+      "object_id": 1,
+      "name": "plug_adapter1",
+      "category": "plug adapter"
+    },
+    {
+      "object_id": 2,
+      "name": "plug_adapter2",
+      "category": "plug adapter"
+    },
+    {
+      "object_id": 3,
+      "name": "plug_adapter3",
+      "category": "plug adapter"
+    },
+    {
+      "object_id": 4,
+      "name": "plug_adapter4",
+      "category": "plug adapter"
+    },
+    {
+      "object_id": 5,
+      "name": "plug_adapter5",
+      "category": "plug adapter"
+    },
+    {
+      "object_id": 6,
+      "name": "mobile_phone1",
+      "category": "mobile phone"
+    },
+    {
+      "object_id": 7,
+      "name": "mobile_phone2",
+      "category": "mobile phone"
+    },
+    {
+      "object_id": 8,
+      "name": "mobile_phone3",
+      "category": "mobile phone"
+    },
+    {
+      "object_id": 9,
+      "name": "mobile_phone4",
+      "category": "mobile phone"
+    },
+    {
+      "object_id": 10,
+      "name": "mobile_phone5",
+      "category": "mobile phone"
+    },
+    {
+      "object_id": 11,
+      "name": "scissor1",
+      "category": "scissors"
+    },
+    {
+      "object_id": 12,
+      "name": "scissor2",
+      "category": "scissors"
+    },
+    {
+      "object_id": 13,
+      "name": "scissor3",
+      "category": "scissors"
+    },
+    {
+      "object_id": 14,
+      "name": "scissor4",
+      "category": "scissors"
+    },
+    {
+      "object_id": 15,
+      "name": "scissor5",
+      "category": "scissors"
+    },
+    {
+      "object_id": 16,
+      "name": "light_bulb1",
+      "category": "light bulb"
+    },
+    {
+      "object_id": 17,
+      "name": "light_bulb2",
+      "category": "light bulb"
+    },
+    {
+      "object_id": 18,
+      "name": "light_bulb3",
+      "category": "light bulb"
+    },
+    {
+      "object_id": 19,
+      "name": "light_bulb4",
+      "category": "light bulb"
+    },
+    {
+      "object_id": 20,
+      "name": "light_bulb5",
+      "category": "light bulb"
+    },
+    {
+      "object_id": 21,
+      "name": "can1",
+      "category": "can"
+    },
+    {
+      "object_id": 22,
+      "name": "can2",
+      "category": "can"
+    },
+    {
+      "object_id": 23,
+      "name": "can3",
+      "category": "can"
+    },
+    {
+      "object_id": 24,
+      "name": "can4",
+      "category": "can"
+    },
+    {
+      "object_id": 25,
+      "name": "can5",
+      "category": "can"
+    },
+    {
+      "object_id": 26,
+      "name": "glass1",
+      "category": "glass"
+    },
+    {
+      "object_id": 27,
+      "name": "glass2",
+      "category": "glass"
+    },
+    {
+      "object_id": 28,
+      "name": "glass3",
+      "category": "glass"
+    },
+    {
+      "object_id": 29,
+      "name": "glass4",
+      "category": "glass"
+    },
+    {
+      "object_id": 30,
+      "name": "glass5",
+      "category": "glass"
+    },
+    {
+      "object_id": 31,
+      "name": "ball1",
+      "category": "ball"
+    },
+    {
+      "object_id": 32,
+      "name": "ball2",
+      "category": "ball"
+    },
+    {
+      "object_id": 33,
+      "name": "ball3",
+      "category": "ball"
+    },
+    {
+      "object_id": 34,
+      "name": "ball4",
+      "category": "ball"
+    },
+    {
+      "object_id": 35,
+      "name": "ball5",
+      "category": "ball"
+    },
+    {
+      "object_id": 36,
+      "name": "marker1",
+      "category": "marker"
+    },
+    {
+      "object_id": 37,
+      "name": "marker2",
+      "category": "marker"
+    },
+    {
+      "object_id": 38,
+      "name": "marker3",
+      "category": "marker"
+    },
+    {
+      "object_id": 39,
+      "name": "marker4",
+      "category": "marker"
+    },
+    {
+      "object_id": 40,
+      "name": "marker5",
+      "category": "marker"
+    },
+    {
+      "object_id": 41,
+      "name": "cup1",
+      "category": "cup"
+    },
+    {
+      "object_id": 42,
+      "name": "cup2",
+      "category": "cup"
+    },
+    {
+      "object_id": 43,
+      "name": "cup3",
+      "category": "cup"
+    },
+    {
+      "object_id": 44,
+      "name": "cup4",
+      "category": "cup"
+    },
+    {
+      "object_id": 45,
+      "name": "cup5",
+      "category": "cup"
+    },
+    {
+      "object_id": 46,
+      "name": "remote_control1",
+      "category": "remote control"
+    },
+    {
+      "object_id": 47,
+      "name": "remote_control2",
+      "category": "remote control"
+    },
+    {
+      "object_id": 48,
+      "name": "remote_control3",
+      "category": "remote control"
+    },
+    {
+      "object_id": 49,
+      "name": "remote_control4",
+      "category": "remote control"
+    },
+    {
+      "object_id": 50,
+      "name": "remote_control5",
+      "category": "remote control"
+    }
+  ],
+  "categories": [
+    "ball",
+    "can",
+    "cup",
+    "glass",
+    "light bulb",
+    "marker",
+    "mobile phone",
+    "plug adapter",
+    "remote control",
+    "scissors"
+  ],
+  "object_count": 50,
+  "category_count": 10,
+  "total_files": 164866,
+  "total_images": 164866,
+  "images_per_session": {
+    "s1": 14989,
+    "s2": 14986,
+    "s3": 14992,
+    "s4": 14995,
+    "s5": 14966,
+    "s6": 14989,
+    "s7": 14994,
+    "s8": 14984,
+    "s9": 14994,
+    "s10": 14986,
+    "s11": 14991
+  },
+  "images_per_category": {
+    "ball": 16496,
+    "can": 16494,
+    "cup": 16488,
+    "glass": 16487,
+    "light bulb": 16479,
+    "marker": 16482,
+    "mobile phone": 16485,
+    "plug adapter": 16484,
+    "remote control": 16488,
+    "scissors": 16483
+  },
+  "images_per_object": {
+    "o1": 3298,
+    "o2": 3294,
+    "o3": 3295,
+    "o4": 3299,
+    "o5": 3298,
+    "o6": 3299,
+    "o7": 3300,
+    "o8": 3296,
+    "o9": 3291,
+    "o10": 3299,
+    "o11": 3295,
+    "o12": 3296,
+    "o13": 3300,
+    "o14": 3297,
+    "o15": 3295,
+    "o16": 3290,
+    "o17": 3293,
+    "o18": 3299,
+    "o19": 3299,
+    "o20": 3298,
+    "o21": 3300,
+    "o22": 3296,
+    "o23": 3300,
+    "o24": 3299,
+    "o25": 3299,
+    "o26": 3292,
+    "o27": 3297,
+    "o28": 3300,
+    "o29": 3298,
+    "o30": 3300,
+    "o31": 3300,
+    "o32": 3297,
+    "o33": 3300,
+    "o34": 3300,
+    "o35": 3299,
+    "o36": 3299,
+    "o37": 3296,
+    "o38": 3293,
+    "o39": 3298,
+    "o40": 3296,
+    "o41": 3300,
+    "o42": 3300,
+    "o43": 3297,
+    "o44": 3297,
+    "o45": 3294,
+    "o46": 3300,
+    "o47": 3296,
+    "o48": 3293,
+    "o49": 3300,
+    "o50": 3299
+  },
+  "official_dims_crosscheck": {
+    "source": "metadata/dataset_dims/Color128x128.tsv",
+    "cells": 550,
+    "mismatches": 0
+  },
+  "filelists": {
+    "NC_cum": {
+      "runs": 5,
+      "run_names": [
+        "run0",
+        "run1",
+        "run2",
+        "run3",
+        "run4"
+      ],
+      "documented_runs": 10,
+      "runs_match_documentation": false,
+      "filelists": 50,
+      "lines": 3461978,
+      "unresolved_paths": 0,
+      "train_batches_per_run": 9,
+      "test_set_fixed_across_runs": true
+    },
+    "NC_inc": {
+      "runs": 10,
+      "run_names": [
+        "run0",
+        "run1",
+        "run2",
+        "run3",
+        "run4",
+        "run5",
+        "run6",
+        "run7",
+        "run8",
+        "run9"
+      ],
+      "documented_runs": 10,
+      "runs_match_documentation": true,
+      "filelists": 100,
+      "lines": 1648660,
+      "unresolved_paths": 0,
+      "train_batches_per_run": 9,
+      "test_set_fixed_across_runs": true
+    },
+    "NIC_cum": {
+      "runs": 3,
+      "run_names": [
+        "run0",
+        "run1",
+        "run2"
+      ],
+      "documented_runs": 10,
+      "runs_match_documentation": false,
+      "filelists": 240,
+      "lines": 14696885,
+      "unresolved_paths": 0,
+      "train_batches_per_run": 79,
+      "test_set_fixed_across_runs": true
+    },
+    "NIC_inc": {
+      "runs": 10,
+      "run_names": [
+        "run0",
+        "run1",
+        "run2",
+        "run3",
+        "run4",
+        "run5",
+        "run6",
+        "run7",
+        "run8",
+        "run9"
+      ],
+      "documented_runs": 10,
+      "runs_match_documentation": true,
+      "filelists": 800,
+      "lines": 1648660,
+      "unresolved_paths": 0,
+      "train_batches_per_run": 79,
+      "test_set_fixed_across_runs": true
+    },
+    "NIC_v2_196": {
+      "runs": 10,
+      "run_names": [
+        "run0",
+        "run1",
+        "run2",
+        "run3",
+        "run4",
+        "run5",
+        "run6",
+        "run7",
+        "run8",
+        "run9"
+      ],
+      "documented_runs": null,
+      "runs_match_documentation": null,
+      "filelists": 1970,
+      "lines": 1648660,
+      "unresolved_paths": 0,
+      "train_batches_per_run": 196,
+      "test_set_fixed_across_runs": true
+    },
+    "NIC_v2_391": {
+      "runs": 10,
+      "run_names": [
+        "run0",
+        "run1",
+        "run2",
+        "run3",
+        "run4",
+        "run5",
+        "run6",
+        "run7",
+        "run8",
+        "run9"
+      ],
+      "documented_runs": null,
+      "runs_match_documentation": null,
+      "filelists": 3920,
+      "lines": 1648660,
+      "unresolved_paths": 0,
+      "train_batches_per_run": 391,
+      "test_set_fixed_across_runs": true
+    },
+    "NIC_v2_79": {
+      "runs": 10,
+      "run_names": [
+        "run0",
+        "run1",
+        "run2",
+        "run3",
+        "run4",
+        "run5",
+        "run6",
+        "run7",
+        "run8",
+        "run9"
+      ],
+      "documented_runs": null,
+      "runs_match_documentation": null,
+      "filelists": 800,
+      "lines": 1648660,
+      "unresolved_paths": 0,
+      "train_batches_per_run": 79,
+      "test_set_fixed_across_runs": true
+    },
+    "NI_cum": {
+      "runs": 10,
+      "run_names": [
+        "run0",
+        "run1",
+        "run2",
+        "run3",
+        "run4",
+        "run5",
+        "run6",
+        "run7",
+        "run8",
+        "run9"
+      ],
+      "documented_runs": 10,
+      "runs_match_documentation": true,
+      "filelists": 90,
+      "lines": 5844965,
+      "unresolved_paths": 0,
+      "train_batches_per_run": 8,
+      "test_set_fixed_across_runs": true
+    },
+    "NI_inc": {
+      "runs": 10,
+      "run_names": [
+        "run0",
+        "run1",
+        "run2",
+        "run3",
+        "run4",
+        "run5",
+        "run6",
+        "run7",
+        "run8",
+        "run9"
+      ],
+      "documented_runs": 10,
+      "runs_match_documentation": true,
+      "filelists": 90,
+      "lines": 1648660,
+      "unresolved_paths": 0,
+      "train_batches_per_run": 8,
+      "test_set_fixed_across_runs": true
+    }
+  },
+  "filelist_total_lines": 33895788,
+  "filelist_unique_paths": 164866,
+  "filelist_unresolved_paths": 0,
+  "scenarios": {
+    "NI": "New Instances",
+    "NC": "New Classes",
+    "NIC": "New Instances + Classes"
+  },
+  "integrity": {
+    "zero_byte_files": 0,
+    "bad_file_names": 0,
+    "png_signature_checked": 164866,
+    "png_signature_failures": 0,
+    "representative_decode": {
+      "images": 43,
+      "sessions": 11,
+      "objects": 38,
+      "categories": 10,
+      "failures": 0
+    },
+    "official_paths_match_disk": true,
+    "bbox": {
+      "files": 550,
+      "parsed": 550,
+      "bad": [],
+      "expected": 550
+    }
+  },
+  "acquisition": {
+    "resources": 9,
+    "bytes": 6005983106,
+    "acquired_utc": "2026-10-02T15:50:13+00:00",
+    "manifest": "data/raw/core50/downloads/MANIFEST.json"
+  },
+  "samples": {
+    "count": 16,
+    "sessions": [
+      "s1",
+      "s10",
+      "s11",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6",
+      "s7",
+      "s8",
+      "s9"
+    ],
+    "objects": 16,
+    "categories": 10,
+    "images": [
+      {
+        "file": "s1_o1_C_01_01_150.png",
+        "session": "s1",
+        "object": "o1",
+        "object_name": "plug_adapter1",
+        "category": "plug adapter",
+        "split": "train"
+      },
+      {
+        "file": "s2_o6_C_02_06_150.png",
+        "session": "s2",
+        "object": "o6",
+        "object_name": "mobile_phone1",
+        "category": "mobile phone",
+        "split": "train"
+      },
+      {
+        "file": "s3_o11_C_03_11_150.png",
+        "session": "s3",
+        "object": "o11",
+        "object_name": "scissor1",
+        "category": "scissors",
+        "split": "test"
+      },
+      {
+        "file": "s4_o16_C_04_16_150.png",
+        "session": "s4",
+        "object": "o16",
+        "object_name": "light_bulb1",
+        "category": "light bulb",
+        "split": "train"
+      },
+      {
+        "file": "s5_o21_C_05_21_150.png",
+        "session": "s5",
+        "object": "o21",
+        "object_name": "can1",
+        "category": "can",
+        "split": "train"
+      },
+      {
+        "file": "s6_o26_C_06_26_150.png",
+        "session": "s6",
+        "object": "o26",
+        "object_name": "glass1",
+        "category": "glass",
+        "split": "train"
+      },
+      {
+        "file": "s7_o31_C_07_31_150.png",
+        "session": "s7",
+        "object": "o31",
+        "object_name": "ball1",
+        "category": "ball",
+        "split": "test"
+      },
+      {
+        "file": "s8_o36_C_08_36_150.png",
+        "session": "s8",
+        "object": "o36",
+        "object_name": "marker1",
+        "category": "marker",
+        "split": "train"
+      },
+      {
+        "file": "s9_o41_C_09_41_150.png",
+        "session": "s9",
+        "object": "o41",
+        "object_name": "cup1",
+        "category": "cup",
+        "split": "train"
+      },
+      {
+        "file": "s10_o46_C_10_46_150.png",
+        "session": "s10",
+        "object": "o46",
+        "object_name": "remote_control1",
+        "category": "remote control",
+        "split": "test"
+      },
+      {
+        "file": "s11_o2_C_11_02_150.png",
+        "session": "s11",
+        "object": "o2",
+        "object_name": "plug_adapter2",
+        "category": "plug adapter",
+        "split": "train"
+      },
+      {
+        "file": "s1_o7_C_01_07_150.png",
+        "session": "s1",
+        "object": "o7",
+        "object_name": "mobile_phone2",
+        "category": "mobile phone",
+        "split": "train"
+      },
+      {
+        "file": "s2_o12_C_02_12_150.png",
+        "session": "s2",
+        "object": "o12",
+        "object_name": "scissor2",
+        "category": "scissors",
+        "split": "train"
+      },
+      {
+        "file": "s3_o17_C_03_17_150.png",
+        "session": "s3",
+        "object": "o17",
+        "object_name": "light_bulb2",
+        "category": "light bulb",
+        "split": "test"
+      },
+      {
+        "file": "s4_o22_C_04_22_150.png",
+        "session": "s4",
+        "object": "o22",
+        "object_name": "can2",
+        "category": "can",
+        "split": "train"
+      },
+      {
+        "file": "s5_o27_C_05_27_150.png",
+        "session": "s5",
+        "object": "o27",
+        "object_name": "glass2",
+        "category": "glass",
+        "split": "train"
+      }
+    ]
+  },
+  "license": "CC BY 4.0",
+  "failures": [],
+  "status": "PASS",
+  "timestamp": "2026-10-02T16:52:29+00:00"
+}

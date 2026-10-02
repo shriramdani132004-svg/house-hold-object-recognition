@@ -7,18 +7,26 @@ scores.
 
 ## Dataset
 
-- **Selected dataset:** COCO — Common Objects in Context (COCO 2017 release)
-- **Official source:** <https://cocodataset.org/> (download page & Terms of Use)
-- **Purpose:** real-world images with professional bounding-box annotations
-  for training and evaluating the household-object detector. The
-  household-relevant class subset is finalized during data preparation.
+- **Selected dataset:** CORe50 — Continual Recognition of 50 Objects
+  (128x128, sessions s1–s11, 50 objects / 10 categories, 164,866 PNGs)
+- **Official source:** <https://vlomonaco.github.io/core50/> ·
+  <https://github.com/vlomonaco/core50>
+- **Purpose:** primary assignment dataset for continual recognition —
+  sequential sessions drive the NI/NC/NIC experience splits with
+  test sessions s3/s7/s10.
 - **Full details** (license, size, classes, annotation format, acquisition
-  method, citation): see [DATASET.md](DATASET.md).
+  method, citation): see `data/raw/core50/DATASET_INFO.md` and
+  [DATASET.md](DATASET.md).
 
-Raw data lives under `data/raw/coco/` (git-ignored); acquisition and
-verification are handled by `scripts/download_dataset.py` and
-`scripts/verify_dataset.py`. Verified metadata is recorded in
-`data/raw/DATASET_INFO.txt`.
+Acquired 2026-10-02 under `data/raw/core50/` (git-ignored) with SHA-256
+manifest in `data/raw/core50/downloads/MANIFEST.json`; validated by
+`scripts/validate_core50.py` (summary:
+`reports/phase2_core50_summary.json`, status PASS).
+
+> **Prototype note:** the earlier COCO 2017 phases (1–6 of the original
+> roadmap) remain intact under `data/raw/coco/`,
+> `data/processed/household_objects/` and `models/` as the static-detection
+> prototype — see [DATASET.md](DATASET.md).
 
 ## Data Preparation (Phase 3)
 
@@ -124,15 +132,14 @@ split untouched). Full report: `reports/phase6_training_report.md`.
 
 ## Project Status
 
-**In progress — Phases 1–6 complete.**
+**Phase 2 (CORe50 dataset) complete — next: Phase 3 continual pipeline.**
 
 - [x] Project structure, virtual environment, Git, documentation
-- [x] Dataset selection, acquisition & documentation
-- [x] Data preparation, class selection & splits
-- [x] Dataset analysis & reporting
-- [x] Baseline model (zero-shot evaluation)
-- [x] Custom model training (validation result only; test split untouched)
-- [ ] Evaluation & improvement
+- [x] CORe50 dataset acquisition, integrity validation & documentation
+- [x] COCO prototype: data preparation, analysis, baseline, training
+- [ ] Continual data pipeline (NI/NC/NIC experiences)
+- [ ] Naive baseline + experience replay
+- [ ] Evaluation & error/forgetting analysis
 - [ ] Inference system & web app
 - [ ] Testing, deployment, final documentation
 

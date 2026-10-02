@@ -46,6 +46,12 @@ data/splits/*
 !data/processed/.gitkeep
 !data/splits/.gitkeep
 
+# CORe50 (Phase 2): dataset itself stays ignored; track only its docs
+!data/raw/core50/
+data/raw/core50/*
+!data/raw/core50/DATASET_INFO.md
+!data/raw/core50/README.md
+
 # Models & checkpoints
 models/*
 !models/.gitkeep

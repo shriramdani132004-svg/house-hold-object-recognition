@@ -3,6 +3,11 @@
 Complete high-level roadmap for the project. Each phase is completed and
 verified before moving to the next.
 
+The **assignment** is continual recognition of household objects with the
+CORe50 dataset (see `phases map.txt`, the canonical phase list). The table
+below is the original static-detection roadmap; its Phases 1–6 were delivered
+as the COCO/YOLO **prototype** and remain intact.
+
 | # | Phase | Goal | Key Outputs |
 |---|-------|------|-------------|
 | 1 | **Setup** | Project foundation: structure, venv, Git, docs, basic deps | Folder tree, `README.md`, `AGENTS.md`, `requirements.txt`, `.gitignore`, `LICENSE`, initial commit |
@@ -22,15 +27,15 @@ verified before moving to the next.
 | 15 | **Final Polish** | Full start-to-finish verification, fix broken paths, remove cruft, portfolio-ready repo | Verified, tidy repository |
 | 16 | **Documentation** | Final project report: dataset, architecture, training, evaluation, error analysis, deployment, limitations, future work | `reports/` final report |
 
-## Status
+### Prototype status (COCO/YOLO)
 
 - [x] Phase 1 — Setup
-- [x] Phase 2 — Dataset
+- [x] Phase 2 — Dataset (COCO 2017 — prototype)
 - [x] Phase 3 — Preparation
 - [x] Phase 4 — Analysis
 - [x] Phase 5 — Baseline
 - [x] Phase 6 — Training
-- [ ] Phase 7 — Evaluation
+- [ ] Phase 7 — Evaluation (prototype; paused — superseded by the continual assignment)
 - [ ] Phase 8 — Improvement
 - [ ] Phase 9 — Final Model
 - [ ] Phase 10 — Inference
@@ -41,6 +46,32 @@ verified before moving to the next.
 - [ ] Phase 15 — Final Polish
 - [ ] Phase 16 — Documentation
 
+---
+
+## Continual Recognition Roadmap (canonical: `phases map.txt`)
+
+Assignment phases for **continual recognition of household objects with
+CORe50**:
+
+| # | Phase | Goal | Status |
+|---|-------|------|--------|
+| 1 | **Setup** | Project foundation: structure, venv, Git, docs, tests | [x] Complete |
+| 2 | **CORe50 Dataset** | Acquire + verify the official CORe50 dataset, session structure, object mapping, NI/NC/NIC resources, documentation | [x] Complete (2026-10-02) |
+| 3 | **Continual Data Pipeline** | Session/experience loading, sequential experiences, official filelists, no leakage | [ ] |
+| 4 | **Naive + Experience Replay** | Sequential baseline and the one required anti-forgetting method | [ ] |
+| 5 | **Main NIC Experiment + Evaluation** | Naive vs Replay with accuracy / forgetting measurements | [ ] |
+| 6 | **Error Analysis + Final Model** | Focused forgetting/error analysis, freeze the selected checkpoint | [ ] |
+| 7 | **Inference + Phone Web App** | Inference API + Gradio live-camera app | [ ] |
+| 8 | **Testing + Deployment** | Practical tests + Hugging Face Spaces deployment | [ ] |
+| 9 | **GitHub + Documentation** | Polished repo + final report | [ ] |
+| 10 | **Final Verification + Demonstration** | End-to-end checks, phone demo | [ ] |
+
+Phase 2 deliverables recorded: `data/raw/core50/DATASET_INFO.md`,
+`DATASET.md` (CORe50 primary section), `reports/phase2_core50_summary.json`,
+`reports/phase2_core50_samples/`, `scripts/download_core50.py`,
+`scripts/extract_core50.py`, `scripts/validate_core50.py`,
+`tests/test_phase2_core50.py`.
+
 ## Notes
 
 - Dependencies are installed incrementally: only what the current phase
@@ -48,3 +79,6 @@ verified before moving to the next.
   training phases begin, not during setup.
 - Dataset license and model weights licensing must be checked and recorded
   in `README.md` / dataset docs during Phase 2.
+- The COCO prototype under `data/raw/coco/`, `data/processed/`,
+  `models/` and `reports/` is preserved as-is; CORe50 lives exclusively
+  under `data/raw/core50/`.
