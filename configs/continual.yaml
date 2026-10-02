@@ -9,3 +9,31 @@ images_root: data/raw/core50/dataset/core50_128x128
 object_mapping: data/raw/core50/metadata/object_mapping.json
 manifest: reports/phase3_continual_pipeline_manifest.json
 check_paths_exist: true
+
+# ---------------------------------------------------------------------------
+# Phase 4 — continual training defaults (generic; NOT final Phase-5 settings).
+# Load with ContinualTrainConfig.from_yaml(...). Phase 5 will select a method
+# (build_continual_trainer) and tune experiment-level values explicitly.
+# ---------------------------------------------------------------------------
+continual:
+  method: naive
+
+training:
+  epochs: 1                 # per experience; raise explicitly in later phases
+  batch_size: 64            # CPU batch; replay batches are added on top
+  learning_rate: 0.001
+  weight_decay: 0.0
+  optimizer: adam           # adam | sgd
+  scheduler: none           # none | step
+  seed: 42
+  device: auto              # auto | cpu | cuda | mps (auto -> cpu here)
+  workers: 0                # deterministic on CPU
+  image_size: 64            # CORe50 frames are 128x128; 64 keeps CPU runs fast
+  model_width: 32           # SmallConvNet base width
+  checkpoint_root: models/continual   # git-ignored; outside every dataset tree
+
+replay:
+  enabled: false            # informational: build_continual_trainer(None, cfg) honors it
+  capacity: 2000            # bounded FIFO over sample references (not images)
+  batch_size: 16            # replay samples appended to each training batch
+  seed: 42                  # deterministic replay sampling (null -> training seed)

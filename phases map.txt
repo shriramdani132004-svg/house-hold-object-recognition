@@ -194,6 +194,9 @@ This establishes the naive continual-learning baseline.
 
 Do NOT train each experience from scratch.
 
+STATUS:
+✅ COMPLETE
+
 
 ==============================================================
 PHASE 5 — ANTI-FORGETTING METHOD
@@ -230,6 +233,9 @@ At every experience:
 Do not implement many continual-learning algorithms.
 
 One strong method is enough.
+
+STATUS:
+✅ COMPLETE
 
 
 ==============================================================
@@ -814,9 +820,9 @@ FINAL CORe50 ASSIGNMENT:
 
 ✅ PHASE 2 — CORe50 Dataset
 ✅ PHASE 3 — Continual Data Pipeline
-▶ PHASE 4 — Naive Continual Baseline
-🔜 PHASE 5 — Experience Replay
-🔜 PHASE 6 — Continual Experiment
+✅ PHASE 4 — Naive Continual Baseline
+✅ PHASE 5 — Experience Replay
+▶ PHASE 6 — Continual Experiment
 🔜 PHASE 7 — Continual Evaluation
 🔜 PHASE 8 — Focused Error/Forgetting Analysis
 🔜 PHASE 9 — Final Model Selection

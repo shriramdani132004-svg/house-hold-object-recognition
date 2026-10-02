@@ -58,7 +58,7 @@ CORe50**:
 | 1 | **Setup** | Project foundation: structure, venv, Git, docs, tests | [x] Complete |
 | 2 | **CORe50 Dataset** | Acquire + verify the official CORe50 dataset, session structure, object mapping, NI/NC/NIC resources, documentation | [x] Complete (2026-10-02) |
 | 3 | **Continual Data Pipeline** | Session/experience loading, sequential experiences, official filelists, no leakage | [x] Complete (2026-10-02) |
-| 4 | **Naive + Experience Replay** | Sequential baseline and the one required anti-forgetting method | [ ] |
+| 4 | **Naive + Experience Replay** | Sequential baseline and the one required anti-forgetting method | [x] Complete (2026-10-02) |
 | 5 | **Main NIC Experiment + Evaluation** | Naive vs Replay with accuracy / forgetting measurements | [ ] |
 | 6 | **Error Analysis + Final Model** | Focused forgetting/error analysis, freeze the selected checkpoint | [ ] |
 | 7 | **Inference + Phone Web App** | Inference API + Gradio live-camera app | [ ] |
@@ -104,6 +104,56 @@ STATUS: IMPLEMENTED (2026-10-02)
 
 Phase 3 does **not** train models, implement replay, or compute accuracy —
 those belong to later phases.
+
+### PHASE 4 — NAIVE + EXPERIENCE REPLAY
+
+STATUS: IMPLEMENTED (2026-10-02)
+
+- **Method A — Naive continual learning** (`NaiveContinualTrainer`,
+  `src/training/naive.py`): the model is created exactly once, then the
+  SAME model continues through every official experience — no per-
+  experience reset, no fresh initialization, official order enforced
+  (experience 0 first, then strictly `i + 1`), only the current
+  experience's official training samples are read.
+- **Method B — Experience Replay** (`ReplayContinualTrainer` +
+  `ReplayMemory`, `src/training/replay.py`): the single anti-forgetting
+  method. Per experience: current samples + replay samples from earlier
+  experiences → combined into each training batch → train → update memory →
+  persist state. The memory starts empty (no replay at experience 0).
+- **Persistent model state**: `ContinualTrainingState` with
+  `save_state()` / `load_state()` / `validate_state()` /
+  `checkpoint_exists()` (`src/training/state.py`) persist model,
+  optimizer, scheduler and replay memory to `state.json` + `checkpoint.pt`
+  under `models/continual/<scenario>_<variant>_run<id>/<method>/`
+  (git-ignored, outside the dataset tree, project-relative metadata only —
+  no absolute personal paths).
+- **Bounded replay memory**: fixed capacity with FIFO eviction over
+  lightweight `SampleRecord` references (image paths are re-read from the
+  official tree; images are never copied). Evaluation/test samples,
+  future-experience samples and out-of-order additions are rejected.
+- **Deterministic replay sampling**: seeded uniform sampling
+  (`ReplayMemory.sample(k, seed=...)`), seeded model initialization and
+  seeded data-loader shuffling.
+- **Shared trainer interface**: `build_continual_trainer("naive" |
+  "replay", config)` — Phase 5 switches methods without touching training
+  code; unknown method names fail with a clear `ValueError`.
+- **Configuration**: generic, explicit defaults in `configs/continual.yaml`
+  (`continual` / `training` / `replay` sections) — final Phase-5
+  experiment settings are deliberately NOT defined yet.
+- **Model**: compact PyTorch `SmallConvNet` classifier
+  (`src/training/model.py`) for CORe50 object-identity classification;
+  the Ultralytics/YOLO stack remains exclusive to the untouched COCO
+  detection prototype.
+- **Tests**: `tests/test_phase4_continual_training.py` — 24 focused,
+  fast tests on tiny synthetic fixtures plus one official NIC
+  experience-0 smoke step (two optimizer steps, no full experiment).
+
+**Phase 5 will run the main NIC continual experiment** (naive vs replay
+with accuracy/forgetting measurements) — not started in Phase 4.
+
+Numbering note: `phases map.txt` describes the two methods as its Phases 4
+(naive) and 5 (replay); assignment Phase 4 implements both together, and
+its Phase 6 "Continual Experiment" corresponds to assignment Phase 5.
 
 ## Notes
 

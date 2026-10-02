@@ -132,13 +132,13 @@ split untouched). Full report: `reports/phase6_training_report.md`.
 
 ## Project Status
 
-**Phase 3 (continual data pipeline) complete — next: Phase 4 naive baseline.**
+**Phase 4 (naive + experience replay) complete — next: Phase 5 main NIC experiment.**
 
 - [x] Project structure, virtual environment, Git, documentation
 - [x] CORe50 dataset acquisition, integrity validation & documentation
 - [x] COCO prototype: data preparation, analysis, baseline, training
 - [x] Continual data pipeline (NI/NC/NIC experiences)
-- [ ] Naive baseline + experience replay
+- [x] Naive baseline + experience replay
 - [ ] Evaluation & error/forgetting analysis
 - [ ] Inference system & web app
 - [ ] Testing, deployment, final documentation
