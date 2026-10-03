@@ -32,12 +32,23 @@ class ModelLoadError(InferenceError):
 class Prediction:
     """One classification result from the frozen continual model.
 
+    ``confidence`` is the softmax score over the 50 CORe50 output
+    classes: a *model confidence*, NOT a calibrated probability that the
+    prediction is correct. The classifier is closed-set — every input is
+    forced to one of the 50 learned identities, even when the true object
+    is out of scope.
+
     Attributes:
         object_name: CORe50 object identity name (e.g. ``plug_adapter1``).
-        confidence: softmax probability in ``[0.0, 1.0]``.
+        confidence: softmax score over the 50 output classes, in
+            ``[0.0, 1.0]`` (model confidence, not a calibrated
+            probability of correctness).
         class_index: 0-based label in ``[0, 49]``.
-        top3: optional ``(name, probability)`` triples for debugging.
+        top3: optional ``(name, score)`` triples for debugging.
         bounding_box: always ``None`` — this classifier emits no boxes.
+        uncertain: ``True`` when the engine's ``min_confidence``
+            threshold rejected the top score; the other fields still
+            describe the argmax prediction.
     """
 
     object_name: str
@@ -45,6 +56,7 @@ class Prediction:
     class_index: int
     top3: tuple[TopPrediction, ...] = ()
     bounding_box: tuple[float, float, float, float] | None = None
+    uncertain: bool = False
 
     @property
     def supports_bounding_boxes(self) -> bool:

@@ -29,7 +29,12 @@ class ReplayMemory:
 
     Guarantees:
 
-    - capacity is a fixed maximum (oldest references are evicted first);
+    - capacity is a fixed maximum;
+    - two memory policies, both standard Experience Replay buffers:
+      ``"fifo"`` evicts the oldest reference first (the Phase-5 default),
+      ``"reservoir"`` performs uniform reservoir sampling over all
+      training references seen so far (Algorithm R), which keeps every
+      class represented regardless of experience recency;
     - only ``split == "train"`` records are accepted — evaluation/test
       samples can never enter;
     - only records from already-trained experiences are accepted
@@ -48,15 +53,22 @@ class ReplayMemory:
         scenario: str | None = None,
         variant: str | None = None,
         run_id: int | None = None,
+        policy: str = "fifo",
     ) -> None:
         if not isinstance(capacity, int) or capacity < 1:
             raise ReplayMemoryError(f"capacity must be an integer >= 1, got {capacity!r}")
+        if policy not in ("fifo", "reservoir"):
+            raise ReplayMemoryError(
+                f"policy must be 'fifo' or 'reservoir', got {policy!r}"
+            )
         self.capacity = int(capacity)
         self.seed = int(seed)
         self.scenario = scenario
         self.variant = variant
         self.run_id = run_id
+        self.policy = policy
         self.last_experience = -1
+        self._arrivals = 0
         self._items: dict[str, SampleRecord] = {}
 
     # ------------------------------------------------------------------
@@ -80,6 +92,7 @@ class ReplayMemory:
         """Explicit reset: empty contents, ready for experience 0 again."""
         self._items.clear()
         self.last_experience = -1
+        self._arrivals = 0
 
     # ------------------------------------------------------------------
     # mutation
@@ -126,12 +139,26 @@ class ReplayMemory:
 
         added = 0
         for record in prepared:
-            if record.relative_path in self._items:
+            key = record.relative_path
+            if key in self._items:
                 continue
-            self._items[record.relative_path] = record
+            if self.policy == "reservoir":
+                self._arrivals += 1
+                if len(self._items) < self.capacity:
+                    self._items[key] = record
+                else:
+                    rng = random.Random(self.seed * 1_000_003 + self._arrivals)
+                    if rng.randrange(self._arrivals) < self.capacity:
+                        victim = rng.choice(list(self._items))
+                        del self._items[victim]
+                        self._items[key] = record
+            else:
+                self._arrivals += 1
+                self._items[key] = record
             added += 1
-        while len(self._items) > self.capacity:
-            self._items.pop(next(iter(self._items)))
+        if self.policy == "fifo":
+            while len(self._items) > self.capacity:
+                self._items.pop(next(iter(self._items)))
         self.last_experience = experience_index
         return added
 
@@ -166,6 +193,8 @@ class ReplayMemory:
             "scenario": self.scenario,
             "variant": self.variant,
             "run_id": self.run_id,
+            "policy": self.policy,
+            "arrivals": self._arrivals,
             "last_experience": self.last_experience,
             "items": [record.to_dict() for record in self._items.values()],
         }
@@ -221,6 +250,13 @@ class ReplayMemory:
                 f"{(scenario, variant, run_id)!r}, expected "
                 f"{(self.scenario, self.variant, self.run_id)!r}"
             )
+        stored_policy = payload.get("policy", "fifo")
+        if stored_policy != self.policy:
+            raise ReplayMemoryError(
+                f"Replay memory policy mismatch: stored {stored_policy!r}, "
+                f"expected {self.policy!r}"
+            )
+        self._arrivals = int(payload.get("arrivals", len(restored)))
 
         self._items = restored
         self.last_experience = last_experience
@@ -265,6 +301,7 @@ class ReplayContinualTrainer(BaseContinualTrainer):
             scenario=scenario.scenario_type if scenario else None,
             variant=scenario.variant if scenario else None,
             run_id=scenario.run_id if scenario else None,
+            policy=self.config.replay_policy,
         )
         stored = payload.get("replay_memory")
         if stored is not None:

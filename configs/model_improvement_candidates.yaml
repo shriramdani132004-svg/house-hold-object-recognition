@@ -1,0 +1,79 @@
+# Candidate recipes for the model-improvement work package (Steps 4-6).
+#
+# Selection uses ONLY the train-only development validation set
+# (data/splits/nic_inc_run0_dev10_seed42.json). The official held-out
+# sessions s3/s7/s10 are never used here.
+#
+# Every candidate is Experience Replay — the single anti-forgetting
+# method. Only diagnosis-justified dimensions vary: memory policy and
+# capacity, replay ratio, model capacity/architecture, resolution,
+# optimizer/regularization, augmentation, and training duration.
+
+seed: 42
+cache_dir: models/continual/candidates/cache
+manifest: data/splits/nic_inc_run0_dev10_seed42.json
+
+candidates:
+  - id: c1_corrected_baseline
+    description: >
+      Corrected baseline: Phase-5 replay configuration (FIFO 2000,
+      replay batch 16, SmallConvNet w32, 64px) trained adequately with
+      development-validation early stopping. Isolates duration effects.
+    method: replay
+    model_arch: small_cnn
+    model_width: 32
+    image_size: 64
+    epochs: 12
+    early_stop_patience: 5
+    batch_size: 64
+    learning_rate: 0.001
+    optimizer: adam
+    weight_decay: 0.0
+    scheduler: none
+    replay_policy: fifo
+    replay_capacity: 2000
+    replay_batch_size: 16
+    augment: false
+
+  - id: c2_replay_strong
+    description: >
+      Reservoir replay buffer (fixes the diagnosed class starvation:
+      FIFO 2000 covered only 7/50 classes), capacity 10000, replay
+      ratio 32:64, wider SmallConvNet, light augmentation, AdamW.
+    method: replay
+    model_arch: small_cnn
+    model_width: 64
+    image_size: 64
+    epochs: 12
+    early_stop_patience: 5
+    batch_size: 64
+    learning_rate: 0.001
+    optimizer: adamw
+    weight_decay: 0.0001
+    scheduler: none
+    replay_policy: reservoir
+    replay_capacity: 10000
+    replay_batch_size: 32
+    augment: true
+
+  - id: c3_residual_96
+    description: >
+      Compact residual GroupNorm network at 96x96 (no BatchNorm running
+      statistic drift), reservoir 10000, replay 32, augmentation, AdamW.
+    method: replay
+    model_arch: compact_resnet
+    model_width: 32
+    image_size: 96
+    epochs: 12
+    early_stop_patience: 5
+    batch_size: 64
+    learning_rate: 0.001
+    optimizer: adamw
+    weight_decay: 0.0001
+    scheduler: none
+    replay_policy: reservoir
+    replay_capacity: 10000
+    replay_batch_size: 32
+    augment: true
+
+

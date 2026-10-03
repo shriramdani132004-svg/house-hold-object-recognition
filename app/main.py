@@ -13,6 +13,12 @@ Optional public sharing (public-link verification belongs to Phase 8)::
     $env:GRADIO_SHARE = "true"
     .\.venv\Scripts\python.exe -m app
 
+Optional confidence floor — predictions scoring below it are displayed as
+"Not confidently recognized" (invalid values are logged and ignored)::
+
+    $env:APP_MIN_CONFIDENCE = "0.6"
+    .\.venv\Scripts\python.exe -m app
+
 Camera frames and uploaded images both flow through the single
 :func:`predict_callback` -> :func:`src.inference.get_engine` backend, so
 there is exactly one inference path and one checkpoint load per process.
@@ -31,20 +37,28 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 import gradio as gr
 
-from src.inference import InferenceError, get_engine
+from src.inference import InferenceError, InferenceEngine, get_engine, set_engine
 
 LOGGER = logging.getLogger("household_object.app")
 
 TITLE = "Continual Household Object Recognition"
 DESCRIPTION = (
-    "Recognizes supported CORe50 household objects using the frozen "
-    "continual-learning model (Experience Replay, 50 classes, 64x64 input)."
+    "Recognizes the 50 CORe50 learned object identities using the frozen "
+    "continual-learning model (Experience Replay, 50 classes, 64x64 input). "
+    "This is a *closed-set* classifier: every input is forced to one of "
+    "the 50 known identities, so it does **not** recognize arbitrary "
+    "household objects — anything unseen is still mapped to the closest "
+    "known class. The confidence shown is model confidence (a softmax "
+    "score), not a guarantee that the prediction is correct."
 )
 BOUNDING_BOX_NOTE = (
     "**Bounding boxes: not supported.** The selected model is a 50-class "
     "CORe50 *classifier* — it predicts the object name and confidence only."
 )
 PREDICTION_OUTPUTS = ("OBJECT", "CONFIDENCE", "CLASS ID", "ERROR")
+
+DEFAULT_MIN_CONFIDENCE: float | None = None
+MIN_CONFIDENCE_ENV = "APP_MIN_CONFIDENCE"
 
 
 def predict_callback(image: object) -> tuple[str, str, str, str]:
@@ -61,12 +75,37 @@ def predict_callback(image: object) -> tuple[str, str, str, str]:
             "",
             "Prediction failed unexpectedly. Check the server log for details.",
         )
-    return (
-        prediction.object_name,
-        prediction.formatted_confidence,
-        str(prediction.class_index),
-        "",
+    object_name = (
+        "Not confidently recognized"
+        if prediction.uncertain
+        else prediction.object_name
     )
+    confidence = f"Model confidence: {prediction.formatted_confidence}"
+    return object_name, confidence, str(prediction.class_index), ""
+
+
+def _min_confidence_from_env() -> float | None:
+    """Read ``APP_MIN_CONFIDENCE``; invalid values are logged and ignored."""
+    raw = os.environ.get(MIN_CONFIDENCE_ENV, "").strip()
+    if not raw:
+        return DEFAULT_MIN_CONFIDENCE
+    try:
+        value = float(raw)
+    except ValueError:
+        LOGGER.warning(
+            "Ignoring invalid %s=%r; expected a float in [0, 1].",
+            MIN_CONFIDENCE_ENV,
+            raw,
+        )
+        return DEFAULT_MIN_CONFIDENCE
+    if not 0.0 <= value <= 1.0:
+        LOGGER.warning(
+            "Ignoring out-of-range %s=%r; expected a float in [0, 1].",
+            MIN_CONFIDENCE_ENV,
+            raw,
+        )
+        return DEFAULT_MIN_CONFIDENCE
+    return value
 
 
 def build_app() -> gr.Blocks:
@@ -100,7 +139,10 @@ def main() -> None:
         "true",
         "yes",
     }
-    get_engine()  # fail fast on startup; the checkpoint is loaded once
+    min_confidence = _min_confidence_from_env()
+    if min_confidence is not None:
+        set_engine(InferenceEngine(min_confidence=min_confidence))
+    get_engine().load()  # fail fast on startup; the checkpoint is loaded once
     demo = build_app()
     demo.launch(share=share)
 

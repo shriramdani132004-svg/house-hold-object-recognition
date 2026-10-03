@@ -2,7 +2,10 @@
 
 Images are opened lazily from the official ``images_root`` using the
 project's existing image-path references — nothing is ever copied,
-re-encoded, or written back into the dataset tree.
+re-encoded, or written back into the dataset tree. The image transform
+itself is the shared one from :mod:`src.data.preprocessing` (the single
+source of truth for training, evaluation, and inference); ``MEAN`` and
+``STD`` are re-exported here for existing importers.
 """
 
 from __future__ import annotations
@@ -11,13 +14,14 @@ from pathlib import Path
 from typing import Sequence
 
 import torch
-from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 
+from src.data import preprocessing as base_preprocessing
 from src.data.continual import SampleRecord
+from src.data.preprocessing import decode_image_file, normalize_chw
 
-MEAN = (0.5, 0.5, 0.5)
-STD = (0.5, 0.5, 0.5)
+MEAN = base_preprocessing.MEAN
+STD = base_preprocessing.STD
 
 
 class ContinualImageDataset(Dataset):
@@ -53,27 +57,20 @@ class ContinualImageDataset(Dataset):
     def __len__(self) -> int:
         return len(self.records)
 
-    def __getitem__(self, index: int) -> tuple[torch.Tensor, int]:
+    def get_uint8(self, index: int) -> torch.Tensor:
+        """Decode record ``index`` to its raw post-resize ``uint8`` CHW tensor."""
         record = self.records[index]
         path = self.images_root.joinpath(*record.relative_path.split("/"))
         try:
-            with Image.open(path) as handle:
-                image = handle.convert("RGB")
+            return decode_image_file(path, self.image_size)
         except FileNotFoundError as exc:
             raise FileNotFoundError(
                 f"Image referenced by the official filelist is missing: {path}"
             ) from exc
-        if image.size != (self.image_size, self.image_size):
-            image = image.resize(
-                (self.image_size, self.image_size), Image.Resampling.BILINEAR
-            )
-        tensor = torch.frombuffer(bytearray(image.tobytes()), dtype=torch.uint8)
-        tensor = tensor.reshape(self.image_size, self.image_size, 3).permute(2, 0, 1)
-        tensor = tensor.to(torch.float32) / 255.0
-        mean = torch.tensor(MEAN).view(3, 1, 1)
-        std = torch.tensor(STD).view(3, 1, 1)
-        tensor = (tensor - mean) / std
-        return tensor, int(record.label)
+
+    def __getitem__(self, index: int) -> tuple[torch.Tensor, int]:
+        tensor = normalize_chw(self.get_uint8(index))
+        return tensor, int(self.records[index].label)
 
 
 def make_loader(

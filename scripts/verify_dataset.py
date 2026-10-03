@@ -19,6 +19,11 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+for _search_root in (PROJECT_ROOT, PROJECT_ROOT / "scripts"):
+    if str(_search_root) not in sys.path:
+        sys.path.insert(0, str(_search_root))
+
 from download_dataset import (
     ANNOTATIONS,
     RAW_DIR,

@@ -75,14 +75,14 @@ STEP_LABELS = [
     "Final model verification and phase completion",
 ]
 
-PHASE5_REPORTS = Path("reports/phase5_nic")
-PHASE5_MODELS = Path("models/continual/phase5_nic")
-OUTPUT_DIR = Path("reports/phase6_analysis")
+PHASE5_REPORTS = PROJECT_ROOT / "reports" / "phase5_nic"
+PHASE5_MODELS = PROJECT_ROOT / "models" / "continual" / "phase5_nic"
+OUTPUT_DIR = PROJECT_ROOT / "reports" / "phase6_analysis"
 EXAMPLES_DIR = OUTPUT_DIR / "examples"
-FINAL_CHECKPOINT = Path("models/continual/final_model.pt")
-FINAL_METADATA = Path("models/continual/final_model.json")
-CONFIG_PATH = Path("configs/phase5_nic.yaml")
-OBJECT_MAPPING = Path("data/raw/core50/metadata/object_mapping.json")
+FINAL_CHECKPOINT = PROJECT_ROOT / "models" / "continual" / "final_model.pt"
+FINAL_METADATA = PROJECT_ROOT / "models" / "continual" / "final_model.json"
+CONFIG_PATH = PROJECT_ROOT / "configs" / "phase5_nic.yaml"
+OBJECT_MAPPING = PROJECT_ROOT / "data" / "raw" / "core50" / "metadata" / "object_mapping.json"
 EXPECTED_DATASET_FILES = 164_866
 ABS_PATH_MARKERS = ("C:\\", "C:/", "/home/")
 PROTECTED_PREFIXES = (
@@ -111,6 +111,20 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
+def resolve_under_project(path: Path) -> Path:
+    """Anchor a possibly relative path to the project root."""
+    return path if path.is_absolute() else PROJECT_ROOT / path
+
+
+def project_relative(path: Path) -> str:
+    """POSIX project-relative string for report content and console lines."""
+    resolved = resolve_under_project(path)
+    try:
+        return resolved.resolve().relative_to(PROJECT_ROOT.resolve()).as_posix()
+    except ValueError:
+        return resolved.as_posix()
+
+
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -128,7 +142,11 @@ def count_dataset_files(images_root: Path) -> int:
 
 def git_status_lines() -> list[str]:
     proc = subprocess.run(
-        ["git", "status", "--short"], capture_output=True, text=True, check=False
+        ["git", "status", "--short"],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=str(PROJECT_ROOT),
     )
     if proc.returncode != 0:
         return []
@@ -188,9 +206,60 @@ def blocked_block(*, step: int | None, error: str) -> str:
     )
 
 
+def merge_authoritative_class_names(report_names: dict[str, str]) -> dict[str, str]:
+    """Merge report class names with the authoritative object mapping.
+
+    The authoritative mapping (``object_mapping.json``) always wins;
+    disagreements are printed as a visible warning instead of raising so
+    historical reports keep processing.
+    """
+    merged = dict(report_names)
+    if not OBJECT_MAPPING.is_file():
+        print(
+            f"WARNING: authoritative object mapping not found: "
+            f"{project_relative(OBJECT_MAPPING)}; keeping report class names",
+            file=sys.stderr,
+        )
+        return merged
+    authoritative = load_class_names(OBJECT_MAPPING)
+    disagreements = [
+        (label, report_names[label], name)
+        for label, name in authoritative.items()
+        if label in report_names and report_names[label] != name
+    ]
+    if disagreements:
+        preview = "; ".join(
+            f"{label}: report {old!r} vs mapping {new!r}"
+            for label, old, new in disagreements[:5]
+        )
+        print(
+            f"WARNING: report class names disagree with "
+            f"{project_relative(OBJECT_MAPPING)} for {len(disagreements)} label(s) "
+            f"(authoritative mapping wins) — {preview}",
+            file=sys.stderr,
+        )
+    merged.update(authoritative)
+    return merged
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Phase 6 analysis driver")
-    parser.parse_args(list(argv) if argv is not None else None)
+    parser.add_argument(
+        "--reports-dir",
+        type=Path,
+        default=PHASE5_REPORTS,
+        help="Phase-5 reports directory to analyse (default: reports/phase5_nic)",
+    )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=CONFIG_PATH,
+        help="experiment YAML holding the model settings "
+        "(default: configs/phase5_nic.yaml)",
+    )
+    args = parser.parse_args(list(argv) if argv is not None else None)
+    reports_dir = resolve_under_project(args.reports_dir)
+    config_path = resolve_under_project(args.config)
 
     phase = PhaseProgress(
         "PHASE 6 OVERALL",
@@ -203,7 +272,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         # ---- step 1: inspect Phase-5 results ----------------------------
         phase.set_step(1, STEP_LABELS[0])
-        results = load_phase5_results(PHASE5_REPORTS)
+        results = load_phase5_results(reports_dir)
 
         naive_ckpt = PHASE5_MODELS / "naive" / "checkpoint.pt"
         replay_ckpt = PHASE5_MODELS / "replay" / "checkpoint.pt"
@@ -216,13 +285,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "checkpoint": sha256_file(ckpt),
                 "state": sha256_file(state_path),
             }
-        if not CONFIG_PATH.is_file():
-            raise ValueError(f"missing {CONFIG_PATH}")
-        config = read_yaml(CONFIG_PATH)
+        if not config_path.is_file():
+            raise ValueError(f"missing {config_path}")
+        config = read_yaml(config_path)
         model_cfg = config.get("model") or {}
         for key in ("arch", "width", "image_size", "num_classes"):
             if key not in model_cfg:
-                raise ValueError(f"configs model.{key} missing from {CONFIG_PATH}")
+                raise ValueError(f"configs model.{key} missing from {config_path}")
 
         comparison = results["comparison"]
         phase.log(
@@ -240,7 +309,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"{comparison['final_forgetting']['replay']:.4f}"
         )
         phase.log(
-            f"Checkpoints: {naive_ckpt} ; {replay_ckpt} ; config {CONFIG_PATH}"
+            f"Checkpoints: {project_relative(naive_ckpt)} ; "
+            f"{project_relative(replay_ckpt)} ; config {project_relative(config_path)}"
         )
 
         # ---- step 2: forgetting / class / experience analyses -----------
@@ -295,12 +365,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         candidates = select_candidate_records(targets, eval_records, max_total=100)
         if not candidates:
             raise ValueError("no candidate evaluation records selected")
-        class_names = results["class_names"]
-        mapping_fallback = (
-            load_class_names(OBJECT_MAPPING) if OBJECT_MAPPING.is_file() else {}
-        )
-        for label, name in mapping_fallback.items():
-            class_names.setdefault(label, name)
+        class_names = merge_authoritative_class_names(results["class_names"])
 
         dataset = ContinualImageDataset(
             candidates,
@@ -310,7 +375,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         device = resolve_device("auto")
         width = int(model_cfg["width"])
-        if int(model_cfg["num_classes"]) != len(results["class_names"]):
+        if int(model_cfg["num_classes"]) != len(class_names):
             raise ValueError("config num_classes does not match class history")
         predictions: dict[str, list[dict[str, Any]]] = {}
         for method, ckpt in (("naive", naive_ckpt), ("replay", replay_ckpt)):
@@ -382,7 +447,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         selection = select_final_model(results)
         selected_method = selection["selected_method"]
         selected_source = PHASE5_MODELS / selected_method / "checkpoint.pt"
-        selection["selected_checkpoint"] = str(selected_source).replace("\\", "/")
+        selection["selected_checkpoint"] = project_relative(selected_source)
         selection["sha256"] = sha256_file(selected_source)
         atomic_write_json(OUTPUT_DIR / "final_model_selection.json", selection)
         (OUTPUT_DIR / "final_model_selection.md").write_text(
@@ -412,8 +477,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         metadata = build_final_model_metadata(
             method=selected_method,
-            source_checkpoint=str(selected_source).replace("\\", "/"),
-            final_checkpoint=str(FINAL_CHECKPOINT).replace("\\", "/"),
+            source_checkpoint=project_relative(selected_source),
+            final_checkpoint=project_relative(FINAL_CHECKPOINT),
             sha256=frozen_sha,
             scenario="NIC",
             variant="inc",
@@ -424,13 +489,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             width=int(model_cfg["width"]),
             image_size=int(model_cfg["image_size"]),
             parameters=int(parameters),
-            class_mapping=str(OBJECT_MAPPING).replace("\\", "/"),
+            class_mapping=project_relative(OBJECT_MAPPING),
             created_utc=utc_now(),
         )
         atomic_write_json(FINAL_METADATA, metadata)
         ignore = subprocess.run(
             ["git", "check-ignore", "-q", str(FINAL_CHECKPOINT)],
             check=False,
+            cwd=str(PROJECT_ROOT),
         )
         if ignore.returncode != 0:
             raise ValueError(
@@ -444,9 +510,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         # ---- step 7: verification, reports, integrity --------------------
         phase.set_step(7, STEP_LABELS[6])
-        mapping = dict(class_names)
-        if OBJECT_MAPPING.is_file():
-            mapping.update(load_class_names(OBJECT_MAPPING))
+        mapping = merge_authoritative_class_names(class_names)
         load_test = run_load_test(
             FINAL_CHECKPOINT,
             width=int(model_cfg["width"]),
@@ -531,7 +595,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     f"{dataset_files:,}; at most "
                     f"{len(representative['examples'])} example copies were "
                     "written outside the dataset tree under "
-                    f"{EXAMPLES_DIR}/"
+                    f"{project_relative(EXAMPLES_DIR)}/"
                 ),
             },
             "portable_metadata": {
@@ -562,6 +626,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         if failed:
             raise ValueError(f"integrity check(s) failed: {', '.join(failed)}")
 
+        output_label = project_relative(OUTPUT_DIR)
+        examples_label = project_relative(EXAMPLES_DIR)
         summary_md = render_summary_md(
             results=results,
             selection=selection,
@@ -569,7 +635,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             representative=representative,
             environment=environment,
             sha256=frozen_sha,
-            final_checkpoint=str(FINAL_CHECKPOINT).replace("\\", "/"),
+            final_checkpoint=project_relative(FINAL_CHECKPOINT),
         )
         (OUTPUT_DIR / "phase6_summary.md").write_text(summary_md, encoding="utf-8")
 
@@ -583,24 +649,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             "num_experiences": results["num_experiences"],
             "source_experiment": "reports/phase5_nic/",
             "selected_method": selection["selected_method"],
-            "final_checkpoint": str(FINAL_CHECKPOINT).replace("\\", "/"),
+            "final_checkpoint": project_relative(FINAL_CHECKPOINT),
             "final_checkpoint_sha256": frozen_sha,
             "representative_errors": representative["n_examples"],
             "targets": targets,
             "load_test": load_test,
             "integrity": integrity,
             "artifacts": {
-                "forgetting_analysis": f"{OUTPUT_DIR}/forgetting_analysis.json",
-                "class_analysis": f"{OUTPUT_DIR}/class_analysis.json",
-                "experience_analysis": f"{OUTPUT_DIR}/experience_analysis.json",
-                "error_analysis_report": f"{OUTPUT_DIR}/phase6_error_analysis.md",
-                "representative_errors": f"{OUTPUT_DIR}/representative_errors.json",
-                "environment_analysis": f"{OUTPUT_DIR}/environment_analysis.json",
-                "final_model_selection": f"{OUTPUT_DIR}/final_model_selection.json",
-                "final_model_selection_md": f"{OUTPUT_DIR}/final_model_selection.md",
-                "summary": f"{OUTPUT_DIR}/phase6_summary.md",
-                "final_model_metadata": str(FINAL_METADATA).replace("\\", "/"),
-                "examples_dir": f"{EXAMPLES_DIR}/",
+                "forgetting_analysis": f"{output_label}/forgetting_analysis.json",
+                "class_analysis": f"{output_label}/class_analysis.json",
+                "experience_analysis": f"{output_label}/experience_analysis.json",
+                "error_analysis_report": f"{output_label}/phase6_error_analysis.md",
+                "representative_errors": f"{output_label}/representative_errors.json",
+                "environment_analysis": f"{output_label}/environment_analysis.json",
+                "final_model_selection": f"{output_label}/final_model_selection.json",
+                "final_model_selection_md": f"{output_label}/final_model_selection.md",
+                "summary": f"{output_label}/phase6_summary.md",
+                "final_model_metadata": project_relative(FINAL_METADATA),
+                "examples_dir": f"{examples_label}/",
             },
             "generated_utc": utc_now(),
             "elapsed_seconds": round(time.perf_counter() - started, 3),

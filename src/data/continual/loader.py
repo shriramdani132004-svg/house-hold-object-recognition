@@ -8,12 +8,12 @@ immutable tuples. No image is decoded and no file is copied.
 
 from __future__ import annotations
 
-import json
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Callable
 
 from src.data import core50
+from src.data.class_mapping import ClassMappingError, load_object_lookup
 from src.data.continual.models import (
     ContinualExperience,
     ContinualScenario,
@@ -38,25 +38,17 @@ ProgressHook = Callable[[str, int, int], None]
 
 
 def _load_object_mapping(path: Path) -> dict[int, dict[str, Any]]:
-    if not path.is_file():
-        raise MalformedFilelistError(f"Object mapping not found: {path}")
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    objects = payload.get("objects")
-    if not isinstance(objects, list) or not objects:
-        raise MalformedFilelistError(f"Malformed object mapping: {path}")
-    mapping: dict[int, dict[str, Any]] = {}
-    category_order = payload.get("category_order", [])
-    for entry in objects:
-        object_id = int(entry["object_id"])
-        category_name = str(entry["category"])
-        mapping[object_id] = {
-            "name": str(entry["name"]),
-            "category_name": category_name,
-            "category_id": category_order.index(category_name)
-            if category_name in category_order
-            else -1,
-        }
-    return mapping
+    """Per-object lookup via the shared class-mapping parser.
+
+    Kept as a thin wrapper so scenario loading and label/name resolution
+    use ONE parsing implementation (:mod:`src.data.class_mapping`).
+    Structural errors surface as the loader's documented
+    :class:`MalformedFilelistError`.
+    """
+    try:
+        return load_object_lookup(path)
+    except ClassMappingError as exc:
+        raise MalformedFilelistError(str(exc)) from exc
 
 
 def _parse_evaluation_set(

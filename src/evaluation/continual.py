@@ -18,14 +18,27 @@ Provides:
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 from typing import Any, Callable, Sequence
 
 import torch
 
+from src.data.class_mapping import load_class_names
 from src.data.continual import SampleRecord
+from src.data.preprocessing import normalize_uint8_batch
 from src.training.dataset import ContinualImageDataset
+
+__all__ = [
+    "EvalCache",
+    "EvalCacheError",
+    "atomic_write_json",
+    "build_metric_record",
+    "compute_forgetting",
+    "evaluate_dataset",
+    "evaluate_model",
+    "load_class_names",
+    "read_json",
+]
 
 EvalProgress = Callable[[int, int], None]
 
@@ -35,7 +48,15 @@ class EvalCacheError(ValueError):
 
 
 class EvalCache:
-    """Cached official evaluation tensors (uint8, no file I/O at eval time)."""
+    """Cached official evaluation tensors (uint8, no file I/O at eval time).
+
+    Stored images are the RAW post-resize ``uint8`` CHW bytes produced by
+    :mod:`src.data.preprocessing` — the same bytes the training pipeline
+    decodes — and :meth:`float_batch` applies the shared normalization, so
+    cached batches are bit-identical to the training transform. Caches
+    written before this semantics were made explicit hold the same raw
+    bytes (the legacy encode round-trips exactly), so they stay valid.
+    """
 
     def __init__(
         self,
@@ -73,9 +94,12 @@ class EvalCache:
         *,
         on_progress: EvalProgress | None = None,
     ) -> "EvalCache":
-        """Decode official evaluation records once (identical transform to
-        the training pipeline: resize bilinear to ``image_size``, normalize
-        by mean/std 0.5, then stored back as uint8 for exact round-trips)."""
+        """Decode official evaluation records once.
+
+        Stores the RAW post-resize ``uint8`` CHW bytes from the shared
+        preprocessing (identical to the training decode); records are
+        still validated with ``require_split="test"``.
+        """
         dataset = ContinualImageDataset(
             records, images_root, image_size, require_split="test"
         )
@@ -83,11 +107,8 @@ class EvalCache:
         labels = torch.empty(len(dataset), dtype=torch.int64)
         paths: list[str] = []
         for index in range(len(dataset)):
-            tensor, label = dataset[index]
-            images[index] = (
-                ((tensor + 1.0) * 127.5).round().clamp(0, 255).to(torch.uint8)
-            )
-            labels[index] = label
+            images[index] = dataset.get_uint8(index)
+            labels[index] = int(dataset.records[index].label)
             paths.append(dataset.records[index].relative_path)
             if on_progress is not None and (index % 2048 == 0 or index == len(dataset) - 1):
                 on_progress(index + 1, len(dataset))
@@ -95,7 +116,7 @@ class EvalCache:
 
     def float_batch(self, start: int, end: int) -> torch.Tensor:
         """Normalized float32 batch matching the training preprocessing."""
-        return self.images[start:end].to(torch.float32).div_(127.5).sub_(1.0)
+        return normalize_uint8_batch(self.images[start:end])
 
     def save(self, path: str | Path) -> Path:
         """Atomically persist the cache (temporary file, then replace)."""
@@ -157,6 +178,49 @@ def evaluate_model(
                 correct[class_id] += int(correct_batch[class_id])
             if on_progress is not None:
                 on_progress(end, n)
+    return {
+        "correct": correct,
+        "total": total,
+        "n": n,
+        "overall_correct": int(sum(correct)),
+    }
+
+
+def evaluate_dataset(
+    model: torch.nn.Module,
+    dataset,
+    *,
+    num_classes: int,
+    device: str = "cpu",
+    batch_size: int = 256,
+    on_progress: EvalProgress | None = None,
+) -> dict[str, Any]:
+    """One forward pass over a torch ``Dataset`` producing per-class counts.
+
+    Same counting conventions as :func:`evaluate_model`; used for
+    development-validation sets that are not backed by an ``EvalCache``.
+    """
+    from torch.utils.data import DataLoader
+
+    if batch_size < 1:
+        raise EvalCacheError(f"batch_size must be >= 1, got {batch_size}")
+    loader = DataLoader(dataset, batch_size=int(batch_size), shuffle=False, num_workers=0)
+    correct = [0] * int(num_classes)
+    total = [0] * int(num_classes)
+    n = 0
+    model.eval()
+    with torch.inference_mode():
+        for images, labels in loader:
+            predictions = model(images.to(device)).argmax(dim=1).cpu()
+            total_batch = torch.bincount(labels, minlength=num_classes)
+            hits = predictions.eq(labels)
+            correct_batch = torch.bincount(labels[hits], minlength=num_classes)
+            for class_id in range(num_classes):
+                total[class_id] += int(total_batch[class_id])
+                correct[class_id] += int(correct_batch[class_id])
+            n += int(labels.shape[0])
+            if on_progress is not None:
+                on_progress(n, len(dataset))
     return {
         "correct": correct,
         "total": total,
@@ -280,19 +344,3 @@ def atomic_write_json(path: str | Path, payload: Any) -> Path:
 
 def read_json(path: str | Path) -> Any:
     return json.loads(Path(path).read_text(encoding="utf-8"))
-
-
-def load_class_names(mapping_path: str | Path) -> dict[str, str]:
-    """Map 0-based label -> class name from the official object mapping."""
-    raw = read_json(mapping_path)
-    names: dict[str, str] = {}
-    objects = raw.get("objects") if isinstance(raw, dict) else None
-    if isinstance(objects, list):
-        for entry in objects:
-            if not isinstance(entry, dict) or "object_id" not in entry:
-                continue
-            label = int(entry["object_id"]) - 1  # NI/NIC: label == object_id - 1
-            name = entry.get("name")
-            if name is not None and label >= 0:
-                names[str(label)] = str(name)
-    return names

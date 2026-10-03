@@ -1,14 +1,16 @@
 """Preprocessing that matches the Phase-5 training pipeline exactly.
 
-The contract is taken from :class:`src.training.dataset.ContinualImageDataset`
-(nothing is re-invented):
+The actual transform is delegated to :mod:`src.data.preprocessing`, the
+ONE authoritative base preprocessing shared by training, evaluation, and
+inference (nothing is re-invented here):
 
 1. decode to PIL and ``convert("RGB")`` (grayscale/RGBA/palette inputs),
-2. resize to ``image_size`` (64) with ``Image.Resampling.BILINEAR`` when
-   the size differs,
+2. resize to ``image_size`` (64) with bilinear resampling when the size
+   differs,
 3. raw RGB bytes -> ``uint8`` HWC -> ``permute(2, 0, 1)`` CHW,
 4. scale to ``float32`` in ``[0, 1]`` via ``/ 255.0``,
-5. normalize with the training ``MEAN``/``STD`` of 0.5 per channel.
+5. normalize with ``MEAN``/``STD`` of 0.5 per channel,
+6. ``unsqueeze(0)`` to the batched ``(1, 3, S, S)`` inference input.
 
 Any input error raises :class:`src.inference.types.InvalidImageError`
 with a user-readable message instead of crashing the caller.
@@ -20,10 +22,10 @@ import numpy as np
 import torch
 from PIL import Image
 
+from src.data.preprocessing import BASE_IMAGE_SIZE, preprocess_pil, to_rgb_pil
 from src.inference.types import InvalidImageError
-from src.training.dataset import MEAN, STD
 
-IMAGE_SIZE = 64
+IMAGE_SIZE = BASE_IMAGE_SIZE
 
 
 def to_pil_rgb(image: object) -> Image.Image:
@@ -33,7 +35,7 @@ def to_pil_rgb(image: object) -> Image.Image:
             "No image received. Capture a camera frame or upload an image."
         )
     if isinstance(image, Image.Image):
-        rgb = image.convert("RGB")
+        rgb = to_rgb_pil(image)
         if rgb.width < 1 or rgb.height < 1:
             raise InvalidImageError(
                 f"Image has invalid dimensions {image.size}; "
@@ -53,7 +55,7 @@ def _array_to_pil(array: np.ndarray) -> Image.Image:
         raise InvalidImageError("Image is empty (zero pixels).")
     if array.ndim == 2:
         gray = _to_uint8(array, "grayscale")
-        return Image.fromarray(gray, mode="L").convert("RGB")
+        return to_rgb_pil(Image.fromarray(gray, mode="L"))
     if array.ndim != 3:
         raise InvalidImageError(
             f"Unexpected array shape {tuple(array.shape)}; "
@@ -62,7 +64,7 @@ def _array_to_pil(array: np.ndarray) -> Image.Image:
     channels = array.shape[2]
     if channels == 1:
         gray = _to_uint8(array[:, :, 0], "grayscale")
-        return Image.fromarray(gray, mode="L").convert("RGB")
+        return to_rgb_pil(Image.fromarray(gray, mode="L"))
     if channels not in (3, 4):
         raise InvalidImageError(
             f"Unsupported channel count {channels} in shape "
@@ -75,7 +77,7 @@ def _array_to_pil(array: np.ndarray) -> Image.Image:
             "width and height must be at least 1 pixel."
         )
     mode = "RGB" if channels == 3 else "RGBA"
-    return Image.fromarray(data, mode=mode).convert("RGB")
+    return to_rgb_pil(Image.fromarray(data, mode=mode))
 
 
 def _to_uint8(array: np.ndarray, kind: str) -> np.ndarray:
@@ -106,12 +108,4 @@ def preprocess_image(
 ) -> torch.Tensor:
     """Convert any supported input into a normalized ``(1, 3, S, S)`` batch."""
     pil = to_pil_rgb(image)
-    if pil.size != (image_size, image_size):
-        pil = pil.resize((image_size, image_size), Image.Resampling.BILINEAR)
-    tensor = torch.frombuffer(bytearray(pil.tobytes()), dtype=torch.uint8)
-    tensor = tensor.reshape(image_size, image_size, 3).permute(2, 0, 1)
-    tensor = tensor.to(torch.float32) / 255.0
-    mean = torch.tensor(MEAN).view(3, 1, 1)
-    std = torch.tensor(STD).view(3, 1, 1)
-    tensor = (tensor - mean) / std
-    return tensor.unsqueeze(0)
+    return preprocess_pil(pil, image_size).unsqueeze(0)

@@ -95,9 +95,9 @@ OVERALL_DEFINITION = (
 )
 
 METHODS = ("naive", "replay")
-DEFAULT_CONFIG = "configs/phase5_nic.yaml"
-DEFAULT_ROOT = "models/continual/phase5_nic"
-DEFAULT_REPORTS = "reports/phase5_nic"
+DEFAULT_CONFIG = str(PROJECT_ROOT / "configs" / "phase5_nic.yaml")
+DEFAULT_ROOT = str(PROJECT_ROOT / "models" / "continual" / "phase5_nic")
+DEFAULT_REPORTS = str(PROJECT_ROOT / "reports" / "phase5_nic")
 MIN_FREE_BYTES = 2 * 1024**3
 EXPECTED_IMAGES = 164_866
 EXPECTED_EVAL_SAMPLES = 44_972
@@ -110,6 +110,20 @@ class Phase5Blocked(Exception):
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def resolve_under_project(path: Path) -> Path:
+    """Anchor a possibly relative path to the project root."""
+    return path if path.is_absolute() else PROJECT_ROOT / path
+
+
+def project_relative(path: Path) -> str:
+    """POSIX project-relative string for report content."""
+    resolved = resolve_under_project(path)
+    try:
+        return resolved.resolve().relative_to(PROJECT_ROOT.resolve()).as_posix()
+    except ValueError:
+        return resolved.as_posix()
 
 
 # ---------------------------------------------------------------------------
@@ -147,7 +161,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     args = parser.parse_args(argv)
     if args.max_experiences is not None:
-        if args.root == DEFAULT_ROOT and args.reports == DEFAULT_REPORTS:
+        official_root = resolve_under_project(Path(DEFAULT_ROOT))
+        official_reports = resolve_under_project(Path(DEFAULT_REPORTS))
+        if (
+            resolve_under_project(Path(args.root)) == official_root
+            and resolve_under_project(Path(args.reports)) == official_reports
+        ):
             parser.error(
                 "--max-experiences refuses to run with the official output roots "
                 "(pass --root/--reports for smoke tests)"
@@ -160,12 +179,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 def load_experiment_config(path: str | Path) -> dict[str, Any]:
     import yaml
 
-    config_path = Path(path)
+    config_path = resolve_under_project(Path(path))
     if not config_path.is_file():
-        raise Phase5Blocked(f"Experiment config not found: {config_path}")
+        raise Phase5Blocked(
+            f"Experiment config not found: {project_relative(config_path)}"
+        )
     payload = yaml.safe_load(config_path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
-        raise Phase5Blocked(f"Expected a mapping in {config_path}")
+        raise Phase5Blocked(f"Expected a mapping in {project_relative(config_path)}")
     required = ("scenario", "variant", "run", "training", "replay", "model", "evaluation")
     missing = [key for key in required if key not in payload]
     if missing:
@@ -180,6 +201,9 @@ def load_experiment_config(path: str | Path) -> dict[str, Any]:
         raise Phase5Blocked(
             f"Phase 5 reuses the Phase-4 architecture, got {model.get('arch')!r}"
         )
+    for key in ("filelist_root", "images_root", "object_mapping"):
+        if key in payload and payload[key] is not None:
+            payload[key] = str(resolve_under_project(Path(str(payload[key]))))
     return payload
 
 
@@ -627,6 +651,20 @@ def _pct(value: float | None) -> str:
 # ---------------------------------------------------------------------------
 # step 6 — finalize metrics (forgetting, per-class, comparison CSV)
 # ---------------------------------------------------------------------------
+def _class_names_for_report(names: dict[str, str], num_classes: int) -> dict[str, str]:
+    """Resolve labels 0..num_classes-1 against the authoritative mapping."""
+    resolved: dict[str, str] = {}
+    for label in range(num_classes):
+        key = str(label)
+        if key not in names:
+            raise ValueError(
+                f"object mapping is missing label {label}; expected contiguous "
+                f"labels 0..{num_classes - 1} (corrupted mapping file)"
+            )
+        resolved[key] = names[key]
+    return resolved
+
+
 def finalize_metrics(
     scenario: ContinualScenario,
     exp: dict[str, Any],
@@ -660,6 +698,7 @@ def finalize_metrics(
 
     num_classes = int(exp["model"]["num_classes"])
     names = load_class_names(exp["object_mapping"])
+    class_names = _class_names_for_report(names, num_classes)
     per_class: dict[str, Any] = {
         "phase": 5,
         "definition": (
@@ -667,7 +706,7 @@ def finalize_metrics(
             "class is introduced); rows are 0-based labels."
         ),
         "forgetting_definition": FORGETTING_DEFINITION,
-        "class_names": {str(i): names.get(str(i), f"class_{i}") for i in range(num_classes)},
+        "class_names": class_names,
         "experiences": list(range(len(scenario))),
     }
     for method in METHODS:
@@ -993,6 +1032,9 @@ def build_summary(
             except (TypeError, ValueError):
                 previous_wall = 0.0
 
+    root_label = project_relative(root)
+    reports_label = project_relative(reports)
+
     summary: dict[str, Any] = {
         "phase": 5,
         "status": "complete",
@@ -1017,7 +1059,7 @@ def build_summary(
         "naive": {
             "status": "complete",
             "metrics": light("naive"),
-            "final_checkpoint": f"{root}/naive/checkpoint.pt",
+            "final_checkpoint": f"{root_label}/naive/checkpoint.pt",
             "training_time_seconds": training_time["naive"],
             "final_accuracy": {
                 "overall": final_records["naive"]["accuracy"]["overall"],
@@ -1029,7 +1071,7 @@ def build_summary(
         "replay": {
             "status": "complete",
             "metrics": light("replay"),
-            "final_checkpoint": f"{root}/replay/checkpoint.pt",
+            "final_checkpoint": f"{root_label}/replay/checkpoint.pt",
             "training_time_seconds": training_time["replay"],
             "replay_capacity": int(exp["replay"]["capacity"]),
             "final_accuracy": {
@@ -1056,12 +1098,12 @@ def build_summary(
         "integrity": checks,
         "artifacts": {
             "config": "configs/phase5_nic.yaml",
-            "resolved_config": f"{root}/shared/config.json",
-            "naive_metrics": f"{reports}/naive_metrics.json",
-            "replay_metrics": f"{reports}/replay_metrics.json",
-            "comparison_csv": f"{reports}/comparison.csv",
-            "per_class_metrics": f"{reports}/per_class_metrics.json",
-            "report": f"{reports}/phase5_nic_report.md",
+            "resolved_config": f"{root_label}/shared/config.json",
+            "naive_metrics": f"{reports_label}/naive_metrics.json",
+            "replay_metrics": f"{reports_label}/replay_metrics.json",
+            "comparison_csv": f"{reports_label}/comparison.csv",
+            "per_class_metrics": f"{reports_label}/per_class_metrics.json",
+            "report": f"{reports_label}/phase5_nic_report.md",
             "plots": plots,
         },
         "wall_clock_seconds": round(previous_wall + elapsed_seconds, 3),
@@ -1082,6 +1124,8 @@ def build_report(
     final = {m: data[m][-1] for m in METHODS}
     naive_final = final["naive"]["accuracy"]
     replay_final = final["replay"]["accuracy"]
+    root_label = project_relative(root)
+    reports_label = project_relative(reports)
     naive_f = final["naive"]["forgetting"]
     replay_f = final["replay"]["forgetting"]
     acc_delta = (replay_final["overall"] or 0.0) - (naive_final["overall"] or 0.0)
@@ -1137,7 +1181,7 @@ def build_report(
         "## 2. Configuration and fairness",
         "",
         "Both methods start from ONE shared initial model state "
-        f"(`{root}/shared/initial_model_state.pt`, checksum recorded), "
+        f"(`{root_label}/shared/initial_model_state.pt`, checksum recorded), "
         "train in the identical official order with identical architecture "
         "and hyperparameters, and are evaluated on the same fixed test set "
         "after every experience. The ONLY difference is the replay section:",
@@ -1198,11 +1242,11 @@ def build_report(
         "",
         "## 5. Per-experience data",
         "",
-        f"- `{reports}/naive_metrics.json` — full naive records (accuracy, "
+        f"- `{reports_label}/naive_metrics.json` — full naive records (accuracy, "
         "per-class, train stats, forgetting)",
-        f"- `{reports}/replay_metrics.json` — full replay records",
-        f"- `{reports}/per_class_metrics.json` — per-class accuracy histories",
-        f"- `{reports}/comparison.csv` — side-by-side comparison table",
+        f"- `{reports_label}/replay_metrics.json` — full replay records",
+        f"- `{reports_label}/per_class_metrics.json` — per-class accuracy histories",
+        f"- `{reports_label}/comparison.csv` — side-by-side comparison table",
         "",
         "## 6. Integrity checks",
         "",
@@ -1221,10 +1265,10 @@ def build_report(
         "## 8. Artifacts and reproduction",
         "",
         f"- Experiment config: `configs/phase5_nic.yaml`",
-        f"- Resolved config: `{root}/shared/config.json`",
-        f"- Shared initial state: `{root}/shared/initial_model_state.pt`",
-        f"- Checkpoints: `{root}/naive/checkpoint.pt`, `{root}/replay/checkpoint.pt`",
-        f"- Report: `{reports}/phase5_nic_report.md`",
+        f"- Resolved config: `{root_label}/shared/config.json`",
+        f"- Shared initial state: `{root_label}/shared/initial_model_state.pt`",
+        f"- Checkpoints: `{root_label}/naive/checkpoint.pt`, `{root_label}/replay/checkpoint.pt`",
+        f"- Report: `{reports_label}/phase5_nic_report.md`",
         "",
         "Reproduce / resume:",
         "",
@@ -1271,9 +1315,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not sys.stdout.isatty():
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-    root = Path(args.root)
-    reports = Path(args.reports)
-    logs_dir = Path("logs")
+    root = resolve_under_project(Path(args.root))
+    reports = resolve_under_project(Path(args.reports))
+    logs_dir = PROJECT_ROOT / "logs"
     resume_hint = f"python scripts/run_phase5_experiment.py --method {args.method}"
 
     master = _file_logger("phase5.master", logs_dir / "phase5_nic_master.log")
@@ -1286,7 +1330,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         for method in METHODS
     }
 
-    free = shutil.disk_usage(root.parent if root.parent.exists() else ".").free
+    free = shutil.disk_usage(
+        root.parent if root.parent.exists() else PROJECT_ROOT
+    ).free
     if free < MIN_FREE_BYTES:
         phase.log(
             f"Insufficient disk space ({free / 1024**3:.1f} GB free) — stopping safely"
@@ -1302,7 +1348,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         shared = root / "shared"
         shared.mkdir(parents=True, exist_ok=True)
         reports.mkdir(parents=True, exist_ok=True)
-        write_shared_config(shared, exp, cfgs, str(args.config))
+        write_shared_config(shared, exp, cfgs, project_relative(Path(args.config)))
         phase.log(
             f"Resolved experiment config written: {shared / 'config.json'} "
             f"(epochs={exp['training']['epochs']}, batch={exp['training']['batch_size']}, "

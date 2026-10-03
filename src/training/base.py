@@ -19,6 +19,7 @@ from typing import Any, Callable, ClassVar
 
 import torch
 import torch.nn as nn
+from torch.utils.data import Dataset
 
 from src.data.continual import ContinualExperience, ContinualScenario
 from src.training.config import (
@@ -158,7 +159,10 @@ class BaseContinualTrainer:
         seed_everything(self.config.seed)
         num_classes = self._num_classes(scenario)
         self._model = build_model(
-            num_classes, width=self.config.model_width, seed=self.config.seed
+            num_classes,
+            width=self.config.model_width,
+            seed=self.config.seed,
+            arch=self.config.model_arch,
         ).to(self.device)
         self._optimizer = self._build_optimizer()
         self._scheduler = self._build_scheduler()
@@ -208,7 +212,10 @@ class BaseContinualTrainer:
         seed_everything(self.config.seed)
         num_classes = self._num_classes(scenario)
         self._model = build_model(
-            num_classes, width=self.config.model_width, seed=self.config.seed
+            num_classes,
+            width=self.config.model_width,
+            seed=self.config.seed,
+            arch=self.config.model_arch,
         ).to(self.device)
         self._optimizer = self._build_optimizer()
         self._scheduler = self._build_scheduler()
@@ -238,6 +245,12 @@ class BaseContinualTrainer:
         assert self._model is not None
         if cfg.optimizer == "adam":
             return torch.optim.Adam(
+                self._model.parameters(),
+                lr=cfg.learning_rate,
+                weight_decay=cfg.weight_decay,
+            )
+        if cfg.optimizer == "adamw":
+            return torch.optim.AdamW(
                 self._model.parameters(),
                 lr=cfg.learning_rate,
                 weight_decay=cfg.weight_decay,
@@ -365,7 +378,7 @@ class BaseContinualTrainer:
 
         experience_id = experience.experience_id
         seed_everything(self.config.seed + 1009 * (experience_id + 1))
-        steps = self._train_epochs(experience)
+        steps, epochs_run = self._train_epochs(experience)
         self._on_experience_trained(experience)
 
         new_state = ContinualTrainingState(
@@ -375,7 +388,7 @@ class BaseContinualTrainer:
             method=state.method,
             current_experience=experience_id,
             experiences_trained=state.experiences_trained + (experience_id,),
-            epochs_completed=state.epochs_completed + int(self.config.epochs),
+            epochs_completed=state.epochs_completed + int(epochs_run),
             steps_completed=state.steps_completed + steps,
             seed=state.seed,
             config_fingerprint=state.config_fingerprint,
@@ -386,20 +399,32 @@ class BaseContinualTrainer:
         save_state(new_state, self._run_dir, payload=self._build_payload(new_state))
         return new_state
 
-    def _train_epochs(self, experience: ContinualExperience) -> int:
-        cfg = self.config
+    def _build_train_dataset(self, experience: ContinualExperience) -> Dataset:
+        """Dataset for one experience's training samples (overridable)."""
         assert self._scenario is not None
-        dataset = ContinualImageDataset(
+        return ContinualImageDataset(
             experience.train_samples,
             self._scenario.images_root,
-            cfg.image_size,
+            self.config.image_size,
             require_split="train",
         )
+
+    def _on_epoch_end(
+        self, experience: ContinualExperience, epoch: int, stats: dict[str, Any]
+    ) -> bool:
+        """Optional per-epoch hook; return True to stop this experience early."""
+        return False
+
+    def _train_epochs(self, experience: ContinualExperience) -> tuple[int, int]:
+        cfg = self.config
+        assert self._scenario is not None
+        dataset = self._build_train_dataset(experience)
         if len(dataset) == 0:
             raise ContinualTrainingError(
                 f"Experience {experience.experience_id} has no training samples"
             )
         total_steps = 0
+        epochs_run = 0
         epochs = cfg.epochs
         for epoch in range(epochs):
             loader = make_loader(
@@ -457,6 +482,7 @@ class BaseContinualTrainer:
                 self._emit("batch", step + 1, limit)
             if self._scheduler is not None:
                 self._scheduler.step()
+            epochs_run += 1
             if self.on_train_metrics is not None and epoch_seen:
                 self.on_train_metrics(
                     {
@@ -469,7 +495,17 @@ class BaseContinualTrainer:
                     }
                 )
             self._emit("epoch", epoch + 1, epochs)
-        return total_steps
+            stop_early = self._on_epoch_end(
+                experience,
+                epoch,
+                {
+                    "loss": epoch_loss_sum / epoch_seen if epoch_seen else 0.0,
+                    "accuracy": epoch_correct / epoch_seen if epoch_seen else 0.0,
+                },
+            )
+            if stop_early:
+                break
+        return total_steps, epochs_run
 
     # ------------------------------------------------------------------
     # convenience

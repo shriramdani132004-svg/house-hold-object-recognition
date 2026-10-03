@@ -8,8 +8,26 @@ Design contract (Phase 7, Part F):
   ``torch.no_grad()`` on the CPU;
 - preprocessing is delegated to :mod:`src.inference.preprocessing`, which
   mirrors the Phase-5 training transform;
-- class names come from the existing official object mapping via
-  :func:`src.evaluation.continual.load_class_names`.
+- class names come from the ONE authoritative mapping loader
+  :func:`src.data.class_mapping.load_class_mapping`.
+
+Contract:
+
+- **inputs**: a PIL image, a NumPy array (RGB / RGBA / grayscale,
+  ``uint8`` or ``float`` in ``[0, 1]``), or a camera frame; anything
+  else raises :class:`InvalidImageError` with a readable message;
+- **outputs**: a typed :class:`~src.inference.types.Prediction`
+  (object name, model confidence, class index, top-3 scores,
+  ``uncertain`` flag) — never raw tensors;
+- **no bounding boxes**: this classifier emits no detection
+  coordinates; ``Prediction.bounding_box`` is always ``None``;
+- **loaded once**: the checkpoint and class mapping are read once per
+  engine instance (and once per process via :func:`get_engine`);
+- **eval + no_grad**: the model stays in ``eval()`` mode and every
+  forward pass runs under ``torch.no_grad()`` on the CPU;
+- **errors**: invalid images raise :class:`InvalidImageError`, load
+  failures raise :class:`ModelLoadError`, and forward-pass failures
+  raise :class:`InferenceError` — none are swallowed.
 """
 
 from __future__ import annotations
@@ -18,8 +36,8 @@ from pathlib import Path
 
 import torch
 
+from src.data.class_mapping import ClassMappingError, load_class_mapping
 from src.data.core50 import OBJECT_MAPPING_PATH
-from src.evaluation.continual import load_class_names
 from src.inference.preprocessing import IMAGE_SIZE, preprocess_image
 from src.inference.types import (
     SUPPORTS_BOUNDING_BOXES,
@@ -44,6 +62,27 @@ def _relative(path: Path) -> str:
         return path.as_posix()
 
 
+def _validate_min_confidence(value: float | None) -> float | None:
+    """Return ``value`` as a float in ``[0, 1]`` (or ``None``).
+
+    Raises:
+        ValueError: if ``value`` is not ``None``/a number in ``[0, 1]``.
+    """
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(
+            f"min_confidence must be None or a float in [0, 1], "
+            f"got {value!r}."
+        )
+    number = float(value)
+    if not 0.0 <= number <= 1.0:
+        raise ValueError(
+            f"min_confidence must be in [0, 1], got {number!r}."
+        )
+    return number
+
+
 class InferenceEngine:
     """Loads the frozen model once and serves repeated predictions.
 
@@ -55,6 +94,13 @@ class InferenceEngine:
         image_size: model input resolution (Phase-5 config: 64).
         width: ``SmallConvNet`` base width (Phase-5 config: 32).
         num_classes: expected output classes (CORe50: 50).
+        min_confidence: optional minimum top-1 softmax score in
+            ``[0, 1]``; predictions below it are flagged
+            ``uncertain=True``. ``None`` (default) disables the check.
+
+    Raises:
+        ValueError: if ``min_confidence`` is not ``None`` or a number
+            in ``[0, 1]``.
     """
 
     supports_bounding_boxes = SUPPORTS_BOUNDING_BOXES
@@ -67,6 +113,7 @@ class InferenceEngine:
         image_size: int = IMAGE_SIZE,
         width: int = 32,
         num_classes: int = 50,
+        min_confidence: float | None = None,
     ) -> None:
         self.checkpoint_path = (
             Path(checkpoint_path) if checkpoint_path is not None else FINAL_MODEL_PATH
@@ -79,6 +126,7 @@ class InferenceEngine:
         self.image_size = int(image_size)
         self.width = int(width)
         self.num_classes = int(num_classes)
+        self.min_confidence = _validate_min_confidence(min_confidence)
         self.device = torch.device("cpu")
         self._model: torch.nn.Module | None = None
         self._class_names: dict[str, str] = {}
@@ -113,13 +161,19 @@ class InferenceEngine:
             raise ModelLoadError(
                 f"Class mapping not found: {_relative(self.class_mapping_path)}"
             )
-        names = load_class_names(self.class_mapping_path)
-        if len(names) != self.num_classes:
+        try:
+            mapping = load_class_mapping(self.class_mapping_path)
+        except ClassMappingError as exc:
+            raise ModelLoadError(
+                f"Invalid class mapping {_relative(self.class_mapping_path)}: {exc}"
+            ) from exc
+        if mapping.num_classes != self.num_classes:
             raise ModelLoadError(
                 f"Incorrect class mapping: expected {self.num_classes} labels, "
-                f"found {len(names)} in "
+                f"found {mapping.num_classes} in "
                 f"{_relative(self.class_mapping_path)}"
             )
+        names = mapping.to_class_names()
         try:
             model, _schema = load_final_model(
                 self.checkpoint_path,
@@ -136,19 +190,26 @@ class InferenceEngine:
         return self
 
     def predict(self, image: object) -> Prediction:
-        """Classify a PIL image, NumPy image, or camera frame."""
+        """Classify a PIL image, NumPy image, or camera frame.
+
+        Invalid input raises :class:`InvalidImageError`; a failed forward
+        pass raises :class:`InferenceError`. This is the single public
+        entry point — every other ``predict_*`` method delegates here.
+        """
         self.load()
         batch = preprocess_image(image, self.image_size)
         return self._forward(batch)
 
     def predict_pil(self, image: object) -> Prediction:
+        """Alias of :meth:`predict` for PIL-image call sites."""
         return self.predict(image)
 
     def predict_numpy(self, image: object) -> Prediction:
+        """Alias of :meth:`predict` for NumPy-array call sites."""
         return self.predict(image)
 
     def predict_frame(self, frame: object) -> Prediction:
-        """Camera-frame entry point; same backend as every other input."""
+        """Alias of :meth:`predict` for camera-frame call sites."""
         return self.predict(frame)
 
     def _forward(self, batch: torch.Tensor) -> Prediction:
@@ -181,11 +242,17 @@ class InferenceEngine:
             for v, i in zip(top_values, top_indices)
             if str(int(i)) in self._class_names
         )
+        confidence_value = max(0.0, min(1.0, float(confidence.item())))
+        uncertain = (
+            self.min_confidence is not None
+            and confidence_value < self.min_confidence
+        )
         return Prediction(
             object_name=name,
-            confidence=max(0.0, min(1.0, float(confidence.item()))),
+            confidence=confidence_value,
             class_index=class_index,
             top3=top3,
+            uncertain=uncertain,
         )
 
 
@@ -211,10 +278,11 @@ def reset_engine() -> None:
 def set_engine(engine: InferenceEngine) -> None:
     """Install a preconfigured engine as the process-wide singleton.
 
-    Deployment entry points (e.g. the Hugging Face Space) use this to wire
-    project-relative checkpoint/class-mapping paths before the first
-    prediction, so :func:`get_engine` and the shared app callback reuse it
-    instead of loading defaults.
+    Deployment entry points (e.g. the Hugging Face Space or the Gradio
+    app's ``APP_MIN_CONFIDENCE`` option) use this to wire project-relative
+    checkpoint/class-mapping paths or a ``min_confidence`` threshold
+    before the first prediction, so :func:`get_engine` and the shared app
+    callback reuse it instead of loading defaults.
     """
     if not isinstance(engine, InferenceEngine):
         raise TypeError(
