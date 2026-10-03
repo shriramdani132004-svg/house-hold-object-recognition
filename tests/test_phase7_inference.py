@@ -238,6 +238,21 @@ def test_get_engine_returns_cached_singleton() -> None:
     assert first.load_count == 1
 
 
+def test_set_engine_installs_shared_singleton() -> None:
+    from src.inference import set_engine
+
+    original = get_engine()
+    replacement = InferenceEngine().load()
+    set_engine(replacement)
+    try:
+        assert get_engine() is replacement
+    finally:
+        set_engine(original)
+    assert get_engine() is original
+    with pytest.raises(TypeError):
+        set_engine(object())  # type: ignore[arg-type]
+
+
 # --- 14: frozen checkpoint integrity ---
 
 

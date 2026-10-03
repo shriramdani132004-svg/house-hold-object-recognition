@@ -1,0 +1,19 @@
+{
+  "phase": 6,
+  "method": "replay",
+  "source_checkpoint": "models/continual/phase5_nic/replay/checkpoint.pt",
+  "final_checkpoint": "models/continual/final_model.pt",
+  "scenario": "NIC",
+  "variant": "inc",
+  "run": 0,
+  "seed": 42,
+  "sha256": "b2f0606cd5e58d811b804f33be48fda779ead5ea1306b1fc951b30af1ca0e351",
+  "dataset": "CORe50",
+  "num_classes": 50,
+  "arch": "small_cnn",
+  "width": 32,
+  "image_size": 64,
+  "parameters": 100597,
+  "class_mapping": "data/raw/core50/metadata/object_mapping.json",
+  "created_utc": "2026-10-03T09:10:26+00:00"
+}
