@@ -822,9 +822,9 @@ FINAL CORe50 ASSIGNMENT:
 ✅ PHASE 3 — Continual Data Pipeline
 ✅ PHASE 4 — Naive Continual Baseline
 ✅ PHASE 5 — Experience Replay
-▶ PHASE 6 — Continual Experiment
-🔜 PHASE 7 — Continual Evaluation
-🔜 PHASE 8 — Focused Error/Forgetting Analysis
+✅ PHASE 6 — Continual Experiment
+✅ PHASE 7 — Continual Evaluation
+▶ PHASE 8 — Focused Error/Forgetting Analysis
 🔜 PHASE 9 — Final Model Selection
 🔜 PHASE 10 — Inference System
 🔜 PHASE 11 — Phone Web App

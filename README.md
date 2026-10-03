@@ -132,14 +132,15 @@ split untouched). Full report: `reports/phase6_training_report.md`.
 
 ## Project Status
 
-**Phase 4 (naive + experience replay) complete — next: Phase 5 main NIC experiment.**
+**Phase 5 (main NIC continual experiment, naive vs replay) complete — next: Phase 6 error analysis + final model selection.**
 
 - [x] Project structure, virtual environment, Git, documentation
 - [x] CORe50 dataset acquisition, integrity validation & documentation
 - [x] COCO prototype: data preparation, analysis, baseline, training
 - [x] Continual data pipeline (NI/NC/NIC experiences)
 - [x] Naive baseline + experience replay
-- [ ] Evaluation & error/forgetting analysis
+- [x] Main NIC experiment + evaluation (per-experience accuracy/forgetting, comparison, plots, report)
+- [ ] Error/forgetting analysis & final model selection
 - [ ] Inference system & web app
 - [ ] Testing, deployment, final documentation
 

@@ -38,6 +38,7 @@ from src.training.state import (
 )
 
 ProgressCallback = Callable[[str, int, int], None]
+TrainMetricsCallback = Callable[[dict[str, Any]], None]
 
 
 class ContinualTrainingError(Exception):
@@ -70,6 +71,7 @@ class BaseContinualTrainer:
             )
         self.config = config
         self.on_progress = on_progress
+        self.on_train_metrics: TrainMetricsCallback | None = None
         self.device = resolve_device(config.device)
         self._scenario: ContinualScenario | None = None
         self._run_dir: Path | None = None
@@ -176,6 +178,59 @@ class BaseContinualTrainer:
         payload = self._build_payload(state)
         save_state(state, self._run_dir, payload=payload)
         self._emit("initialize", 1, 1)
+        return state
+
+    def resume(
+        self,
+        scenario: ContinualScenario,
+        *,
+        checkpoint_dir: str | Path | None = None,
+    ) -> ContinualTrainingState:
+        """Restore model/optimizer/scheduler (+ replay) from an existing run.
+
+        Used by the Phase-5 experiment driver to restart after an
+        interruption: every ``train_experience`` call reloads from disk
+        anyway, so the trainer only needs its in-memory objects rebuilt and
+        validated against the checkpoint written by the previous experience.
+        Raises :class:`ContinualStateError` when no checkpoint exists.
+        """
+        if not isinstance(scenario, ContinualScenario):
+            raise ContinualTrainingError(
+                f"scenario must be a ContinualScenario, got {type(scenario).__name__}"
+            )
+        if not scenario.experiences:
+            raise ContinualTrainingError(
+                f"Scenario {scenario.name!r} has no experiences to train on"
+            )
+        self._scenario = scenario
+        self._run_dir = self._resolve_run_dir(checkpoint_dir)
+
+        seed_everything(self.config.seed)
+        num_classes = self._num_classes(scenario)
+        self._model = build_model(
+            num_classes, width=self.config.model_width, seed=self.config.seed
+        ).to(self.device)
+        self._optimizer = self._build_optimizer()
+        self._scheduler = self._build_scheduler()
+
+        state, payload = load_state(self._run_dir)
+        validate_state(
+            state,
+            scenario=scenario.scenario_type,
+            variant=scenario.variant,
+            run_id=scenario.run_id,
+            method=self.method_name,
+            config_fingerprint=self._fingerprint,
+        )
+        if payload.get("current_experience") != state.current_experience:
+            raise StateCompatibilityError(
+                f"Checkpoint payload is at experience "
+                f"{payload.get('current_experience')!r} but state.json is at "
+                f"experience {state.current_experience!r}"
+            )
+        self._restore(payload)
+        self._model.to(self.device)
+        self._emit("resume", state.current_experience + 1, len(scenario))
         return state
 
     def _build_optimizer(self) -> torch.optim.Optimizer:
@@ -359,6 +414,9 @@ class BaseContinualTrainer:
             assert self._model is not None
             self._model.train()
             criterion = nn.CrossEntropyLoss()
+            epoch_loss_sum = 0.0
+            epoch_correct = 0
+            epoch_seen = 0
             for step, (images, labels) in enumerate(loader):
                 if cfg.max_steps_per_epoch is not None and step >= cfg.max_steps_per_epoch:
                     break
@@ -375,9 +433,41 @@ class BaseContinualTrainer:
                 loss.backward()
                 self._optimizer.step()
                 total_steps += 1
+                batch_n = int(labels.size(0))
+                with torch.no_grad():
+                    batch_correct = int((logits.argmax(dim=1) == labels).sum().item())
+                loss_value = float(loss.detach())
+                epoch_loss_sum += loss_value * batch_n
+                epoch_correct += batch_correct
+                epoch_seen += batch_n
+                if self.on_train_metrics is not None:
+                    self.on_train_metrics(
+                        {
+                            "event": "batch",
+                            "experience": experience.experience_id,
+                            "epoch": epoch + 1,
+                            "epochs": epochs,
+                            "step": step + 1,
+                            "steps": limit,
+                            "samples": batch_n,
+                            "loss": loss_value,
+                            "batch_accuracy": batch_correct / batch_n if batch_n else 0.0,
+                        }
+                    )
                 self._emit("batch", step + 1, limit)
             if self._scheduler is not None:
                 self._scheduler.step()
+            if self.on_train_metrics is not None and epoch_seen:
+                self.on_train_metrics(
+                    {
+                        "event": "epoch",
+                        "experience": experience.experience_id,
+                        "epoch": epoch + 1,
+                        "epochs": epochs,
+                        "loss": epoch_loss_sum / epoch_seen,
+                        "accuracy": epoch_correct / epoch_seen,
+                    }
+                )
             self._emit("epoch", epoch + 1, epochs)
         return total_steps
 

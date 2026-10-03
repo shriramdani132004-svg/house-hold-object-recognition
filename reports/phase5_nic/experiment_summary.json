@@ -1,0 +1,1213 @@
+{
+  "phase": 5,
+  "status": "complete",
+  "dataset": "CORe50",
+  "scenario": "NIC",
+  "variant": "inc",
+  "run": 0,
+  "seed": 42,
+  "model": "SmallConvNet (width 32, 64x64 input)",
+  "device": "cpu",
+  "num_experiences": 79,
+  "accuracy_definition": "overall = micro top-1 accuracy over evaluation samples whose class has been introduced up to that experience; full = over all evaluation classes; old = over classes seen before the experience (null at experience 0); new = over classes introduced by the experience (null when none).",
+  "forgetting_definition": "forgetting(c, t) = max{acc(c, t') : t' < t} - acc(c, t); the aggregate at experience t is the mean over every class that has a prior measurement. The first experience has no prior measurement (null / N-A). Negative values (a class improved on its previous best) are preserved.",
+  "average_incremental_definition": "average incremental accuracy = the mean, over all experiences, of the overall (cumulative-classes) accuracy measured after each experience.",
+  "naive": {
+    "status": "complete",
+    "metrics": [
+      {
+        "experience_id": 0,
+        "overall": 0.26676303791838096,
+        "old": null,
+        "new": 0.26676303791838096,
+        "forgetting": null
+      },
+      {
+        "experience_id": 1,
+        "overall": 0.23451573446013566,
+        "old": 0.23451573446013566,
+        "new": null,
+        "forgetting": 0.032386
+      },
+      {
+        "experience_id": 2,
+        "overall": 0.0697450340942781,
+        "old": 0.0,
+        "new": 0.20915759057568348,
+        "forgetting": 0.383335
+      },
+      {
+        "experience_id": 3,
+        "overall": 0.08546961018739921,
+        "old": 0.0,
+        "new": 0.34224003562680916,
+        "forgetting": 0.32526
+      },
+      {
+        "experience_id": 4,
+        "overall": 0.09287016857180981,
+        "old": 0.0,
+        "new": 0.464,
+        "forgetting": 0.329462
+      },
+      {
+        "experience_id": 5,
+        "overall": 0.0567095138549126,
+        "old": 0.0567095138549126,
+        "new": null,
+        "forgetting": 0.299692
+      },
+      {
+        "experience_id": 6,
+        "overall": 0.0662317927430414,
+        "old": 0.0,
+        "new": 0.39728768341485104,
+        "forgetting": 0.394248
+      },
+      {
+        "experience_id": 7,
+        "overall": 0.040029227690059406,
+        "old": 0.0,
+        "new": 0.2802491103202847,
+        "forgetting": 0.394787
+      },
+      {
+        "experience_id": 8,
+        "overall": 0.057438764812402704,
+        "old": 0.057438764812402704,
+        "new": null,
+        "forgetting": 0.320988
+      },
+      {
+        "experience_id": 9,
+        "overall": 0.04063284302824285,
+        "old": 0.04063284302824285,
+        "new": null,
+        "forgetting": 0.36494
+      },
+      {
+        "experience_id": 10,
+        "overall": 0.04750257108708342,
+        "old": 0.0,
+        "new": 0.37977777777777777,
+        "forgetting": 0.411282
+      },
+      {
+        "experience_id": 11,
+        "overall": 0.057592350668482645,
+        "old": 0.057592350668482645,
+        "new": null,
+        "forgetting": 0.349641
+      },
+      {
+        "experience_id": 12,
+        "overall": 0.04147093976707341,
+        "old": 0.04147093976707341,
+        "new": null,
+        "forgetting": 0.388594
+      },
+      {
+        "experience_id": 13,
+        "overall": 0.03940996244317059,
+        "old": 0.0,
+        "new": 0.3548387096774194,
+        "forgetting": 0.44351
+      },
+      {
+        "experience_id": 14,
+        "overall": 0.03834749950583119,
+        "old": 0.03834749950583119,
+        "new": null,
+        "forgetting": 0.39534
+      },
+      {
+        "experience_id": 15,
+        "overall": 0.04341272978849575,
+        "old": 0.04341272978849575,
+        "new": null,
+        "forgetting": 0.393355
+      },
+      {
+        "experience_id": 16,
+        "overall": 0.05304902154576003,
+        "old": 0.05304902154576003,
+        "new": null,
+        "forgetting": 0.397081
+      },
+      {
+        "experience_id": 17,
+        "overall": 0.026635698754694605,
+        "old": 0.026635698754694605,
+        "new": null,
+        "forgetting": 0.430783
+      },
+      {
+        "experience_id": 18,
+        "overall": 0.033899980233247674,
+        "old": 0.033899980233247674,
+        "new": null,
+        "forgetting": 0.43979
+      },
+      {
+        "experience_id": 19,
+        "overall": 0.050256967780193715,
+        "old": 0.050256967780193715,
+        "new": null,
+        "forgetting": 0.423426
+      },
+      {
+        "experience_id": 20,
+        "overall": 0.051937141727614156,
+        "old": 0.051937141727614156,
+        "new": null,
+        "forgetting": 0.424798
+      },
+      {
+        "experience_id": 21,
+        "overall": 0.04541411346115833,
+        "old": 0.04541411346115833,
+        "new": null,
+        "forgetting": 0.456813
+      },
+      {
+        "experience_id": 22,
+        "overall": 0.043338604467286025,
+        "old": 0.043338604467286025,
+        "new": null,
+        "forgetting": 0.466909
+      },
+      {
+        "experience_id": 23,
+        "overall": 0.04514232061672267,
+        "old": 0.04514232061672267,
+        "new": null,
+        "forgetting": 0.467383
+      },
+      {
+        "experience_id": 24,
+        "overall": 0.03654378335639454,
+        "old": 0.03654378335639454,
+        "new": null,
+        "forgetting": 0.483351
+      },
+      {
+        "experience_id": 25,
+        "overall": 0.03291164261711801,
+        "old": 0.03291164261711801,
+        "new": null,
+        "forgetting": 0.491186
+      },
+      {
+        "experience_id": 26,
+        "overall": 0.045043486855109706,
+        "old": 0.045043486855109706,
+        "new": null,
+        "forgetting": 0.479433
+      },
+      {
+        "experience_id": 27,
+        "overall": 0.03506127693220004,
+        "old": 0.03506127693220004,
+        "new": null,
+        "forgetting": 0.490272
+      },
+      {
+        "experience_id": 28,
+        "overall": 0.021279907497998754,
+        "old": 0.0,
+        "new": 0.21266666666666667,
+        "forgetting": 0.526099
+      },
+      {
+        "experience_id": 29,
+        "overall": 0.02788401672151561,
+        "old": 0.02788401672151561,
+        "new": null,
+        "forgetting": 0.466834
+      },
+      {
+        "experience_id": 30,
+        "overall": 0.04258205105398915,
+        "old": 0.04258205105398915,
+        "new": null,
+        "forgetting": 0.458614
+      },
+      {
+        "experience_id": 31,
+        "overall": 0.023236680601263007,
+        "old": 0.023236680601263007,
+        "new": null,
+        "forgetting": 0.485516
+      },
+      {
+        "experience_id": 32,
+        "overall": 0.05647958729876368,
+        "old": 0.05647958729876368,
+        "new": null,
+        "forgetting": 0.458256
+      },
+      {
+        "experience_id": 33,
+        "overall": 0.033376323045450504,
+        "old": 0.033376323045450504,
+        "new": null,
+        "forgetting": 0.491171
+      },
+      {
+        "experience_id": 34,
+        "overall": 0.02728364315574135,
+        "old": 0.02728364315574135,
+        "new": null,
+        "forgetting": 0.498089
+      },
+      {
+        "experience_id": 35,
+        "overall": 0.024837676776661034,
+        "old": 0.024837676776661034,
+        "new": null,
+        "forgetting": 0.50056
+      },
+      {
+        "experience_id": 36,
+        "overall": 0.02703904651783332,
+        "old": 0.02703904651783332,
+        "new": null,
+        "forgetting": 0.499048
+      },
+      {
+        "experience_id": 37,
+        "overall": 0.035755581250555904,
+        "old": 0.035755581250555904,
+        "new": null,
+        "forgetting": 0.491006
+      },
+      {
+        "experience_id": 38,
+        "overall": 0.043338077025704885,
+        "old": 0.043338077025704885,
+        "new": null,
+        "forgetting": 0.484019
+      },
+      {
+        "experience_id": 39,
+        "overall": 0.05063150404696255,
+        "old": 0.05063150404696255,
+        "new": null,
+        "forgetting": 0.477065
+      },
+      {
+        "experience_id": 40,
+        "overall": 0.02995197011473806,
+        "old": 0.02995197011473806,
+        "new": null,
+        "forgetting": 0.505041
+      },
+      {
+        "experience_id": 41,
+        "overall": 0.021880281063773013,
+        "old": 0.021880281063773013,
+        "new": null,
+        "forgetting": 0.530571
+      },
+      {
+        "experience_id": 42,
+        "overall": 0.029507248954905273,
+        "old": 0.029507248954905273,
+        "new": null,
+        "forgetting": 0.523485
+      },
+      {
+        "experience_id": 43,
+        "overall": 0.03168638263808592,
+        "old": 0.03168638263808592,
+        "new": null,
+        "forgetting": 0.52965
+      },
+      {
+        "experience_id": 44,
+        "overall": 0.02401494263097038,
+        "old": 0.02401494263097038,
+        "new": null,
+        "forgetting": 0.537329
+      },
+      {
+        "experience_id": 45,
+        "overall": 0.04138130392244063,
+        "old": 0.04138130392244063,
+        "new": null,
+        "forgetting": 0.520957
+      },
+      {
+        "experience_id": 46,
+        "overall": 0.03186427110201903,
+        "old": 0.03186427110201903,
+        "new": null,
+        "forgetting": 0.532426
+      },
+      {
+        "experience_id": 47,
+        "overall": 0.03353197545139198,
+        "old": 0.03353197545139198,
+        "new": null,
+        "forgetting": 0.537658
+      },
+      {
+        "experience_id": 48,
+        "overall": 0.028439918171306592,
+        "old": 0.028439918171306592,
+        "new": null,
+        "forgetting": 0.54737
+      },
+      {
+        "experience_id": 49,
+        "overall": 0.024437427732811528,
+        "old": 0.024437427732811528,
+        "new": null,
+        "forgetting": 0.557504
+      },
+      {
+        "experience_id": 50,
+        "overall": 0.030352219158587566,
+        "old": 0.030352219158587566,
+        "new": null,
+        "forgetting": 0.551636
+      },
+      {
+        "experience_id": 51,
+        "overall": 0.03984701592101752,
+        "old": 0.03984701592101752,
+        "new": null,
+        "forgetting": 0.551812
+      },
+      {
+        "experience_id": 52,
+        "overall": 0.035088499510806725,
+        "old": 0.035088499510806725,
+        "new": null,
+        "forgetting": 0.558946
+      },
+      {
+        "experience_id": 53,
+        "overall": 0.0558125055590145,
+        "old": 0.0558125055590145,
+        "new": null,
+        "forgetting": 0.538268
+      },
+      {
+        "experience_id": 54,
+        "overall": 0.04665124966645913,
+        "old": 0.04665124966645913,
+        "new": null,
+        "forgetting": 0.552769
+      },
+      {
+        "experience_id": 55,
+        "overall": 0.03737881348394557,
+        "old": 0.03737881348394557,
+        "new": null,
+        "forgetting": 0.563216
+      },
+      {
+        "experience_id": 56,
+        "overall": 0.028929111447122655,
+        "old": 0.028929111447122655,
+        "new": null,
+        "forgetting": 0.572267
+      },
+      {
+        "experience_id": 57,
+        "overall": 0.03784577070176999,
+        "old": 0.03784577070176999,
+        "new": null,
+        "forgetting": 0.568399
+      },
+      {
+        "experience_id": 58,
+        "overall": 0.03940229476118474,
+        "old": 0.03940229476118474,
+        "new": null,
+        "forgetting": 0.566843
+      },
+      {
+        "experience_id": 59,
+        "overall": 0.036333718758338525,
+        "old": 0.036333718758338525,
+        "new": null,
+        "forgetting": 0.56991
+      },
+      {
+        "experience_id": 60,
+        "overall": 0.04267099528595571,
+        "old": 0.04267099528595571,
+        "new": null,
+        "forgetting": 0.563732
+      },
+      {
+        "experience_id": 61,
+        "overall": 0.04011384861691719,
+        "old": 0.04011384861691719,
+        "new": null,
+        "forgetting": 0.566839
+      },
+      {
+        "experience_id": 62,
+        "overall": 0.03344303121942542,
+        "old": 0.03344303121942542,
+        "new": null,
+        "forgetting": 0.578518
+      },
+      {
+        "experience_id": 63,
+        "overall": 0.03806813128168638,
+        "old": 0.03806813128168638,
+        "new": null,
+        "forgetting": 0.576535
+      },
+      {
+        "experience_id": 64,
+        "overall": 0.034510362003024105,
+        "old": 0.034510362003024105,
+        "new": null,
+        "forgetting": 0.580513
+      },
+      {
+        "experience_id": 65,
+        "overall": 0.03230899226185182,
+        "old": 0.03230899226185182,
+        "new": null,
+        "forgetting": 0.587667
+      },
+      {
+        "experience_id": 66,
+        "overall": 0.03457707017699902,
+        "old": 0.03457707017699902,
+        "new": null,
+        "forgetting": 0.58533
+      },
+      {
+        "experience_id": 67,
+        "overall": 0.028217557591390198,
+        "old": 0.028217557591390198,
+        "new": null,
+        "forgetting": 0.597
+      },
+      {
+        "experience_id": 68,
+        "overall": 0.02783954460553233,
+        "old": 0.02783954460553233,
+        "new": null,
+        "forgetting": 0.600255
+      },
+      {
+        "experience_id": 69,
+        "overall": 0.050008894423196656,
+        "old": 0.050008894423196656,
+        "new": null,
+        "forgetting": 0.578563
+      },
+      {
+        "experience_id": 70,
+        "overall": 0.059147914257760385,
+        "old": 0.059147914257760385,
+        "new": null,
+        "forgetting": 0.570758
+      },
+      {
+        "experience_id": 71,
+        "overall": 0.06730854754069199,
+        "old": 0.06730854754069199,
+        "new": null,
+        "forgetting": 0.564239
+      },
+      {
+        "experience_id": 72,
+        "overall": 0.052032375700435826,
+        "old": 0.052032375700435826,
+        "new": null,
+        "forgetting": 0.583087
+      },
+      {
+        "experience_id": 73,
+        "overall": 0.047162679000266834,
+        "old": 0.047162679000266834,
+        "new": null,
+        "forgetting": 0.587855
+      },
+      {
+        "experience_id": 74,
+        "overall": 0.03204215956595215,
+        "old": 0.03204215956595215,
+        "new": null,
+        "forgetting": 0.60894
+      },
+      {
+        "experience_id": 75,
+        "overall": 0.03284265765365116,
+        "old": 0.03284265765365116,
+        "new": null,
+        "forgetting": 0.608116
+      },
+      {
+        "experience_id": 76,
+        "overall": 0.03126389753624478,
+        "old": 0.03126389753624478,
+        "new": null,
+        "forgetting": 0.613172
+      },
+      {
+        "experience_id": 77,
+        "overall": 0.03842390820955261,
+        "old": 0.03842390820955261,
+        "new": null,
+        "forgetting": 0.606011
+      },
+      {
+        "experience_id": 78,
+        "overall": 0.0234590411811794,
+        "old": 0.0234590411811794,
+        "new": null,
+        "forgetting": 0.620896
+      }
+    ],
+    "final_checkpoint": "models\\continual\\phase5_nic/naive/checkpoint.pt",
+    "training_time_seconds": 2258.24,
+    "final_accuracy": {
+      "overall": 0.0234590411811794,
+      "full": 0.0234590411811794,
+      "old": 0.0234590411811794,
+      "forgetting": 0.620896
+    }
+  },
+  "replay": {
+    "status": "complete",
+    "metrics": [
+      {
+        "experience_id": 0,
+        "overall": 0.26676303791838096,
+        "old": null,
+        "new": 0.26676303791838096,
+        "forgetting": null
+      },
+      {
+        "experience_id": 1,
+        "overall": 0.3238074057600356,
+        "old": 0.3238074057600356,
+        "new": null,
+        "forgetting": -0.056853
+      },
+      {
+        "experience_id": 2,
+        "overall": 0.11428994959976282,
+        "old": 0.09440676081396641,
+        "new": 0.15403422982885084,
+        "forgetting": 0.308564
+      },
+      {
+        "experience_id": 3,
+        "overall": 0.08908413501640439,
+        "old": 0.0056329676845538095,
+        "new": 0.33979069249610333,
+        "forgetting": 0.314312
+      },
+      {
+        "experience_id": 4,
+        "overall": 0.10390072499221634,
+        "old": 0.02352221542567981,
+        "new": 0.4251111111111111,
+        "forgetting": 0.301381
+      },
+      {
+        "experience_id": 5,
+        "overall": 0.08753280256193569,
+        "old": 0.08753280256193569,
+        "new": null,
+        "forgetting": 0.257457
+      },
+      {
+        "experience_id": 6,
+        "overall": 0.10811311663763389,
+        "old": 0.057643552906640576,
+        "new": 0.3603823921742997,
+        "forgetting": 0.30859
+      },
+      {
+        "experience_id": 7,
+        "overall": 0.051974457540426344,
+        "old": 0.025388236166191024,
+        "new": 0.21152135231316727,
+        "forgetting": 0.339873
+      },
+      {
+        "experience_id": 8,
+        "overall": 0.06782730247482288,
+        "old": 0.06782730247482288,
+        "new": null,
+        "forgetting": 0.275468
+      },
+      {
+        "experience_id": 9,
+        "overall": 0.056771611017568384,
+        "old": 0.056771611017568384,
+        "new": null,
+        "forgetting": 0.325556
+      },
+      {
+        "experience_id": 10,
+        "overall": 0.0633182310920866,
+        "old": 0.021666613717952792,
+        "new": 0.3546666666666667,
+        "forgetting": 0.360655
+      },
+      {
+        "experience_id": 11,
+        "overall": 0.06565305611918726,
+        "old": 0.06565305611918726,
+        "new": null,
+        "forgetting": 0.313143
+      },
+      {
+        "experience_id": 12,
+        "overall": 0.05948244711899269,
+        "old": 0.05948244711899269,
+        "new": null,
+        "forgetting": 0.333561
+      },
+      {
+        "experience_id": 13,
+        "overall": 0.06298181458786321,
+        "old": 0.006226200072268394,
+        "new": 0.5172413793103449,
+        "forgetting": 0.395221
+      },
+      {
+        "experience_id": 14,
+        "overall": 0.05094880411148448,
+        "old": 0.05094880411148448,
+        "new": null,
+        "forgetting": 0.363366
+      },
+      {
+        "experience_id": 15,
+        "overall": 0.05670587072543981,
+        "old": 0.05670587072543981,
+        "new": null,
+        "forgetting": 0.357615
+      },
+      {
+        "experience_id": 16,
+        "overall": 0.05984384265665151,
+        "old": 0.05984384265665151,
+        "new": null,
+        "forgetting": 0.371688
+      },
+      {
+        "experience_id": 17,
+        "overall": 0.05613757659616525,
+        "old": 0.05613757659616525,
+        "new": null,
+        "forgetting": 0.379457
+      },
+      {
+        "experience_id": 18,
+        "overall": 0.03743328721091125,
+        "old": 0.03743328721091125,
+        "new": null,
+        "forgetting": 0.4
+      },
+      {
+        "experience_id": 19,
+        "overall": 0.05448211108914805,
+        "old": 0.05448211108914805,
+        "new": null,
+        "forgetting": 0.382948
+      },
+      {
+        "experience_id": 20,
+        "overall": 0.04726724649140146,
+        "old": 0.04726724649140146,
+        "new": null,
+        "forgetting": 0.392122
+      },
+      {
+        "experience_id": 21,
+        "overall": 0.05485273769519668,
+        "old": 0.05485273769519668,
+        "new": null,
+        "forgetting": 0.394969
+      },
+      {
+        "experience_id": 22,
+        "overall": 0.0570517888910852,
+        "old": 0.0570517888910852,
+        "new": null,
+        "forgetting": 0.4004
+      },
+      {
+        "experience_id": 23,
+        "overall": 0.04516702905712591,
+        "old": 0.04516702905712591,
+        "new": null,
+        "forgetting": 0.41671
+      },
+      {
+        "experience_id": 24,
+        "overall": 0.06997430322198063,
+        "old": 0.06997430322198063,
+        "new": null,
+        "forgetting": 0.393493
+      },
+      {
+        "experience_id": 25,
+        "overall": 0.05317256374777624,
+        "old": 0.05317256374777624,
+        "new": null,
+        "forgetting": 0.412879
+      },
+      {
+        "experience_id": 26,
+        "overall": 0.04694603676615932,
+        "old": 0.04694603676615932,
+        "new": null,
+        "forgetting": 0.419921
+      },
+      {
+        "experience_id": 27,
+        "overall": 0.05742241549713382,
+        "old": 0.05742241549713382,
+        "new": null,
+        "forgetting": 0.415464
+      },
+      {
+        "experience_id": 28,
+        "overall": 0.04407186693942898,
+        "old": 0.03162680371614943,
+        "new": 0.156,
+        "forgetting": 0.444106
+      },
+      {
+        "experience_id": 29,
+        "overall": 0.058903317619852354,
+        "old": 0.058903317619852354,
+        "new": null,
+        "forgetting": 0.384851
+      },
+      {
+        "experience_id": 30,
+        "overall": 0.040981054878591126,
+        "old": 0.040981054878591126,
+        "new": null,
+        "forgetting": 0.423131
+      },
+      {
+        "experience_id": 31,
+        "overall": 0.04802988526194076,
+        "old": 0.04802988526194076,
+        "new": null,
+        "forgetting": 0.425076
+      },
+      {
+        "experience_id": 32,
+        "overall": 0.05883660944587744,
+        "old": 0.05883660944587744,
+        "new": null,
+        "forgetting": 0.427099
+      },
+      {
+        "experience_id": 33,
+        "overall": 0.054745174775415816,
+        "old": 0.054745174775415816,
+        "new": null,
+        "forgetting": 0.431493
+      },
+      {
+        "experience_id": 34,
+        "overall": 0.0555901449790981,
+        "old": 0.0555901449790981,
+        "new": null,
+        "forgetting": 0.437593
+      },
+      {
+        "experience_id": 35,
+        "overall": 0.05723561327047941,
+        "old": 0.05723561327047941,
+        "new": null,
+        "forgetting": 0.435972
+      },
+      {
+        "experience_id": 36,
+        "overall": 0.04636218091256782,
+        "old": 0.04636218091256782,
+        "new": null,
+        "forgetting": 0.455398
+      },
+      {
+        "experience_id": 37,
+        "overall": 0.04905274392955617,
+        "old": 0.04905274392955617,
+        "new": null,
+        "forgetting": 0.462215
+      },
+      {
+        "experience_id": 38,
+        "overall": 0.0674864360046251,
+        "old": 0.0674864360046251,
+        "new": null,
+        "forgetting": 0.445292
+      },
+      {
+        "experience_id": 39,
+        "overall": 0.05736902961842925,
+        "old": 0.05736902961842925,
+        "new": null,
+        "forgetting": 0.455365
+      },
+      {
+        "experience_id": 40,
+        "overall": 0.03611135817842213,
+        "old": 0.03611135817842213,
+        "new": null,
+        "forgetting": 0.481505
+      },
+      {
+        "experience_id": 41,
+        "overall": 0.0217023925998399,
+        "old": 0.0217023925998399,
+        "new": null,
+        "forgetting": 0.505039
+      },
+      {
+        "experience_id": 42,
+        "overall": 0.027350351329716267,
+        "old": 0.027350351329716267,
+        "new": null,
+        "forgetting": 0.50024
+      },
+      {
+        "experience_id": 43,
+        "overall": 0.0434047851996798,
+        "old": 0.0434047851996798,
+        "new": null,
+        "forgetting": 0.486673
+      },
+      {
+        "experience_id": 44,
+        "overall": 0.037690118295828516,
+        "old": 0.037690118295828516,
+        "new": null,
+        "forgetting": 0.493353
+      },
+      {
+        "experience_id": 45,
+        "overall": 0.05903673396780219,
+        "old": 0.05903673396780219,
+        "new": null,
+        "forgetting": 0.47828
+      },
+      {
+        "experience_id": 46,
+        "overall": 0.05392244062972516,
+        "old": 0.05392244062972516,
+        "new": null,
+        "forgetting": 0.483387
+      },
+      {
+        "experience_id": 47,
+        "overall": 0.04384950635951258,
+        "old": 0.04384950635951258,
+        "new": null,
+        "forgetting": 0.49348
+      },
+      {
+        "experience_id": 48,
+        "overall": 0.035088499510806725,
+        "old": 0.035088499510806725,
+        "new": null,
+        "forgetting": 0.506342
+      },
+      {
+        "experience_id": 49,
+        "overall": 0.03370986391532509,
+        "old": 0.03370986391532509,
+        "new": null,
+        "forgetting": 0.512648
+      },
+      {
+        "experience_id": 50,
+        "overall": 0.040402917370808505,
+        "old": 0.040402917370808505,
+        "new": null,
+        "forgetting": 0.505975
+      },
+      {
+        "experience_id": 51,
+        "overall": 0.05888108156186071,
+        "old": 0.05888108156186071,
+        "new": null,
+        "forgetting": 0.48753
+      },
+      {
+        "experience_id": 52,
+        "overall": 0.05759139019834564,
+        "old": 0.05759139019834564,
+        "new": null,
+        "forgetting": 0.491443
+      },
+      {
+        "experience_id": 53,
+        "overall": 0.08060571021969225,
+        "old": 0.08060571021969225,
+        "new": null,
+        "forgetting": 0.468405
+      },
+      {
+        "experience_id": 54,
+        "overall": 0.06270568353642267,
+        "old": 0.06270568353642267,
+        "new": null,
+        "forgetting": 0.490782
+      },
+      {
+        "experience_id": 55,
+        "overall": 0.05016454682913813,
+        "old": 0.05016454682913813,
+        "new": null,
+        "forgetting": 0.503355
+      },
+      {
+        "experience_id": 56,
+        "overall": 0.045917459752735035,
+        "old": 0.045917459752735035,
+        "new": null,
+        "forgetting": 0.507541
+      },
+      {
+        "experience_id": 57,
+        "overall": 0.046139820332651425,
+        "old": 0.046139820332651425,
+        "new": null,
+        "forgetting": 0.512291
+      },
+      {
+        "experience_id": 58,
+        "overall": 0.0498087699012719,
+        "old": 0.0498087699012719,
+        "new": null,
+        "forgetting": 0.508627
+      },
+      {
+        "experience_id": 59,
+        "overall": 0.045250378012985856,
+        "old": 0.045250378012985856,
+        "new": null,
+        "forgetting": 0.513183
+      },
+      {
+        "experience_id": 60,
+        "overall": 0.04811882949390732,
+        "old": 0.04811882949390732,
+        "new": null,
+        "forgetting": 0.510316
+      },
+      {
+        "experience_id": 61,
+        "overall": 0.07153339855910344,
+        "old": 0.07153339855910344,
+        "new": null,
+        "forgetting": 0.486906
+      },
+      {
+        "experience_id": 62,
+        "overall": 0.05945921906964333,
+        "old": 0.05945921906964333,
+        "new": null,
+        "forgetting": 0.499594
+      },
+      {
+        "experience_id": 63,
+        "overall": 0.047629636218091256,
+        "old": 0.047629636218091256,
+        "new": null,
+        "forgetting": 0.511439
+      },
+      {
+        "experience_id": 64,
+        "overall": 0.05852530463399448,
+        "old": 0.05852530463399448,
+        "new": null,
+        "forgetting": 0.503307
+      },
+      {
+        "experience_id": 65,
+        "overall": 0.07417948946010851,
+        "old": 0.07417948946010851,
+        "new": null,
+        "forgetting": 0.487664
+      },
+      {
+        "experience_id": 66,
+        "overall": 0.056657475762696786,
+        "old": 0.056657475762696786,
+        "new": null,
+        "forgetting": 0.507717
+      },
+      {
+        "experience_id": 67,
+        "overall": 0.04327136885172996,
+        "old": 0.04327136885172996,
+        "new": null,
+        "forgetting": 0.521153
+      },
+      {
+        "experience_id": 68,
+        "overall": 0.04055856977674998,
+        "old": 0.04055856977674998,
+        "new": null,
+        "forgetting": 0.523781
+      },
+      {
+        "experience_id": 69,
+        "overall": 0.06630792493106823,
+        "old": 0.06630792493106823,
+        "new": null,
+        "forgetting": 0.501785
+      },
+      {
+        "experience_id": 70,
+        "overall": 0.07435737792404162,
+        "old": 0.07435737792404162,
+        "new": null,
+        "forgetting": 0.49882
+      },
+      {
+        "experience_id": 71,
+        "overall": 0.0830072044827893,
+        "old": 0.0830072044827893,
+        "new": null,
+        "forgetting": 0.500113
+      },
+      {
+        "experience_id": 72,
+        "overall": 0.06161611669483234,
+        "old": 0.06161611669483234,
+        "new": null,
+        "forgetting": 0.523055
+      },
+      {
+        "experience_id": 73,
+        "overall": 0.07609179044738949,
+        "old": 0.07609179044738949,
+        "new": null,
+        "forgetting": 0.508516
+      },
+      {
+        "experience_id": 74,
+        "overall": 0.05883660944587744,
+        "old": 0.05883660944587744,
+        "new": null,
+        "forgetting": 0.528543
+      },
+      {
+        "experience_id": 75,
+        "overall": 0.07157787067508672,
+        "old": 0.07157787067508672,
+        "new": null,
+        "forgetting": 0.515762
+      },
+      {
+        "experience_id": 76,
+        "overall": 0.04522814195499422,
+        "old": 0.04522814195499422,
+        "new": null,
+        "forgetting": 0.542169
+      },
+      {
+        "experience_id": 77,
+        "overall": 0.06904296006403984,
+        "old": 0.06904296006403984,
+        "new": null,
+        "forgetting": 0.519044
+      },
+      {
+        "experience_id": 78,
+        "overall": 0.05378902428177533,
+        "old": 0.05378902428177533,
+        "new": null,
+        "forgetting": 0.536408
+      }
+    ],
+    "final_checkpoint": "models\\continual\\phase5_nic/replay/checkpoint.pt",
+    "training_time_seconds": 5387.215,
+    "replay_capacity": 2000,
+    "final_accuracy": {
+      "overall": 0.05378902428177533,
+      "full": 0.05378902428177533,
+      "old": 0.05378902428177533,
+      "forgetting": 0.536408
+    }
+  },
+  "comparison": {
+    "final_accuracy": {
+      "naive": 0.0234590411811794,
+      "replay": 0.05378902428177533
+    },
+    "final_forgetting": {
+      "naive": 0.620896,
+      "replay": 0.536408
+    },
+    "average_incremental_accuracy": {
+      "naive": 0.045834,
+      "replay": 0.063249
+    }
+  },
+  "integrity": {
+    "official_experience_order": {
+      "status": "PASS",
+      "detail": "records follow 0..78 with official training counts for both methods"
+    },
+    "no_future_experience_leakage": {
+      "status": "PASS",
+      "detail": "class sets match the official scenario; no class appears before introduction"
+    },
+    "no_evaluation_samples_in_training": {
+      "status": "PASS",
+      "detail": "44972 eval samples per experience; naive checkpoint has no replay memory; replay memory 2000 train-only references"
+    },
+    "same_initial_state_both_methods": {
+      "status": "PASS",
+      "detail": "shared checksum 1a3a1a5b6fb671ff verified={naive: True, replay: True}"
+    },
+    "independent_runs_identical_settings": {
+      "status": "PASS",
+      "detail": "separate run directories, matching training hyperparameters, differing only in the replay section"
+    },
+    "bounded_replay_memory": {
+      "status": "PASS",
+      "detail": "2000 of 2000 training references (FIFO bound respected)"
+    },
+    "no_image_duplication": {
+      "status": "PASS",
+      "detail": "164,866 images remain in the read-only dataset tree (expected 164,866; single enumeration, no decoding)"
+    },
+    "reproducible_configuration": {
+      "status": "PASS",
+      "detail": "resolved config + fingerprints recorded; no absolute paths in reports"
+    }
+  },
+  "artifacts": {
+    "config": "configs/phase5_nic.yaml",
+    "resolved_config": "models\\continual\\phase5_nic/shared/config.json",
+    "naive_metrics": "reports\\phase5_nic/naive_metrics.json",
+    "replay_metrics": "reports\\phase5_nic/replay_metrics.json",
+    "comparison_csv": "reports\\phase5_nic/comparison.csv",
+    "per_class_metrics": "reports\\phase5_nic/per_class_metrics.json",
+    "report": "reports\\phase5_nic/phase5_nic_report.md",
+    "plots": [
+      "plots/overall_accuracy.png",
+      "plots/old_class_accuracy.png",
+      "plots/new_class_accuracy.png",
+      "plots/forgetting.png"
+    ]
+  },
+  "wall_clock_seconds": 5729.938,
+  "generated_utc": "2026-10-03T01:50:50+00:00"
+}

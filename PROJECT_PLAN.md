@@ -59,7 +59,7 @@ CORe50**:
 | 2 | **CORe50 Dataset** | Acquire + verify the official CORe50 dataset, session structure, object mapping, NI/NC/NIC resources, documentation | [x] Complete (2026-10-02) |
 | 3 | **Continual Data Pipeline** | Session/experience loading, sequential experiences, official filelists, no leakage | [x] Complete (2026-10-02) |
 | 4 | **Naive + Experience Replay** | Sequential baseline and the one required anti-forgetting method | [x] Complete (2026-10-02) |
-| 5 | **Main NIC Experiment + Evaluation** | Naive vs Replay with accuracy / forgetting measurements | [ ] |
+| 5 | **Main NIC Experiment + Evaluation** | Naive vs Replay with accuracy / forgetting measurements | [x] Complete (2026-10-03) |
 | 6 | **Error Analysis + Final Model** | Focused forgetting/error analysis, freeze the selected checkpoint | [ ] |
 | 7 | **Inference + Phone Web App** | Inference API + Gradio live-camera app | [ ] |
 | 8 | **Testing + Deployment** | Practical tests + Hugging Face Spaces deployment | [ ] |
@@ -148,12 +148,45 @@ STATUS: IMPLEMENTED (2026-10-02)
   fast tests on tiny synthetic fixtures plus one official NIC
   experience-0 smoke step (two optimizer steps, no full experiment).
 
-**Phase 5 will run the main NIC continual experiment** (naive vs replay
-with accuracy/forgetting measurements) — not started in Phase 4.
+### PHASE 5 — MAIN NIC CONTINUAL EXPERIMENT + EVALUATION
+
+STATUS: COMPLETE (2026-10-03)
+
+- **Experiment**: Scenario NIC variant `inc` run 0 — 79 official
+  experiences (119,894 training references). Both methods trained
+  independently from ONE shared initial model state (checksum verified at
+  every initialize/resume), identical architecture and hyperparameters
+  (SmallConvNet width 32, 64x64 input, 3 epochs, batch 64, lr 1e-3 Adam,
+  seed 42); the ONLY difference is the replay section (FIFO capacity 2000,
+  replay batch 16).
+- **Evaluation**: fixed official test set (sessions 3/7/10, 44,972
+  samples, one shared uint8 cache) evaluated after every experience for
+  both methods; per-experience overall / old / new / full / per-class
+  accuracy, forgetting (documented definition) and average incremental
+  accuracy recorded.
+- **Measured results** (`reports/phase5_nic/`): final overall accuracy
+  naive 0.0235 vs replay 0.0538; final mean forgetting naive 0.6209 vs
+  replay 0.5364; average incremental accuracy naive 0.0458 vs replay
+  0.0632 — replay better on all three measured metrics (single run,
+  single seed).
+- **Artifacts**: `configs/phase5_nic.yaml`,
+  `scripts/run_phase5_experiment.py`, `src/evaluation/continual.py`,
+  `src/utils/experiment_display.py`, `tests/test_phase5_metrics.py`;
+  outputs under `reports/phase5_nic/` (metrics JSONs, `comparison.csv`,
+  `per_class_metrics.json`, `experiment_summary.json`,
+  `phase5_nic_report.md`, 4 plots) and git-ignored
+  `models/continual/phase5_nic/{shared,naive,replay}/`.
+- **Integrity**: all 8 checks PASS (official experience order, no future
+  experience leakage, no evaluation samples in training, same initial
+  state both methods, independent runs with identical settings, bounded
+  replay memory, no image duplication, reproducible configuration).
+- **Verification**: full suite 212 tests passing; interrupt-safe resume
+  proven by a real mid-run interruption and recovery.
 
 Numbering note: `phases map.txt` describes the two methods as its Phases 4
 (naive) and 5 (replay); assignment Phase 4 implements both together, and
-its Phase 6 "Continual Experiment" corresponds to assignment Phase 5.
+its Phase 6 "Continual Experiment" plus Phase 7 "Continual Evaluation"
+correspond to assignment Phase 5.
 
 ## Notes
 

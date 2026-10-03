@@ -1,0 +1,61 @@
+# Phase 5 — Main NIC Continual Experiment (naive vs experience replay)
+#
+# Reproducible configuration for the single official experiment:
+#   Scenario NIC, variant "inc", run 0, 79 experiences, official order.
+#
+# Deviations from the Phase-4 generic defaults in configs/continual.yaml
+# are explicit below:
+#   - training.epochs: 3 (Phase-4 default was 1 — one epoch per experience
+#     under-fits the 50-way classifier and produces degenerate accuracy
+#     curves; 3 epochs is the fixed value for BOTH methods).
+#   - evaluation.batch_size: 256 (inference only; not a training knob).
+# Both methods use every other value identically — the ONLY behavioural
+# difference between the runs is the replay section.
+
+experiment_name: phase5_nic_naive_vs_replay
+dataset: core50
+scenario: NIC
+variant: inc
+run: 0
+
+# Phase-3 data pipeline keys (identical to configs/continual.yaml).
+filelist_root: data/raw/core50/filelists
+images_root: data/raw/core50/dataset/core50_128x128
+object_mapping: data/raw/core50/metadata/object_mapping.json
+
+model:
+  arch: small_cnn        # Phase-4 SmallConvNet — no new architecture.
+  width: 32
+  image_size: 64
+  num_classes: 50
+
+training:
+  epochs: 3
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0
+  optimizer: adam
+  scheduler: none
+  seed: 42
+  device: auto
+  workers: 0
+
+replay:
+  enabled: true
+  capacity: 2000         # bounded FIFO memory of training references
+  batch_size: 16         # replay samples concatenated per training batch
+  seed: 42               # deterministic, identical across restarts
+
+evaluation:
+  sessions: [3, 7, 10]   # official CORe50 NIC test sessions (fixed)
+  batch_size: 256
+  metrics:
+    - top1_accuracy
+    - old_class_accuracy
+    - new_class_accuracy
+    - per_class_accuracy
+    - forgetting
+
+outputs:
+  models_root: models/continual/phase5_nic
+  reports_root: reports/phase5_nic
