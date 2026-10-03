@@ -1,0 +1,350 @@
+{
+  "phase": 6,
+  "candidates_evaluated": 100,
+  "candidates_per_method": {
+    "naive": 87,
+    "replay": 92
+  },
+  "total_errors": {
+    "disagreement": 13,
+    "both_wrong": 83
+  },
+  "selection_rule": "disagreement errors first, then both-method errors; ties by (label, session, relative_path); per-session balanced picks (ceil(12/3) per session) then ranked fill; per-class cap 2; cap 12; all available errors returned when fewer exist",
+  "examples": [
+    {
+      "relative_path": "s3/o16/C_03_16_002.png",
+      "true_label": 15,
+      "true_name": "light_bulb1",
+      "true_object_name": "light_bulb1",
+      "category": "light bulb",
+      "session": 3,
+      "object_id": 16,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": true,
+      "showcase_method": "replay",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.5459293127059937,
+          "correct": true
+        },
+        "replay": {
+          "predicted": 4,
+          "predicted_name": "plug_adapter5",
+          "confidence": 0.9898524880409241,
+          "correct": false
+        }
+      }
+    },
+    {
+      "relative_path": "s3/o16/C_03_16_003.png",
+      "true_label": 15,
+      "true_name": "light_bulb1",
+      "true_object_name": "light_bulb1",
+      "category": "light bulb",
+      "session": 3,
+      "object_id": 16,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": true,
+      "showcase_method": "replay",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.5616781711578369,
+          "correct": true
+        },
+        "replay": {
+          "predicted": 4,
+          "predicted_name": "plug_adapter5",
+          "confidence": 0.9894794821739197,
+          "correct": false
+        }
+      }
+    },
+    {
+      "relative_path": "s3/o2/C_03_02_000.png",
+      "true_label": 1,
+      "true_name": "plug_adapter2",
+      "true_object_name": "plug_adapter2",
+      "category": "plug adapter",
+      "session": 3,
+      "object_id": 2,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": false,
+      "showcase_method": "naive+replay",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.7120149731636047,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 4,
+          "predicted_name": "plug_adapter5",
+          "confidence": 0.9738352298736572,
+          "correct": false
+        }
+      }
+    },
+    {
+      "relative_path": "s3/o2/C_03_02_001.png",
+      "true_label": 1,
+      "true_name": "plug_adapter2",
+      "true_object_name": "plug_adapter2",
+      "category": "plug adapter",
+      "session": 3,
+      "object_id": 2,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": false,
+      "showcase_method": "naive+replay",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.7084254026412964,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 4,
+          "predicted_name": "plug_adapter5",
+          "confidence": 0.9746432304382324,
+          "correct": false
+        }
+      }
+    },
+    {
+      "relative_path": "s7/o31/C_07_31_000.png",
+      "true_label": 30,
+      "true_name": "ball1",
+      "true_object_name": "ball1",
+      "category": "ball",
+      "session": 7,
+      "object_id": 31,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": true,
+      "showcase_method": "naive",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.9999852180480957,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 30,
+          "predicted_name": "ball1",
+          "confidence": 0.9067228436470032,
+          "correct": true
+        }
+      }
+    },
+    {
+      "relative_path": "s7/o31/C_07_31_001.png",
+      "true_label": 30,
+      "true_name": "ball1",
+      "true_object_name": "ball1",
+      "category": "ball",
+      "session": 7,
+      "object_id": 31,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": true,
+      "showcase_method": "naive",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.9999816417694092,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 30,
+          "predicted_name": "ball1",
+          "confidence": 0.9373961091041565,
+          "correct": true
+        }
+      }
+    },
+    {
+      "relative_path": "s7/o3/C_07_03_000.png",
+      "true_label": 2,
+      "true_name": "plug_adapter3",
+      "true_object_name": "plug_adapter3",
+      "category": "plug adapter",
+      "session": 7,
+      "object_id": 3,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": false,
+      "showcase_method": "naive+replay",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.9999986886978149,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.9999040365219116,
+          "correct": false
+        }
+      }
+    },
+    {
+      "relative_path": "s7/o3/C_07_03_001.png",
+      "true_label": 2,
+      "true_name": "plug_adapter3",
+      "true_object_name": "plug_adapter3",
+      "category": "plug adapter",
+      "session": 7,
+      "object_id": 3,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": false,
+      "showcase_method": "naive+replay",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.9999986886978149,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.999893307685852,
+          "correct": false
+        }
+      }
+    },
+    {
+      "relative_path": "s10/o4/C_10_04_000.png",
+      "true_label": 3,
+      "true_name": "plug_adapter4",
+      "true_object_name": "plug_adapter4",
+      "category": "plug adapter",
+      "session": 10,
+      "object_id": 4,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": false,
+      "showcase_method": "naive+replay",
+      "predictions": {
+        "naive": {
+          "predicted": 10,
+          "predicted_name": "scissor1",
+          "confidence": 0.43839895725250244,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 45,
+          "predicted_name": "remote_control1",
+          "confidence": 0.22189119458198547,
+          "correct": false
+        }
+      }
+    },
+    {
+      "relative_path": "s10/o4/C_10_04_001.png",
+      "true_label": 3,
+      "true_name": "plug_adapter4",
+      "true_object_name": "plug_adapter4",
+      "category": "plug adapter",
+      "session": 10,
+      "object_id": 4,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": false,
+      "showcase_method": "naive+replay",
+      "predictions": {
+        "naive": {
+          "predicted": 10,
+          "predicted_name": "scissor1",
+          "confidence": 0.43105384707450867,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 45,
+          "predicted_name": "remote_control1",
+          "confidence": 0.22117552161216736,
+          "correct": false
+        }
+      }
+    },
+    {
+      "relative_path": "s10/o34/C_10_34_000.png",
+      "true_label": 33,
+      "true_name": "ball4",
+      "true_object_name": "ball4",
+      "category": "ball",
+      "session": 10,
+      "object_id": 34,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": false,
+      "showcase_method": "naive+replay",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.5798332095146179,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 35,
+          "predicted_name": "marker1",
+          "confidence": 0.4922105073928833,
+          "correct": false
+        }
+      }
+    },
+    {
+      "relative_path": "s10/o34/C_10_34_001.png",
+      "true_label": 33,
+      "true_name": "ball4",
+      "true_object_name": "ball4",
+      "category": "ball",
+      "session": 10,
+      "object_id": 34,
+      "split": "test",
+      "checkpoint_experience": "after final experience (id 78 of 79)",
+      "disagreement": false,
+      "showcase_method": "naive+replay",
+      "predictions": {
+        "naive": {
+          "predicted": 15,
+          "predicted_name": "light_bulb1",
+          "confidence": 0.5870262384414673,
+          "correct": false
+        },
+        "replay": {
+          "predicted": 35,
+          "predicted_name": "marker1",
+          "confidence": 0.46877601742744446,
+          "correct": false
+        }
+      }
+    }
+  ],
+  "n_examples": 12,
+  "targets": [
+    1,
+    2,
+    3,
+    15,
+    30,
+    33,
+    34,
+    44
+  ]
+}

@@ -51,12 +51,16 @@ class PhaseProgress:
         step_labels: Sequence[str],
         *,
         stream=None,
+        eta_own_line: bool = False,
+        sample_wording: bool = False,
     ) -> None:
         if not step_labels:
             raise ValueError("step_labels must not be empty")
         self.title = title
         self.step_labels = list(step_labels)
-        self.total_steps = len(self.step_labels)
+        self.total_steps = len(step_labels)
+        self.eta_own_line = eta_own_line
+        self.sample_wording = sample_wording
         self.stream = stream if stream is not None else sys.stdout
         _ensure_utf8(self.stream)
         self.step_index = 1
@@ -119,18 +123,35 @@ class PhaseProgress:
         ]
         if self.total > 0:
             pct = 100.0 * min(self.current, self.total) / self.total
-            lines.append(
-                f"Current: {self.current:,} / {self.total:,}  ({pct:.1f}%)"
-            )
+            if self.sample_wording:
+                lines.append(f"Current sample: {self.current:,} / {self.total:,}")
+                lines.append(f"Progress: {pct:.1f}%")
+            else:
+                lines.append(
+                    f"Current: {self.current:,} / {self.total:,}  ({pct:.1f}%)"
+                )
         elif self.detail:
             lines.append(self.detail)
         elapsed = self.elapsed
+        if self.eta_own_line:
+            lines.append(f"Elapsed: {format_duration(elapsed)}")
+            lines.append(f"ETA: {self._eta_text(elapsed)}")
+            return lines
         rate = self.current / elapsed if elapsed > 0 and self.total else 0.0
         eta = ""
         if self.total and rate > 0:
             eta = f"  ETA {format_duration((self.total - self.current) / rate)}"
         lines.append(f"Elapsed: {format_duration(elapsed)}{eta}")
         return lines
+
+    def _eta_text(self, elapsed: float) -> str:
+        if self.total > 0 and self.current > 0 and elapsed > 0:
+            rate = self.current / elapsed
+            return format_duration((self.total - self.current) / rate)
+        fraction = self.overall_fraction
+        if fraction > 0 and elapsed > 0:
+            return format_duration(elapsed * (1.0 - fraction) / fraction)
+        return "--:--:--"
 
     def render(self, *, force: bool = False) -> None:
         now = time.monotonic()

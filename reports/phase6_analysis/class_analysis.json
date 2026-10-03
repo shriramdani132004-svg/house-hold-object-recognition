@@ -1,0 +1,1157 @@
+{
+  "phase": 6,
+  "source": "reports/phase5_nic",
+  "definition": "Per-class accuracy for each experience index (null before the class is introduced); rows are 0-based labels.",
+  "classes": [
+    {
+      "label": 0,
+      "name": "plug_adapter1",
+      "category": "plug adapter",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.157953,
+        "peak_accuracy": 0.580645,
+        "forgetting": 0.42269199999999996,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.083426,
+        "peak_accuracy": 0.694105,
+        "forgetting": 0.610679,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": -0.07452700000000001
+    },
+    {
+      "label": 1,
+      "name": "plug_adapter2",
+      "category": "plug adapter",
+      "introduced_experience": 28,
+      "naive": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.615556,
+        "forgetting": 0.615556,
+        "n_measurements": 51
+      },
+      "replay": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.465556,
+        "forgetting": 0.465556,
+        "n_measurements": 51
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 2,
+      "name": "plug_adapter3",
+      "category": "plug adapter",
+      "introduced_experience": 4,
+      "naive": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.612222,
+        "forgetting": 0.612222,
+        "n_measurements": 75
+      },
+      "replay": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.438889,
+        "forgetting": 0.438889,
+        "n_measurements": 75
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 3,
+      "name": "plug_adapter4",
+      "category": "plug adapter",
+      "introduced_experience": 13,
+      "naive": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.638889,
+        "forgetting": 0.638889,
+        "n_measurements": 66
+      },
+      "replay": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.626667,
+        "forgetting": 0.626667,
+        "n_measurements": 66
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 4,
+      "name": "plug_adapter5",
+      "category": "plug adapter",
+      "introduced_experience": 28,
+      "naive": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.386667,
+        "forgetting": 0.386667,
+        "n_measurements": 51
+      },
+      "replay": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.325556,
+        "peak_accuracy": 0.412222,
+        "forgetting": 0.08666599999999997,
+        "n_measurements": 51
+      },
+      "difference_replay_minus_naive": 0.325556
+    },
+    {
+      "label": 5,
+      "name": "mobile_phone1",
+      "category": "mobile phone",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.345556,
+        "forgetting": 0.345556,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.036667,
+        "peak_accuracy": 0.618889,
+        "forgetting": 0.582222,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": 0.036667
+    },
+    {
+      "label": 6,
+      "name": "mobile_phone2",
+      "category": "mobile phone",
+      "introduced_experience": 2,
+      "naive": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.715556,
+        "forgetting": 0.715556,
+        "n_measurements": 77
+      },
+      "replay": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.623333,
+        "forgetting": 0.623333,
+        "n_measurements": 77
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 7,
+      "name": "mobile_phone3",
+      "category": "mobile phone",
+      "introduced_experience": 10,
+      "naive": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.483333,
+        "forgetting": 0.483333,
+        "n_measurements": 69
+      },
+      "replay": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.41,
+        "forgetting": 0.41,
+        "n_measurements": 69
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 8,
+      "name": "mobile_phone4",
+      "category": "mobile phone",
+      "introduced_experience": 3,
+      "naive": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.756696,
+        "forgetting": 0.756696,
+        "n_measurements": 76
+      },
+      "replay": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.613839,
+        "forgetting": 0.613839,
+        "n_measurements": 76
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 9,
+      "name": "mobile_phone5",
+      "category": "mobile phone",
+      "introduced_experience": 4,
+      "naive": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.725556,
+        "forgetting": 0.725556,
+        "n_measurements": 75
+      },
+      "replay": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.586667,
+        "forgetting": 0.586667,
+        "n_measurements": 75
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 10,
+      "name": "scissor1",
+      "category": "scissors",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.206667,
+        "peak_accuracy": 0.264444,
+        "forgetting": 0.05777700000000002,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.043333,
+        "peak_accuracy": 0.3,
+        "forgetting": 0.256667,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": -0.16333399999999998
+    },
+    {
+      "label": 11,
+      "name": "scissor2",
+      "category": "scissors",
+      "introduced_experience": 6,
+      "naive": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.525556,
+        "forgetting": 0.525556,
+        "n_measurements": 73
+      },
+      "replay": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.377778,
+        "forgetting": 0.377778,
+        "n_measurements": 73
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 12,
+      "name": "scissor3",
+      "category": "scissors",
+      "introduced_experience": 28,
+      "naive": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.358889,
+        "forgetting": 0.358889,
+        "n_measurements": 51
+      },
+      "replay": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.141111,
+        "peak_accuracy": 0.342222,
+        "forgetting": 0.20111100000000004,
+        "n_measurements": 51
+      },
+      "difference_replay_minus_naive": 0.141111
+    },
+    {
+      "label": 13,
+      "name": "scissor4",
+      "category": "scissors",
+      "introduced_experience": 2,
+      "naive": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.484444,
+        "forgetting": 0.484444,
+        "n_measurements": 77
+      },
+      "replay": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.508889,
+        "forgetting": 0.508889,
+        "n_measurements": 77
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 14,
+      "name": "scissor5",
+      "category": "scissors",
+      "introduced_experience": 7,
+      "naive": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.701111,
+        "forgetting": 0.701111,
+        "n_measurements": 72
+      },
+      "replay": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.862222,
+        "forgetting": 0.862222,
+        "n_measurements": 72
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 15,
+      "name": "light_bulb1",
+      "category": "light bulb",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.654749,
+        "peak_accuracy": 0.699441,
+        "forgetting": 0.044691999999999954,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.164246,
+        "peak_accuracy": 0.743017,
+        "forgetting": 0.578771,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": -0.490503
+    },
+    {
+      "label": 16,
+      "name": "light_bulb2",
+      "category": "light bulb",
+      "introduced_experience": 4,
+      "naive": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.232222,
+        "forgetting": 0.232222,
+        "n_measurements": 75
+      },
+      "replay": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.308889,
+        "forgetting": 0.308889,
+        "n_measurements": 75
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 17,
+      "name": "light_bulb3",
+      "category": "light bulb",
+      "introduced_experience": 10,
+      "naive": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.45,
+        "forgetting": 0.45,
+        "n_measurements": 69
+      },
+      "replay": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.263333,
+        "forgetting": 0.263333,
+        "n_measurements": 69
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 18,
+      "name": "light_bulb4",
+      "category": "light bulb",
+      "introduced_experience": 10,
+      "naive": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.642222,
+        "forgetting": 0.642222,
+        "n_measurements": 69
+      },
+      "replay": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.574444,
+        "forgetting": 0.574444,
+        "n_measurements": 69
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 19,
+      "name": "light_bulb5",
+      "category": "light bulb",
+      "introduced_experience": 7,
+      "naive": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.417778,
+        "forgetting": 0.417778,
+        "n_measurements": 72
+      },
+      "replay": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.533333,
+        "forgetting": 0.533333,
+        "n_measurements": 72
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 20,
+      "name": "can1",
+      "category": "can",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.156667,
+        "peak_accuracy": 0.566667,
+        "forgetting": 0.41000000000000003,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.05,
+        "peak_accuracy": 0.486667,
+        "forgetting": 0.436667,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": -0.106667
+    },
+    {
+      "label": 21,
+      "name": "can2",
+      "category": "can",
+      "introduced_experience": 6,
+      "naive": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.463333,
+        "forgetting": 0.463333,
+        "n_measurements": 73
+      },
+      "replay": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.676667,
+        "forgetting": 0.676667,
+        "n_measurements": 73
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 22,
+      "name": "can3",
+      "category": "can",
+      "introduced_experience": 10,
+      "naive": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.801111,
+        "forgetting": 0.801111,
+        "n_measurements": 69
+      },
+      "replay": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.626667,
+        "forgetting": 0.626667,
+        "n_measurements": 69
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 23,
+      "name": "can4",
+      "category": "can",
+      "introduced_experience": 7,
+      "naive": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.627364,
+        "forgetting": 0.627364,
+        "n_measurements": 72
+      },
+      "replay": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.650723,
+        "forgetting": 0.650723,
+        "n_measurements": 72
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 24,
+      "name": "can5",
+      "category": "can",
+      "introduced_experience": 28,
+      "naive": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.9,
+        "forgetting": 0.9,
+        "n_measurements": 51
+      },
+      "replay": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.507778,
+        "forgetting": 0.507778,
+        "n_measurements": 51
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 25,
+      "name": "glass1",
+      "category": "glass",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.588432,
+        "forgetting": 0.588432,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.194661,
+        "peak_accuracy": 0.541713,
+        "forgetting": 0.347052,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": 0.194661
+    },
+    {
+      "label": 26,
+      "name": "glass2",
+      "category": "glass",
+      "introduced_experience": 2,
+      "naive": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.244716,
+        "forgetting": 0.244716,
+        "n_measurements": 77
+      },
+      "replay": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.374861,
+        "forgetting": 0.374861,
+        "n_measurements": 77
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 27,
+      "name": "glass3",
+      "category": "glass",
+      "introduced_experience": 3,
+      "naive": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.877778,
+        "forgetting": 0.877778,
+        "n_measurements": 76
+      },
+      "replay": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.878889,
+        "forgetting": 0.878889,
+        "n_measurements": 76
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 28,
+      "name": "glass4",
+      "category": "glass",
+      "introduced_experience": 2,
+      "naive": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.633333,
+        "forgetting": 0.633333,
+        "n_measurements": 77
+      },
+      "replay": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.287778,
+        "forgetting": 0.287778,
+        "n_measurements": 77
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 29,
+      "name": "glass5",
+      "category": "glass",
+      "introduced_experience": 3,
+      "naive": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.406667,
+        "forgetting": 0.406667,
+        "n_measurements": 76
+      },
+      "replay": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.287778,
+        "forgetting": 0.287778,
+        "n_measurements": 76
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 30,
+      "name": "ball1",
+      "category": "ball",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.826667,
+        "forgetting": 0.826667,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.716667,
+        "peak_accuracy": 0.791111,
+        "forgetting": 0.07444399999999995,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": 0.716667
+    },
+    {
+      "label": 31,
+      "name": "ball2",
+      "category": "ball",
+      "introduced_experience": 3,
+      "naive": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.964326,
+        "forgetting": 0.964326,
+        "n_measurements": 76
+      },
+      "replay": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.884058,
+        "forgetting": 0.884058,
+        "n_measurements": 76
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 32,
+      "name": "ball3",
+      "category": "ball",
+      "introduced_experience": 2,
+      "naive": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.693333,
+        "forgetting": 0.693333,
+        "n_measurements": 77
+      },
+      "replay": {
+        "introduced_experience": 2,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.635556,
+        "forgetting": 0.635556,
+        "n_measurements": 77
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 33,
+      "name": "ball4",
+      "category": "ball",
+      "introduced_experience": 4,
+      "naive": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.993333,
+        "forgetting": 0.993333,
+        "n_measurements": 75
+      },
+      "replay": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.983333,
+        "forgetting": 0.983333,
+        "n_measurements": 75
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 34,
+      "name": "ball5",
+      "category": "ball",
+      "introduced_experience": 13,
+      "naive": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.976641,
+        "forgetting": 0.976641,
+        "n_measurements": 66
+      },
+      "replay": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.932147,
+        "forgetting": 0.932147,
+        "n_measurements": 66
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 35,
+      "name": "marker1",
+      "category": "marker",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.381111,
+        "forgetting": 0.381111,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.154444,
+        "peak_accuracy": 0.341111,
+        "forgetting": 0.186667,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": 0.154444
+    },
+    {
+      "label": 36,
+      "name": "marker2",
+      "category": "marker",
+      "introduced_experience": 7,
+      "naive": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.759733,
+        "forgetting": 0.759733,
+        "n_measurements": 72
+      },
+      "replay": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.840934,
+        "forgetting": 0.840934,
+        "n_measurements": 72
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 37,
+      "name": "marker3",
+      "category": "marker",
+      "introduced_experience": 7,
+      "naive": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.660356,
+        "forgetting": 0.660356,
+        "n_measurements": 72
+      },
+      "replay": {
+        "introduced_experience": 7,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.622494,
+        "forgetting": 0.622494,
+        "n_measurements": 72
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 38,
+      "name": "marker4",
+      "category": "marker",
+      "introduced_experience": 6,
+      "naive": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.686667,
+        "forgetting": 0.686667,
+        "n_measurements": 73
+      },
+      "replay": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.666667,
+        "forgetting": 0.666667,
+        "n_measurements": 73
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 39,
+      "name": "marker5",
+      "category": "marker",
+      "introduced_experience": 3,
+      "naive": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.674833,
+        "forgetting": 0.674833,
+        "n_measurements": 76
+      },
+      "replay": {
+        "introduced_experience": 3,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.697105,
+        "forgetting": 0.697105,
+        "n_measurements": 76
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 40,
+      "name": "cup1",
+      "category": "cup",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.913333,
+        "forgetting": 0.913333,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.372222,
+        "peak_accuracy": 0.888889,
+        "forgetting": 0.516667,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": 0.372222
+    },
+    {
+      "label": 41,
+      "name": "cup2",
+      "category": "cup",
+      "introduced_experience": 4,
+      "naive": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.554444,
+        "forgetting": 0.554444,
+        "n_measurements": 75
+      },
+      "replay": {
+        "introduced_experience": 4,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.622222,
+        "forgetting": 0.622222,
+        "n_measurements": 75
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 42,
+      "name": "cup3",
+      "category": "cup",
+      "introduced_experience": 10,
+      "naive": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.66,
+        "forgetting": 0.66,
+        "n_measurements": 69
+      },
+      "replay": {
+        "introduced_experience": 10,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.578889,
+        "forgetting": 0.578889,
+        "n_measurements": 69
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 43,
+      "name": "cup4",
+      "category": "cup",
+      "introduced_experience": 6,
+      "naive": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.811111,
+        "forgetting": 0.811111,
+        "n_measurements": 73
+      },
+      "replay": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.674444,
+        "forgetting": 0.674444,
+        "n_measurements": 73
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 44,
+      "name": "cup5",
+      "category": "cup",
+      "introduced_experience": 13,
+      "naive": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 1.0,
+        "forgetting": 1.0,
+        "n_measurements": 66
+      },
+      "replay": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.682981,
+        "forgetting": 0.682981,
+        "n_measurements": 66
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 45,
+      "name": "remote_control1",
+      "category": "remote control",
+      "introduced_experience": 0,
+      "naive": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.738889,
+        "forgetting": 0.738889,
+        "n_measurements": 79
+      },
+      "replay": {
+        "introduced_experience": 0,
+        "final_experience": 78,
+        "final_accuracy": 0.071111,
+        "peak_accuracy": 0.397778,
+        "forgetting": 0.32666700000000004,
+        "n_measurements": 79
+      },
+      "difference_replay_minus_naive": 0.071111
+    },
+    {
+      "label": 46,
+      "name": "remote_control2",
+      "category": "remote control",
+      "introduced_experience": 6,
+      "naive": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.846325,
+        "forgetting": 0.846325,
+        "n_measurements": 73
+      },
+      "replay": {
+        "introduced_experience": 6,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.64588,
+        "forgetting": 0.64588,
+        "n_measurements": 73
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 47,
+      "name": "remote_control3",
+      "category": "remote control",
+      "introduced_experience": 13,
+      "naive": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.721604,
+        "forgetting": 0.721604,
+        "n_measurements": 66
+      },
+      "replay": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.64588,
+        "forgetting": 0.64588,
+        "n_measurements": 66
+      },
+      "difference_replay_minus_naive": 0.0
+    },
+    {
+      "label": 48,
+      "name": "remote_control4",
+      "category": "remote control",
+      "introduced_experience": 28,
+      "naive": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.881111,
+        "forgetting": 0.881111,
+        "n_measurements": 51
+      },
+      "replay": {
+        "introduced_experience": 28,
+        "final_experience": 78,
+        "final_accuracy": 0.335556,
+        "peak_accuracy": 0.675556,
+        "forgetting": 0.34,
+        "n_measurements": 51
+      },
+      "difference_replay_minus_naive": 0.335556
+    },
+    {
+      "label": 49,
+      "name": "remote_control5",
+      "category": "remote control",
+      "introduced_experience": 13,
+      "naive": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.730812,
+        "forgetting": 0.730812,
+        "n_measurements": 66
+      },
+      "replay": {
+        "introduced_experience": 13,
+        "final_experience": 78,
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.678532,
+        "forgetting": 0.678532,
+        "n_measurements": 66
+      },
+      "difference_replay_minus_naive": 0.0
+    }
+  ]
+}

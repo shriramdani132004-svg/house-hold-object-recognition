@@ -72,6 +72,7 @@ reports/figures/*
 !reports/figures/phase6/
 reports/phase3_samples/*
 !reports/phase3_samples/.gitkeep
+reports/phase6_analysis/examples/
 reports/baseline_detections.json
 runs/
 wandb/

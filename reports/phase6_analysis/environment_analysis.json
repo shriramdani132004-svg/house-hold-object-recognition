@@ -1,0 +1,130 @@
+{
+  "phase": 6,
+  "session_facts": {
+    "source": "data/raw/core50/DATASET_INFO.md",
+    "sessions_total": 11,
+    "test_sessions": [
+      3,
+      7,
+      10
+    ],
+    "train_sessions": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      8,
+      9,
+      11
+    ],
+    "recording": "15-second videos at 20 fps (Kinect 2.0)",
+    "indoor_outdoor": "8 indoor + 3 outdoor sessions per the official page; the repository does not record which sessions are outdoor",
+    "varying_across_sessions": [
+      "background",
+      "lighting",
+      "pose",
+      "viewpoint",
+      "hand occlusion"
+    ]
+  },
+  "errors_by_session": {
+    "3": 4,
+    "7": 4,
+    "10": 4
+  },
+  "observations": [
+    {
+      "relative_path": "s3/o16/C_03_16_002.png",
+      "session": 3,
+      "true_name": "light_bulb1",
+      "observed": "session s3 -> class light_bulb1 -> true label 15; naive predicted light_bulb1 (conf 0.546, correct); replay predicted plug_adapter5 (conf 0.990, wrong)",
+      "possible_factor": "The example is from test session s3; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s3/o16/C_03_16_003.png",
+      "session": 3,
+      "true_name": "light_bulb1",
+      "observed": "session s3 -> class light_bulb1 -> true label 15; naive predicted light_bulb1 (conf 0.562, correct); replay predicted plug_adapter5 (conf 0.989, wrong)",
+      "possible_factor": "The example is from test session s3; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s3/o2/C_03_02_000.png",
+      "session": 3,
+      "true_name": "plug_adapter2",
+      "observed": "session s3 -> class plug_adapter2 -> true label 1; naive predicted light_bulb1 (conf 0.712, wrong); replay predicted plug_adapter5 (conf 0.974, wrong)",
+      "possible_factor": "The example is from test session s3; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s3/o2/C_03_02_001.png",
+      "session": 3,
+      "true_name": "plug_adapter2",
+      "observed": "session s3 -> class plug_adapter2 -> true label 1; naive predicted light_bulb1 (conf 0.708, wrong); replay predicted plug_adapter5 (conf 0.975, wrong)",
+      "possible_factor": "The example is from test session s3; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s7/o31/C_07_31_000.png",
+      "session": 7,
+      "true_name": "ball1",
+      "observed": "session s7 -> class ball1 -> true label 30; naive predicted light_bulb1 (conf 1.000, wrong); replay predicted ball1 (conf 0.907, correct)",
+      "possible_factor": "The example is from test session s7; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s7/o31/C_07_31_001.png",
+      "session": 7,
+      "true_name": "ball1",
+      "observed": "session s7 -> class ball1 -> true label 30; naive predicted light_bulb1 (conf 1.000, wrong); replay predicted ball1 (conf 0.937, correct)",
+      "possible_factor": "The example is from test session s7; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s7/o3/C_07_03_000.png",
+      "session": 7,
+      "true_name": "plug_adapter3",
+      "observed": "session s7 -> class plug_adapter3 -> true label 2; naive predicted light_bulb1 (conf 1.000, wrong); replay predicted light_bulb1 (conf 1.000, wrong)",
+      "possible_factor": "The example is from test session s7; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s7/o3/C_07_03_001.png",
+      "session": 7,
+      "true_name": "plug_adapter3",
+      "observed": "session s7 -> class plug_adapter3 -> true label 2; naive predicted light_bulb1 (conf 1.000, wrong); replay predicted light_bulb1 (conf 1.000, wrong)",
+      "possible_factor": "The example is from test session s7; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s10/o4/C_10_04_000.png",
+      "session": 10,
+      "true_name": "plug_adapter4",
+      "observed": "session s10 -> class plug_adapter4 -> true label 3; naive predicted scissor1 (conf 0.438, wrong); replay predicted remote_control1 (conf 0.222, wrong)",
+      "possible_factor": "The example is from test session s10; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s10/o4/C_10_04_001.png",
+      "session": 10,
+      "true_name": "plug_adapter4",
+      "observed": "session s10 -> class plug_adapter4 -> true label 3; naive predicted scissor1 (conf 0.431, wrong); replay predicted remote_control1 (conf 0.221, wrong)",
+      "possible_factor": "The example is from test session s10; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s10/o34/C_10_34_000.png",
+      "session": 10,
+      "true_name": "ball4",
+      "observed": "session s10 -> class ball4 -> true label 33; naive predicted light_bulb1 (conf 0.580, wrong); replay predicted marker1 (conf 0.492, wrong)",
+      "possible_factor": "The example is from test session s10; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    },
+    {
+      "relative_path": "s10/o34/C_10_34_001.png",
+      "session": 10,
+      "true_name": "ball4",
+      "observed": "session s10 -> class ball4 -> true label 33; naive predicted light_bulb1 (conf 0.587, wrong); replay predicted marker1 (conf 0.469, wrong)",
+      "possible_factor": "The example is from test session s10; per the dataset documentation sessions vary in background, lighting, pose, viewpoint, hand occlusion, so session shift is a plausible background factor. However, the specific causal factor cannot be established from this sample alone."
+    }
+  ],
+  "observed_evidence": [
+    "All evaluated examples come from the fixed official test sessions [3, 7, 10]; those sessions are never used for training (training sessions: [1, 2, 4, 5, 6, 8, 9, 11]).",
+    "Selected example sessions: ['3', '7', '10']."
+  ],
+  "possible_factors": [
+    "The failure occurred on an example from a different session/environment; the specific causal factor cannot be established from this sample alone."
+  ],
+  "causal_claim_policy": "No causal environmental claim is made without evidence; the fallback sentence is used whenever a specific factor cannot be isolated."
+}

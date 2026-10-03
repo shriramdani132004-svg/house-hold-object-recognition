@@ -1,0 +1,68 @@
+{
+  "phase": 6,
+  "selected_method": "replay",
+  "rationale": "Replay is at least as good as naive on every primary measured criterion and strictly better on at least one; select replay.",
+  "rationale_detail": "final_accuracy: naive 0.0235 vs replay 0.0538 (replay better); final_forgetting: naive 0.6209 vs replay 0.5364 (replay better); old_knowledge_retention: naive 0.0235 vs replay 0.0538 (replay better); average_incremental_accuracy: naive 0.0458 vs replay 0.0632 (replay better)",
+  "primary_criteria": [
+    "final_accuracy",
+    "final_forgetting",
+    "old_knowledge_retention",
+    "average_incremental_accuracy"
+  ],
+  "criteria": [
+    {
+      "criterion": "final_accuracy",
+      "naive": 0.0234590411811794,
+      "replay": 0.05378902428177533,
+      "verdict": "replay better"
+    },
+    {
+      "criterion": "final_forgetting",
+      "naive": 0.620896,
+      "replay": 0.536408,
+      "verdict": "replay better"
+    },
+    {
+      "criterion": "old_knowledge_retention",
+      "naive": 0.0234590411811794,
+      "replay": 0.05378902428177533,
+      "verdict": "replay better"
+    },
+    {
+      "criterion": "average_incremental_accuracy",
+      "naive": 0.045834,
+      "replay": 0.063249,
+      "verdict": "replay better"
+    }
+  ],
+  "tradeoffs": [
+    "Both methods share the identical architecture (SmallConvNet (width 32, 64x64 input)), so final model size and inference cost are the same; the replay checkpoint file is larger only because its payload carries the bounded replay memory.",
+    "Replay training took longer per experience (replay batch loading); training time is not a quality criterion for the frozen inference model."
+  ],
+  "naive_metrics": {
+    "final_accuracy": 0.0234590411811794,
+    "final_forgetting": 0.620896,
+    "average_incremental_accuracy": 0.045834,
+    "final_old_accuracy": 0.0234590411811794,
+    "training_time_seconds": 2258.24
+  },
+  "replay_metrics": {
+    "final_accuracy": 0.05378902428177533,
+    "final_forgetting": 0.536408,
+    "average_incremental_accuracy": 0.063249,
+    "final_old_accuracy": 0.05378902428177533,
+    "training_time_seconds": 5387.215,
+    "replay_capacity": 2000
+  },
+  "source_experiment": {
+    "dataset": "CORe50",
+    "scenario": "NIC",
+    "variant": "inc",
+    "run": 0,
+    "seed": 42,
+    "num_experiences": 79,
+    "artifacts": "reports/phase5_nic/"
+  },
+  "selected_checkpoint": "models/continual/phase5_nic/replay/checkpoint.pt",
+  "sha256": "b2f0606cd5e58d811b804f33be48fda779ead5ea1306b1fc951b30af1ca0e351"
+}

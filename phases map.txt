@@ -824,9 +824,9 @@ FINAL CORe50 ASSIGNMENT:
 ✅ PHASE 5 — Experience Replay
 ✅ PHASE 6 — Continual Experiment
 ✅ PHASE 7 — Continual Evaluation
-▶ PHASE 8 — Focused Error/Forgetting Analysis
-🔜 PHASE 9 — Final Model Selection
-🔜 PHASE 10 — Inference System
+✅ PHASE 8 — Focused Error/Forgetting Analysis
+✅ PHASE 9 — Final Model Selection
+▶ PHASE 10 — Inference System
 🔜 PHASE 11 — Phone Web App
 🔜 PHASE 12 — Practical Testing
 🔜 PHASE 13 — GitHub

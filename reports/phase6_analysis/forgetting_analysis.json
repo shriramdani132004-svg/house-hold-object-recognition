@@ -1,0 +1,591 @@
+{
+  "phase": 6,
+  "source": "reports/phase5_nic",
+  "forgetting_definition": "forgetting(c, t) = max{acc(c, t') : t' < t} - acc(c, t); the aggregate at experience t is the mean over every class that has a prior measurement. The first experience has no prior measurement (null / N-A). Negative values (a class improved on its previous best) are preserved.",
+  "accuracy_definition": "overall = micro top-1 accuracy over evaluation samples whose class has been introduced up to that experience; full = over all evaluation classes; old = over classes seen before the experience (null at experience 0); new = over classes introduced by the experience (null when none).",
+  "aggregate": {
+    "naive": {
+      "final_mean_forgetting": 0.620896,
+      "final_overall_accuracy": 0.0234590411811794,
+      "average_incremental_accuracy": 0.045834
+    },
+    "replay": {
+      "final_mean_forgetting": 0.536408,
+      "final_overall_accuracy": 0.05378902428177533,
+      "average_incremental_accuracy": 0.063249
+    },
+    "delta_replay_minus_naive": {
+      "final_accuracy": 0.03032998310059593,
+      "final_forgetting": -0.08448800000000001,
+      "average_incremental_accuracy": 0.017415
+    }
+  },
+  "top_forgetting_classes": {
+    "naive": [
+      {
+        "label": 44,
+        "name": "cup5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 1.0,
+        "forgetting": 1.0
+      },
+      {
+        "label": 33,
+        "name": "ball4",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.993333,
+        "forgetting": 0.993333
+      },
+      {
+        "label": 34,
+        "name": "ball5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.976641,
+        "forgetting": 0.976641
+      },
+      {
+        "label": 31,
+        "name": "ball2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.964326,
+        "forgetting": 0.964326
+      },
+      {
+        "label": 40,
+        "name": "cup1",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.913333,
+        "forgetting": 0.913333
+      },
+      {
+        "label": 24,
+        "name": "can5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.9,
+        "forgetting": 0.9
+      },
+      {
+        "label": 48,
+        "name": "remote_control4",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.881111,
+        "forgetting": 0.881111
+      },
+      {
+        "label": 27,
+        "name": "glass3",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.877778,
+        "forgetting": 0.877778
+      },
+      {
+        "label": 46,
+        "name": "remote_control2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.846325,
+        "forgetting": 0.846325
+      },
+      {
+        "label": 30,
+        "name": "ball1",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.826667,
+        "forgetting": 0.826667
+      }
+    ],
+    "replay": [
+      {
+        "label": 33,
+        "name": "ball4",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.983333,
+        "forgetting": 0.983333
+      },
+      {
+        "label": 34,
+        "name": "ball5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.932147,
+        "forgetting": 0.932147
+      },
+      {
+        "label": 31,
+        "name": "ball2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.884058,
+        "forgetting": 0.884058
+      },
+      {
+        "label": 27,
+        "name": "glass3",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.878889,
+        "forgetting": 0.878889
+      },
+      {
+        "label": 14,
+        "name": "scissor5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.862222,
+        "forgetting": 0.862222
+      },
+      {
+        "label": 36,
+        "name": "marker2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.840934,
+        "forgetting": 0.840934
+      },
+      {
+        "label": 39,
+        "name": "marker5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.697105,
+        "forgetting": 0.697105
+      },
+      {
+        "label": 44,
+        "name": "cup5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.682981,
+        "forgetting": 0.682981
+      },
+      {
+        "label": 49,
+        "name": "remote_control5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.678532,
+        "forgetting": 0.678532
+      },
+      {
+        "label": 21,
+        "name": "can2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.676667,
+        "forgetting": 0.676667
+      }
+    ]
+  },
+  "most_retained_classes": {
+    "naive": [
+      {
+        "label": 15,
+        "name": "light_bulb1",
+        "final_accuracy": 0.654749,
+        "peak_accuracy": 0.699441,
+        "forgetting": 0.044691999999999954
+      },
+      {
+        "label": 10,
+        "name": "scissor1",
+        "final_accuracy": 0.206667,
+        "peak_accuracy": 0.264444,
+        "forgetting": 0.05777700000000002
+      },
+      {
+        "label": 0,
+        "name": "plug_adapter1",
+        "final_accuracy": 0.157953,
+        "peak_accuracy": 0.580645,
+        "forgetting": 0.42269199999999996
+      },
+      {
+        "label": 20,
+        "name": "can1",
+        "final_accuracy": 0.156667,
+        "peak_accuracy": 0.566667,
+        "forgetting": 0.41000000000000003
+      },
+      {
+        "label": 1,
+        "name": "plug_adapter2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.615556,
+        "forgetting": 0.615556
+      },
+      {
+        "label": 2,
+        "name": "plug_adapter3",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.612222,
+        "forgetting": 0.612222
+      },
+      {
+        "label": 3,
+        "name": "plug_adapter4",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.638889,
+        "forgetting": 0.638889
+      },
+      {
+        "label": 4,
+        "name": "plug_adapter5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.386667,
+        "forgetting": 0.386667
+      },
+      {
+        "label": 5,
+        "name": "mobile_phone1",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.345556,
+        "forgetting": 0.345556
+      },
+      {
+        "label": 6,
+        "name": "mobile_phone2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.715556,
+        "forgetting": 0.715556
+      }
+    ],
+    "replay": [
+      {
+        "label": 30,
+        "name": "ball1",
+        "final_accuracy": 0.716667,
+        "peak_accuracy": 0.791111,
+        "forgetting": 0.07444399999999995
+      },
+      {
+        "label": 40,
+        "name": "cup1",
+        "final_accuracy": 0.372222,
+        "peak_accuracy": 0.888889,
+        "forgetting": 0.516667
+      },
+      {
+        "label": 48,
+        "name": "remote_control4",
+        "final_accuracy": 0.335556,
+        "peak_accuracy": 0.675556,
+        "forgetting": 0.34
+      },
+      {
+        "label": 4,
+        "name": "plug_adapter5",
+        "final_accuracy": 0.325556,
+        "peak_accuracy": 0.412222,
+        "forgetting": 0.08666599999999997
+      },
+      {
+        "label": 25,
+        "name": "glass1",
+        "final_accuracy": 0.194661,
+        "peak_accuracy": 0.541713,
+        "forgetting": 0.347052
+      },
+      {
+        "label": 15,
+        "name": "light_bulb1",
+        "final_accuracy": 0.164246,
+        "peak_accuracy": 0.743017,
+        "forgetting": 0.578771
+      },
+      {
+        "label": 35,
+        "name": "marker1",
+        "final_accuracy": 0.154444,
+        "peak_accuracy": 0.341111,
+        "forgetting": 0.186667
+      },
+      {
+        "label": 12,
+        "name": "scissor3",
+        "final_accuracy": 0.141111,
+        "peak_accuracy": 0.342222,
+        "forgetting": 0.20111100000000004
+      },
+      {
+        "label": 0,
+        "name": "plug_adapter1",
+        "final_accuracy": 0.083426,
+        "peak_accuracy": 0.694105,
+        "forgetting": 0.610679
+      },
+      {
+        "label": 45,
+        "name": "remote_control1",
+        "final_accuracy": 0.071111,
+        "peak_accuracy": 0.397778,
+        "forgetting": 0.32666700000000004
+      }
+    ]
+  },
+  "lowest_final_accuracy_classes": {
+    "naive": [
+      {
+        "label": 1,
+        "name": "plug_adapter2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.615556,
+        "forgetting": 0.615556
+      },
+      {
+        "label": 2,
+        "name": "plug_adapter3",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.612222,
+        "forgetting": 0.612222
+      },
+      {
+        "label": 3,
+        "name": "plug_adapter4",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.638889,
+        "forgetting": 0.638889
+      },
+      {
+        "label": 4,
+        "name": "plug_adapter5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.386667,
+        "forgetting": 0.386667
+      },
+      {
+        "label": 5,
+        "name": "mobile_phone1",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.345556,
+        "forgetting": 0.345556
+      },
+      {
+        "label": 6,
+        "name": "mobile_phone2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.715556,
+        "forgetting": 0.715556
+      },
+      {
+        "label": 7,
+        "name": "mobile_phone3",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.483333,
+        "forgetting": 0.483333
+      },
+      {
+        "label": 8,
+        "name": "mobile_phone4",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.756696,
+        "forgetting": 0.756696
+      },
+      {
+        "label": 9,
+        "name": "mobile_phone5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.725556,
+        "forgetting": 0.725556
+      },
+      {
+        "label": 11,
+        "name": "scissor2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.525556,
+        "forgetting": 0.525556
+      }
+    ],
+    "replay": [
+      {
+        "label": 1,
+        "name": "plug_adapter2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.465556,
+        "forgetting": 0.465556
+      },
+      {
+        "label": 2,
+        "name": "plug_adapter3",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.438889,
+        "forgetting": 0.438889
+      },
+      {
+        "label": 3,
+        "name": "plug_adapter4",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.626667,
+        "forgetting": 0.626667
+      },
+      {
+        "label": 6,
+        "name": "mobile_phone2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.623333,
+        "forgetting": 0.623333
+      },
+      {
+        "label": 7,
+        "name": "mobile_phone3",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.41,
+        "forgetting": 0.41
+      },
+      {
+        "label": 8,
+        "name": "mobile_phone4",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.613839,
+        "forgetting": 0.613839
+      },
+      {
+        "label": 9,
+        "name": "mobile_phone5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.586667,
+        "forgetting": 0.586667
+      },
+      {
+        "label": 11,
+        "name": "scissor2",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.377778,
+        "forgetting": 0.377778
+      },
+      {
+        "label": 13,
+        "name": "scissor4",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.508889,
+        "forgetting": 0.508889
+      },
+      {
+        "label": 14,
+        "name": "scissor5",
+        "final_accuracy": 0.0,
+        "peak_accuracy": 0.862222,
+        "forgetting": 0.862222
+      }
+    ]
+  },
+  "largest_naive_replay_differences": [
+    {
+      "label": 30,
+      "name": "ball1",
+      "naive_final_accuracy": 0.0,
+      "replay_final_accuracy": 0.716667,
+      "difference": 0.716667
+    },
+    {
+      "label": 15,
+      "name": "light_bulb1",
+      "naive_final_accuracy": 0.654749,
+      "replay_final_accuracy": 0.164246,
+      "difference": -0.490503
+    },
+    {
+      "label": 40,
+      "name": "cup1",
+      "naive_final_accuracy": 0.0,
+      "replay_final_accuracy": 0.372222,
+      "difference": 0.372222
+    },
+    {
+      "label": 48,
+      "name": "remote_control4",
+      "naive_final_accuracy": 0.0,
+      "replay_final_accuracy": 0.335556,
+      "difference": 0.335556
+    },
+    {
+      "label": 4,
+      "name": "plug_adapter5",
+      "naive_final_accuracy": 0.0,
+      "replay_final_accuracy": 0.325556,
+      "difference": 0.325556
+    },
+    {
+      "label": 25,
+      "name": "glass1",
+      "naive_final_accuracy": 0.0,
+      "replay_final_accuracy": 0.194661,
+      "difference": 0.194661
+    },
+    {
+      "label": 10,
+      "name": "scissor1",
+      "naive_final_accuracy": 0.206667,
+      "replay_final_accuracy": 0.043333,
+      "difference": -0.16333399999999998
+    },
+    {
+      "label": 35,
+      "name": "marker1",
+      "naive_final_accuracy": 0.0,
+      "replay_final_accuracy": 0.154444,
+      "difference": 0.154444
+    },
+    {
+      "label": 12,
+      "name": "scissor3",
+      "naive_final_accuracy": 0.0,
+      "replay_final_accuracy": 0.141111,
+      "difference": 0.141111
+    },
+    {
+      "label": 20,
+      "name": "can1",
+      "naive_final_accuracy": 0.156667,
+      "replay_final_accuracy": 0.05,
+      "difference": -0.106667
+    }
+  ],
+  "experiences_with_largest_forgetting_increase": [
+    {
+      "experience_id": 2,
+      "naive_forgetting": 0.383335,
+      "naive_increase": 0.35094899999999996,
+      "replay_forgetting": 0.308564,
+      "replay_increase": 0.365417
+    },
+    {
+      "experience_id": 6,
+      "naive_forgetting": 0.394248,
+      "naive_increase": 0.09455599999999997,
+      "replay_forgetting": 0.30859,
+      "replay_increase": 0.051132999999999984
+    },
+    {
+      "experience_id": 13,
+      "naive_forgetting": 0.44351,
+      "naive_increase": 0.05491600000000002,
+      "replay_forgetting": 0.395221,
+      "replay_increase": 0.06165999999999999
+    },
+    {
+      "experience_id": 10,
+      "naive_forgetting": 0.411282,
+      "naive_increase": 0.046341999999999994,
+      "replay_forgetting": 0.360655,
+      "replay_increase": 0.03509899999999999
+    },
+    {
+      "experience_id": 9,
+      "naive_forgetting": 0.36494,
+      "naive_increase": 0.04395199999999999,
+      "replay_forgetting": 0.325556,
+      "replay_increase": 0.05008800000000002
+    },
+    {
+      "experience_id": 12,
+      "naive_forgetting": 0.388594,
+      "naive_increase": 0.038953000000000015,
+      "replay_forgetting": 0.333561,
+      "replay_increase": 0.02041799999999999
+    },
+    {
+      "experience_id": 28,
+      "naive_forgetting": 0.526099,
+      "naive_increase": 0.035827,
+      "replay_forgetting": 0.444106,
+      "replay_increase": 0.028642
+    },
+    {
+      "experience_id": 17,
+      "naive_forgetting": 0.430783,
+      "naive_increase": 0.03370200000000001,
+      "replay_forgetting": 0.379457,
+      "replay_increase": 0.00776899999999997
+    }
+  ]
+}

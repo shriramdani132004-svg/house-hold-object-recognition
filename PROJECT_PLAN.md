@@ -60,7 +60,7 @@ CORe50**:
 | 3 | **Continual Data Pipeline** | Session/experience loading, sequential experiences, official filelists, no leakage | [x] Complete (2026-10-02) |
 | 4 | **Naive + Experience Replay** | Sequential baseline and the one required anti-forgetting method | [x] Complete (2026-10-02) |
 | 5 | **Main NIC Experiment + Evaluation** | Naive vs Replay with accuracy / forgetting measurements | [x] Complete (2026-10-03) |
-| 6 | **Error Analysis + Final Model** | Focused forgetting/error analysis, freeze the selected checkpoint | [ ] |
+| 6 | **Error Analysis + Final Model** | Focused forgetting/error analysis, freeze the selected checkpoint | [x] Complete (2026-10-03) |
 | 7 | **Inference + Phone Web App** | Inference API + Gradio live-camera app | [ ] |
 | 8 | **Testing + Deployment** | Practical tests + Hugging Face Spaces deployment | [ ] |
 | 9 | **GitHub + Documentation** | Polished repo + final report | [ ] |
@@ -187,6 +187,52 @@ Numbering note: `phases map.txt` describes the two methods as its Phases 4
 (naive) and 5 (replay); assignment Phase 4 implements both together, and
 its Phase 6 "Continual Experiment" plus Phase 7 "Continual Evaluation"
 correspond to assignment Phase 5.
+
+### PHASE 6 — ERROR ANALYSIS + FINAL MODEL SELECTION
+
+STATUS: COMPLETE (2026-10-03)
+
+- **Analysis** (`reports/phase6_analysis/`): deterministic re-analysis of
+  the committed Phase-5 metrics — `forgetting_analysis.json`,
+  `class_analysis.json`, `experience_analysis.json` and
+  `phase6_error_analysis.md`. Key measured findings: highest naive
+  forgetting cup5 1.0000, ball4 0.9933, ball5 0.9766; lowest naive final
+  accuracy plug_adapter2–5 and mobile_phone1 at 0.0000; largest naive
+  forgetting increases after experiences 2, 6, 13, 10, 9; replay's
+  measured effect +0.0303 final accuracy, −0.0845 final forgetting,
+  +0.0174 average incremental accuracy.
+- **Targeted representative inference**: 100 deterministic test-split
+  candidates (8 hardest classes, round-robin across sessions 3/7/10)
+  classified by both frozen final checkpoints; 12 session-balanced
+  representative errors (disagreement-first ranking, per-class cap 2)
+  recorded in `representative_errors.json`, example PNGs under
+  `reports/phase6_analysis/examples/` (git-ignored).
+- **Environment analysis**: `environment_analysis.json` strictly
+  separates OBSERVED evidence from POSSIBLE factors using only the
+  documented session facts; no causal claim is made without evidence
+  (fallback uncertainty sentence everywhere).
+- **Final model selection** (`final_model_selection.json/.md`): four
+  primary measured criteria (final accuracy, final forgetting,
+  old-knowledge retention, average incremental accuracy) — replay is at
+  least as good on every criterion and strictly better on all four, so
+  REPLAY is selected by the documented evidence-driven rule.
+- **Frozen checkpoint**: `models/continual/final_model.pt` — byte copy of
+  the Phase-5 replay checkpoint, SHA-256 verified identical to source,
+  portable metadata in `models/continual/final_model.json` (relative
+  paths only), confirmed git-ignored.
+- **Integrity**: all attestations PASS/PRESERVED — no retraining (Phase-5
+  state/checkpoint SHA-256s byte-identical before/after), no dataset
+  modification (164,866-file non-decoding count), no future-data access,
+  no evaluation data used for training, no image duplication, portable
+  metadata (0 absolute paths in generated reports), COCO prototype
+  preserved.
+- **Artifacts**: `src/evaluation/error_analysis.py`,
+  `scripts/run_phase6_analysis.py` (7-step driver with overall progress
+  display), `tests/test_phase6_analysis.py` (20 focused tests); full
+  suite 232 tests passing.
+- **Numbering note**: `phases map.txt` Phases 8 (focused
+  error/forgetting analysis) and 9 (final model selection) together are
+  assignment Phase 6.
 
 ## Notes
 

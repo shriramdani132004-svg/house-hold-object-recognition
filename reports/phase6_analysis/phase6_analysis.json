@@ -1,0 +1,81 @@
+{
+  "phase": 6,
+  "status": "complete",
+  "dataset": "CORe50",
+  "scenario": "NIC",
+  "variant": "inc",
+  "run": 0,
+  "num_experiences": 79,
+  "source_experiment": "reports/phase5_nic/",
+  "selected_method": "replay",
+  "final_checkpoint": "models/continual/final_model.pt",
+  "final_checkpoint_sha256": "b2f0606cd5e58d811b804f33be48fda779ead5ea1306b1fc951b30af1ca0e351",
+  "representative_errors": 12,
+  "targets": [
+    1,
+    2,
+    3,
+    15,
+    30,
+    33,
+    34,
+    44
+  ],
+  "load_test": {
+    "checkpoint_loaded": true,
+    "architecture_loaded": "SmallConvNet",
+    "num_classes": 50,
+    "class_mapping_entries": 50,
+    "strict_state_dict": true,
+    "representative_inference": {
+      "true_label": 1,
+      "predicted_label": 35,
+      "confidence": 0.23426274955272675
+    }
+  },
+  "integrity": {
+    "no_retraining": {
+      "status": "PASS",
+      "detail": "Phase-5 state.json and checkpoint.pt SHA-256 hashes are byte-identical before and after Phase 6"
+    },
+    "no_dataset_modification": {
+      "status": "PASS",
+      "detail": "dataset tree holds 164,866 files (expected 164,866); counted with a non-decoding directory walk, no images opened"
+    },
+    "no_future_data_access": {
+      "status": "PASS",
+      "detail": "no training was performed; analysis reads only committed metric files and final checkpoints"
+    },
+    "no_evaluation_data_used_for_training": {
+      "status": "PASS",
+      "detail": "no training was performed; all targeted records are split='test' (enforced when selecting candidates)"
+    },
+    "no_image_duplication": {
+      "status": "PASS",
+      "detail": "dataset file count unchanged at 164,866; at most 12 example copies were written outside the dataset tree under reports\\phase6_analysis\\examples/"
+    },
+    "portable_metadata": {
+      "status": "PASS",
+      "detail": "0 absolute personal path markers across generated Phase-6 reports (10 files)"
+    },
+    "coco_prototype": {
+      "status": "PRESERVED",
+      "detail": "git status shows no modification under protected COCO/prototype paths"
+    }
+  },
+  "artifacts": {
+    "forgetting_analysis": "reports\\phase6_analysis/forgetting_analysis.json",
+    "class_analysis": "reports\\phase6_analysis/class_analysis.json",
+    "experience_analysis": "reports\\phase6_analysis/experience_analysis.json",
+    "error_analysis_report": "reports\\phase6_analysis/phase6_error_analysis.md",
+    "representative_errors": "reports\\phase6_analysis/representative_errors.json",
+    "environment_analysis": "reports\\phase6_analysis/environment_analysis.json",
+    "final_model_selection": "reports\\phase6_analysis/final_model_selection.json",
+    "final_model_selection_md": "reports\\phase6_analysis/final_model_selection.md",
+    "summary": "reports\\phase6_analysis/phase6_summary.md",
+    "final_model_metadata": "models/continual/final_model.json",
+    "examples_dir": "reports\\phase6_analysis\\examples/"
+  },
+  "generated_utc": "2026-10-03T05:51:23+00:00",
+  "elapsed_seconds": 2.368
+}
