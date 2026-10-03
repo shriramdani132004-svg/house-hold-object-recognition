@@ -1,9 +1,9 @@
 # Household Object Recognition
 
-An object-detection project that recognizes common household objects in
-images — from dataset preparation and custom model training to a Gradio web
-app where you upload a photo and get labeled bounding boxes with confidence
-scores.
+An object-recognition project that learns common household objects — from
+dataset preparation and continual-learning training to a phone-first Gradio
+web app where you recognize objects by live camera or photo upload and get
+the object name with a confidence score.
 
 ## Dataset
 
@@ -130,9 +130,47 @@ split untouched). Full report: `reports/phase6_training_report.md`.
 .\.venv\Scripts\python.exe scripts/benchmark_training_speed.py --tag c
 ```
 
+## Inference System + Phone Web App (Phase 7)
+
+The frozen Phase-6 selection — `models/continual/final_model.pt`
+(Experience Replay, SmallConvNet, 50 CORe50 classes, 64x64 input,
+SHA-256 `b2f0606c…e351`) — is wrapped in a reusable inference layer and
+a simple phone-first Gradio application. The checkpoint is loaded **once
+per process** and reused for every frame (`eval()` + `torch.no_grad()`,
+CPU only); no retraining, no checkpoint changes.
+
+- **Reusable API** (`src/inference/`): `get_engine()` returns the cached
+  `InferenceEngine`; `predict(...)` / `predict_pil(...)` /
+  `predict_numpy(...)` / `predict_frame(...)` accept PIL images, NumPy
+  RGB/RGBA/grayscale arrays, and camera frames — all through one
+  preprocessing path that mirrors Phase-5 training exactly (RGB,
+  bilinear resize to 64x64, `/255`, mean/std 0.5). A prediction carries
+  the object name, confidence, and class index
+  (`Prediction.format_block()` → `OBJECT` / `CONFIDENCE` / `CLASS ID`).
+- **Live camera + image upload:** one Gradio page in `app/` with a single
+  shared callback for both inputs; invalid input returns a readable error
+  instead of crashing.
+- **Local launch** (from the project root):
+
+  ```bash
+  .\.venv\Scripts\python.exe -m app
+  ```
+
+  Optional public sharing (the public URL is **not** verified here —
+  actual deployment belongs to Phase 8): set `GRADIO_SHARE = "true"`
+  before launching.
+- **Current model limitation:** the selected model is a *classifier* —
+  it predicts object name + confidence only. **Bounding boxes are not
+  available** for it and are never drawn. Phone-camera validation and
+  public deployment are Phase 8 steps.
+
+```bash
+.\.venv\Scripts\python.exe -m pytest tests/test_phase7_inference.py -q
+```
+
 ## Project Status
 
-**Phase 6 (error analysis + final model selection, replay checkpoint frozen) complete — next: Phase 7 reusable inference system + phone web app.**
+**Phase 7 (reusable inference system + phone-first web app) complete — next: Phase 8 practical testing + Hugging Face deployment.**
 
 - [x] Project structure, virtual environment, Git, documentation
 - [x] CORe50 dataset acquisition, integrity validation & documentation
@@ -141,7 +179,7 @@ split untouched). Full report: `reports/phase6_training_report.md`.
 - [x] Naive baseline + experience replay
 - [x] Main NIC experiment + evaluation (per-experience accuracy/forgetting, comparison, plots, report)
 - [x] Error/forgetting analysis & final model selection
-- [ ] Inference system & web app
+- [x] Inference system & web app
 - [ ] Testing, deployment, final documentation
 
 ## Planned Features

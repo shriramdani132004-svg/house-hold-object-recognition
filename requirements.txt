@@ -24,3 +24,9 @@ tqdm>=4.66
 torch>=2.5
 torchvision>=0.20
 ultralytics>=8.4
+
+# --- Phase 7: inference system + phone-first Gradio web app ---
+# gradio 6.x was installed into the existing CPU-only venv; numpy is a
+# direct dependency of the new preprocessing input handling.
+gradio>=6.0
+numpy>=1.26
