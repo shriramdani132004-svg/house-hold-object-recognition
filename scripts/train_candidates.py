@@ -26,7 +26,7 @@ import yaml
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.data.continual import load_scenario_cached  # noqa: E402
+from src.data.continual import check_development_split, load_scenario_cached  # noqa: E402
 from src.evaluation.continual import (  # noqa: E402
     atomic_write_json,
     build_metric_record,
@@ -37,9 +37,11 @@ from src.evaluation.continual import (  # noqa: E402
 from src.training.config import ContinualTrainConfig  # noqa: E402
 from src.training.improved import AugmentedCachedDataset, ImprovedReplayTrainer  # noqa: E402
 from src.training.tensor_cache import TensorCache  # noqa: E402
+from src.utils.run_logging import get_logger, log_event  # noqa: E402
 
 RECIPE_PATH = PROJECT_ROOT / "configs/model_improvement_candidates.yaml"
 NUM_CLASSES = 50
+LOG_PATH = Path("logs") / "train_candidates.log"
 
 _META_KEYS = {"id", "description"}
 
@@ -68,6 +70,12 @@ def build_config(recipe: dict, *, method: str, final: bool, epochs_override: int
 
 
 def dev_manifest_paths(manifest_path: Path) -> tuple[list[set[str]], str]:
+    if not manifest_path.is_file():
+        raise SystemExit(
+            f"development manifest missing: "
+            f"{manifest_path.relative_to(PROJECT_ROOT)}\n"
+            "create it first: python scripts/make_dev_split.py"
+        )
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     per_exp = [
         set(entry["dev_paths"]) for entry in sorted(payload["experiences"], key=lambda e: e["experience_id"])
@@ -109,7 +117,17 @@ class CandidateRunner:
 
         self.scenario = load_scenario_cached("NIC", "inc", 0)
         self.dev_sets, self.manifest_sha = dev_manifest_paths(self.manifest_path)
+        leak = check_development_split(
+            set().union(*self.dev_sets) if self.dev_sets else set(),
+            self.scenario,
+        )
+        if not leak.passed:
+            raise SystemExit(
+                f"development split failed leakage validation: {leak.detail}\n"
+                "regenerate it: python scripts/make_dev_split.py"
+            )
         self.images_root = self.scenario.images_root
+        self.logger = get_logger("train_candidates", log_file=LOG_PATH)
         self.config = build_config(
             recipe,
             method=recipe.get("method", "replay"),
@@ -119,7 +137,16 @@ class CandidateRunner:
 
     # ------------------------------------------------------------------
     def _banner(self, event: str, current: int, total: int) -> None:
-        pass
+        """One structured line per lifecycle/epoch event (never per image)."""
+        if event == "batch":
+            return
+        log_event(
+            self.logger,
+            event=event,
+            candidate=self.candidate_id,
+            seed=self.config.seed,
+            progress=f"{current}/{total}",
+        )
 
     def _print_block(self, experience_id: int, epoch: int | None, loss: float | None) -> None:
         """Print one progress block; ``experience_id`` is 0-based."""
@@ -232,6 +259,16 @@ class CandidateRunner:
             on_progress=self._banner,
             cache=cache,
             dev_provider=None if self.final else dev_provider,
+            best_checkpoint_path=self.ckpt_dir / "best_model.pt",
+        )
+        log_event(
+            self.logger,
+            event="run_start",
+            candidate=self.candidate_id,
+            scenario="NIC-inc-0",
+            seed=cfg.seed,
+            manifest=str(self.manifest_path.relative_to(PROJECT_ROOT)),
+            checkpoint=str(self.ckpt_dir.relative_to(PROJECT_ROOT)),
         )
 
         epoch_state = {"losses": [], "accs": []}
@@ -252,6 +289,17 @@ class CandidateRunner:
                 flush=True,
             )
             self.last_validation = acc
+            log_event(
+                self.logger,
+                event="dev_epoch",
+                candidate=self.candidate_id,
+                experience=event["experience"],
+                epoch=event["epoch"],
+                dev_accuracy=acc,
+                best_dev=event["best_dev_accuracy"],
+                replay_size=event["non_improving_epochs"],
+                checkpoint="best" if event["is_best"] else None,
+            )
 
         trainer.on_train_metrics = on_metrics
         trainer.on_dev_metrics = on_dev
@@ -351,6 +399,16 @@ class CandidateRunner:
                 f"validation accuracy {overall:.4f} | dev forgetting "
                 f"{forgetting[-1]} | experience seconds {train_seconds:.1f}",
                 flush=True,
+            )
+            log_event(
+                self.logger,
+                event="experience_eval",
+                candidate=self.candidate_id,
+                experience=exp.experience_id,
+                dev_accuracy=overall,
+                best_dev=trainer.best_development_value,
+                replay_size=state.replay.get("size") if state.replay else None,
+                elapsed=round(train_seconds, 1),
             )
 
         summary = self._summarize(state, records)

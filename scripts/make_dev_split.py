@@ -20,7 +20,10 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.data.continual import load_scenario_cached  # noqa: E402
+from src.data.continual import (  # noqa: E402
+    check_development_split,
+    load_scenario_cached,
+)
 
 SEED = 42
 FRACTION = 0.10
@@ -87,6 +90,10 @@ def main() -> int:
     if dev_class_coverage != set(range(50)):
         raise SystemExit(f"dev split misses classes: {set(range(50)) - dev_class_coverage}")
 
+    leak = check_development_split(all_dev_paths, scenario)
+    if not leak.passed:
+        raise SystemExit(f"leakage validation failed: {leak.detail}")
+
     payload = {
         "format_version": 1,
         "seed": SEED,
@@ -115,6 +122,7 @@ def main() -> int:
     print(f"sha256: {digest}")
     print(f"train refs: {len(all_train_paths)}  dev refs: {len(all_dev_paths)}")
     print(f"dev class coverage: {len(dev_class_coverage)}/50")
+    print(f"leakage validation: {leak.detail}")
     print("evaluation-session leakage check: PASS")
     return 0
 

@@ -248,6 +248,45 @@ def _check_label_integrity(scenario: ContinualScenario) -> CheckResult:
     return CheckResult("label_integrity", passed, detail)
 
 
+def check_development_split(
+    dev_paths: set[str],
+    scenario: ContinualScenario,
+) -> CheckResult:
+    """Development split must come ONLY from official training references.
+
+    Guarantees the selection pipeline can never silently fall back to the
+    held-out evaluation sessions: every dev path must be a training
+    reference of some experience and none may appear in the fixed
+    evaluation set (s3/s7/s10). Purely metadata-level — no image reads.
+    """
+    train_paths: set[str] = set()
+    eval_paths: set[str] = set()
+    for exp in scenario.experiences:
+        train_paths |= _paths(exp.train_samples)
+        eval_paths |= _paths(exp.evaluation_samples)
+    leaked = sorted(dev_paths & eval_paths)
+    unknown = sorted(dev_paths - train_paths)
+    problems: list[str] = []
+    if leaked:
+        problems.append(
+            f"{len(leaked)} development path(s) are official evaluation "
+            f"references (first: {leaked[:3]})"
+        )
+    if unknown:
+        problems.append(
+            f"{len(unknown)} development path(s) are not training references "
+            f"(first: {unknown[:3]})"
+        )
+    passed = not problems
+    detail = (
+        f"all {len(dev_paths)} development references are training-only and "
+        "disjoint from the held-out evaluation sessions"
+        if passed
+        else "; ".join(problems)
+    )
+    return CheckResult("development_split_leakage", passed, detail)
+
+
 def validate_scenario(
     scenario: ContinualScenario,
     *,

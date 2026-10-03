@@ -286,6 +286,8 @@ class BaseContinualTrainer:
             "scheduler_state": self._scheduler.state_dict() if self._scheduler else None,
             "seed": int(self.config.seed),
             "num_classes": int(getattr(self._model, "num_classes", 0)),
+            "image_size": int(self.config.image_size),
+            "arch": self.config.model_arch,
         }
         payload.update(self._extra_payload())
         return payload
@@ -415,6 +417,42 @@ class BaseContinualTrainer:
         """Optional per-epoch hook; return True to stop this experience early."""
         return False
 
+    def _on_experience_start(self, experience: ContinualExperience) -> None:
+        """Optional hook run once before an experience's first epoch."""
+
+    def _finalize_experience_weights(self, experience: ContinualExperience) -> None:
+        """Optional hook run after the epochs, before the state is saved.
+
+        Used to restore a best-development checkpoint so the weights
+        carried into the next experience are explicitly selected, not
+        merely the last epoch's.
+        """
+
+    @staticmethod
+    def _assert_finite_loss(loss: torch.Tensor, *, experience_id: int, epoch: int, step: int) -> None:
+        if not torch.isfinite(loss).item():
+            raise ContinualTrainingError(
+                f"Non-finite training loss ({float(loss.detach())!r}) at "
+                f"experience {experience_id} epoch {epoch + 1} step {step + 1}; "
+                "aborting before optimizer.step() — the run is broken, not "
+                "merely unlucky"
+            )
+
+    def _assert_finite_gradients(self, *, experience_id: int, epoch: int, step: int) -> None:
+        assert self._model is not None
+        bad = [
+            name
+            for name, param in self._model.named_parameters()
+            if param.grad is not None and not torch.isfinite(param.grad).all()
+        ]
+        if bad:
+            raise ContinualTrainingError(
+                f"Non-finite gradients in {len(bad)} parameter(s) "
+                f"(first: {bad[:3]}) at experience {experience_id} "
+                f"epoch {epoch + 1} step {step + 1}; aborting before "
+                "optimizer.step()"
+            )
+
     def _train_epochs(self, experience: ContinualExperience) -> tuple[int, int]:
         cfg = self.config
         assert self._scenario is not None
@@ -426,6 +464,7 @@ class BaseContinualTrainer:
         total_steps = 0
         epochs_run = 0
         epochs = cfg.epochs
+        self._on_experience_start(experience)
         for epoch in range(epochs):
             loader = make_loader(
                 dataset,
@@ -455,7 +494,18 @@ class BaseContinualTrainer:
                 self._optimizer.zero_grad()
                 logits = self._model(images)
                 loss = criterion(logits, labels)
+                self._assert_finite_loss(
+                    loss,
+                    experience_id=experience.experience_id,
+                    epoch=epoch,
+                    step=step,
+                )
                 loss.backward()
+                self._assert_finite_gradients(
+                    experience_id=experience.experience_id,
+                    epoch=epoch,
+                    step=step,
+                )
                 self._optimizer.step()
                 total_steps += 1
                 batch_n = int(labels.size(0))
@@ -505,6 +555,7 @@ class BaseContinualTrainer:
             )
             if stop_early:
                 break
+        self._finalize_experience_weights(experience)
         return total_steps, epochs_run
 
     # ------------------------------------------------------------------

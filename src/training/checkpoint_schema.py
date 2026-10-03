@@ -13,6 +13,8 @@ Full payload layout (``format_version == 1``)::
       "num_classes":     50,
       "current_experience": int,       # last trained experience id
       "seed":            int,
+      "image_size":      int,          # model input resolution (new checkpoints)
+      "arch":            str,          # model architecture id (new checkpoints)
       "model_state":     OrderedDict[str, Tensor],   # SmallConvNet weights
       "optimizer_state": dict,                        # Adam state
       "scheduler_state": dict | None,
@@ -20,7 +22,9 @@ Full payload layout (``format_version == 1``)::
       "replay_stats":    dict,                        # replay method only
     }
 
-Reading or validating a checkpoint never modifies the file on disk.
+Legacy checkpoints (written before ``image_size``/``arch`` existed) remain
+loadable; readers treat those keys as optional and validate them only when
+present. Reading or validating a checkpoint never modifies the file on disk.
 """
 
 from __future__ import annotations
@@ -31,7 +35,7 @@ from typing import Any
 
 import torch
 
-from src.training.model import SmallConvNet, build_model
+from src.training.model import assert_model_contract, build_model
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 FINAL_MODEL_PATH = PROJECT_ROOT / "models" / "continual" / "final_model.pt"
@@ -101,6 +105,8 @@ def read_checkpoint_schema(path: str | Path | None = None) -> dict[str, Any]:
         "num_classes": payload.get("num_classes"),
         "current_experience": payload.get("current_experience"),
         "seed": payload.get("seed"),
+        "image_size": payload.get("image_size"),
+        "arch": payload.get("arch"),
         "model_state_keys": sorted(tensors),
         "model_state_tensors": len(tensors),
         "model_state_all_tensors": all_tensors,
@@ -165,6 +171,12 @@ def validate_checkpoint_schema(
         ]
         if non_tensors:
             errors.append(f"'model_state' has non-tensor entries: {non_tensors[:5]}")
+    image_size = payload.get("image_size")
+    if image_size is not None and (not isinstance(image_size, int) or image_size <= 0):
+        errors.append(f"'image_size' must be a positive int when present, got {image_size!r}")
+    arch = payload.get("arch")
+    if arch is not None and (not isinstance(arch, str) or not arch):
+        errors.append(f"'arch' must be a non-empty string when present, got {arch!r}")
     return errors
 
 
@@ -173,13 +185,18 @@ def load_final_model(
     *,
     num_classes: int = 50,
     width: int = 32,
-) -> tuple[SmallConvNet, dict[str, Any]]:
-    """Load the final model checkpoint for inference.
+    image_size: int | None = None,
+) -> tuple[torch.nn.Module, dict[str, Any]]:
+    """Load a continual checkpoint for inference with full validation.
 
-    Validates the documented schema, builds ``SmallConvNet`` with
-    ``num_classes``/``width``, and loads ``model_state`` with
-    ``strict=True``. Returns ``(model, schema)`` with the model in eval
-    mode. Raises :class:`CheckpointSchemaError` when validation fails.
+    Validates the documented schema, builds the architecture recorded in
+    the payload (``small_cnn`` for legacy checkpoints without ``arch``),
+    loads ``model_state`` with ``strict=True``, verifies any recorded
+    ``image_size`` against the requested one, and runs
+    :func:`src.training.model.assert_model_contract` so a structurally
+    wrong or non-finite model fails here instead of at predict time.
+    Returns ``(model, schema)`` with the model in eval mode. Raises
+    :class:`CheckpointSchemaError` when validation fails.
     """
     checkpoint = Path(path) if path is not None else FINAL_MODEL_PATH
     problems = validate_checkpoint_schema(
@@ -190,7 +207,29 @@ def load_final_model(
             f"invalid checkpoint {_relative(checkpoint)}: " + "; ".join(problems)
         )
     payload = _load_payload(checkpoint)
-    model = build_model(num_classes, width=width)
-    model.load_state_dict(payload["model_state"], strict=True)
+    recorded_size = payload.get("image_size")
+    if (
+        image_size is not None
+        and recorded_size is not None
+        and int(recorded_size) != int(image_size)
+    ):
+        raise CheckpointSchemaError(
+            f"checkpoint {_relative(checkpoint)} was trained at "
+            f"image_size={recorded_size} but image_size={image_size} was requested"
+        )
+    arch = payload.get("arch") or "small_cnn"
+    model = build_model(num_classes, width=width, arch=arch)
+    try:
+        model.load_state_dict(payload["model_state"], strict=True)
+    except RuntimeError as exc:
+        raise CheckpointSchemaError(
+            f"weight shapes in {_relative(checkpoint)} do not match arch "
+            f"{arch!r} (width {width}): {exc}"
+        ) from exc
     model.eval()
+    assert_model_contract(
+        model,
+        num_classes=num_classes,
+        image_size=int(image_size if image_size is not None else recorded_size or 64),
+    )
     return model, read_checkpoint_schema(checkpoint)

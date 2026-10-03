@@ -12,7 +12,7 @@ check_paths_exist: true
 
 # ---------------------------------------------------------------------------
 # Phase 4 — continual training defaults (generic; NOT final Phase-5 settings).
-# Load with ContinualTrainConfig.from_yaml(...). Phase 5 will select a method
+# Load with ContinualTrainConfig.from_dict(...) after selecting a section
 # (build_continual_trainer) and tune experiment-level values explicitly.
 # ---------------------------------------------------------------------------
 continual:

@@ -41,6 +41,7 @@ from src.data.continual.scenarios import (
 from src.data.continual.validation import (
     CheckResult,
     ValidationReport,
+    check_development_split,
     validate_scenario,
 )
 
@@ -60,6 +61,7 @@ __all__ = [
     "VariantNotFoundError",
     "build_manifest",
     "build_scenario_manifest",
+    "check_development_split",
     "discover_variants",
     "list_scenarios",
     "load_scenario",

@@ -37,6 +37,7 @@ LOCKED_SHA256 = (
 )
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CONFIDENCE_RE = re.compile(r"^\d{1,3}\.\d{2}%$")
+APP_CONFIDENCE_RE = re.compile(r"^Model confidence: \d{1,3}\.\d{2}%$")
 
 
 @pytest.fixture(scope="module")
@@ -310,7 +311,7 @@ def test_upload_callback_works_with_synthetic_image(
     app_module = _load_app()
     objects, confidence, class_id, error = app_module.predict_callback(rgb_pil)
     assert objects
-    assert CONFIDENCE_RE.match(confidence)
+    assert APP_CONFIDENCE_RE.match(confidence)
     assert 0 <= int(class_id) <= 49
     assert error == ""
     assert app_module.predict_callback(rgb_np) == (
@@ -365,7 +366,7 @@ def test_app_smoke_test(rgb_pil: Image.Image) -> None:
     objects, confidence, class_id, error = app_module.predict_callback(
         rgb_pil
     )  # 4-5. callback + synthetic image prediction
-    assert objects and CONFIDENCE_RE.match(confidence)
+    assert objects and APP_CONFIDENCE_RE.match(confidence)
     assert 0 <= int(class_id) <= 49
     assert error == ""
     bad = app_module.predict_callback(None)  # 6. invalid input -> clear error
