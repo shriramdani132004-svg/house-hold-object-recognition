@@ -58,8 +58,8 @@ def test_readme_has_dataset_section_linking_docs() -> None:
 
 
 def test_dataset_info_exists_with_verified_fields() -> None:
-    info = PROJECT_ROOT / "data" / "raw" / "DATASET_INFO.txt"
-    assert info.is_file(), "data/raw/DATASET_INFO.txt must exist after Phase 2"
+    info = PROJECT_ROOT / "docs" / "dataset" / "DATASET_INFO.txt"
+    assert info.is_file(), "docs/dataset/DATASET_INFO.txt must exist after Phase 2"
     text = info.read_text(encoding="utf-8")
     for field in (
         "Dataset name",

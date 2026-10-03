@@ -1,7 +1,7 @@
 {
   "phase": 6,
   "session_facts": {
-    "source": "data/raw/core50/DATASET_INFO.md",
+    "source": "docs/dataset/core50/DATASET_INFO.md",
     "sessions_total": 11,
     "test_sessions": [
       3,

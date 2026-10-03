@@ -1,7 +1,8 @@
 # `data/raw/core50/` — CORe50 raw dataset (Phase 2)
 
-Everything in this directory is **acquired from the official CORe50 sources**
-and is **Git-ignored** (except this file and `DATASET_INFO.md`). Full
+Everything in `data/raw/core50/` is **acquired from the official CORe50
+sources** and is **Git-ignored**; this documentation is tracked under
+`docs/dataset/core50/`. Full
 documentation, licence and verification results: [DATASET_INFO.md](DATASET_INFO.md).
 
 ```

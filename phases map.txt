@@ -1,84 +1,91 @@
-HOUSEHOLD OBJECT RECOGNITION — CONTINUAL RECOGNITION PROJECT
-==============================================================
+HOUSEHOLD OBJECT RECOGNITION — MASTER ROADMAP
+==============================================
 
+=====================================================================
+CORE ASSIGNMENT — DO NOT CHANGE
+=====================================================================
+
+| 19 | Continual Recognition of Household Objects | Develop an object-recognition system that learns household objects over multiple sessions and changing environments while minimizing forgetting of previously learned objects. | CORe50 | https://vlomonaco.github.io/core50/ | Continual Object Recognition |
+
+=====================================================================
 PROJECT GOAL
-------------
+=====================================================================
 
-Build a continual household-object recognition system using the
-CORe50 dataset.
+Build a continual household-object recognition system using CORe50.
 
-The system must:
+The final system must demonstrate:
 
-1. Learn household objects incrementally across sessions/batches.
-2. Learn new object instances and/or new classes over time.
-3. Minimize forgetting of previously learned objects.
-4. Measure accuracy and forgetting after incremental learning.
-5. Compare a naive continual-learning approach with an
-   anti-forgetting approach.
-6. Provide a simple web application.
-7. Allow the user to open a public link on a phone.
-8. Use the phone camera for live object recognition.
-9. Show object name, confidence, and bounding box where supported.
+1. Household objects learned incrementally across sessions/experiences.
+2. New object instances and/or classes introduced over time.
+3. Previously learned knowledge evaluated after new learning.
+4. Forgetting measured.
+5. Naive continual learning compared with ONE anti-forgetting method.
+6. Experience Replay used as the anti-forgetting method.
+7. A final model capable of inference.
+8. A simple public web application.
+9. Phone browser access.
+10. Phone camera live recognition.
+11. Object name and confidence displayed.
+12. Bounding boxes where supported by the selected model.
 
+=====================================================================
+MASTER ROADMAP — 10 PHASES ONLY
+=====================================================================
 
-==============================================================
-DATASET
-==============================================================
+PHASE 1  — Project Foundation
+PHASE 2  — CORe50 Dataset
+PHASE 3  — Continual Data Pipeline
+PHASE 4  — Naive Continual Learning + Experience Replay
+PHASE 5  — Main NIC Continual Experiment + Evaluation
+PHASE 6  — Error Analysis + Final Model Selection
+PHASE 7  — Inference System + Phone Web App
+PHASE 8  — Practical Testing + Hugging Face Deployment
+PHASE 9  — GitHub + Final Project Documentation
+PHASE 10 — Final End-to-End Verification + Demonstration
 
-PRIMARY DATASET:
+=====================================================================
+CURRENT STATUS
+=====================================================================
 
-CORe50
+PHASE 1  → ✅ COMPLETE
+PHASE 2  → ✅ COMPLETE
+PHASE 3  → ✅ COMPLETE
+PHASE 4  → ✅ COMPLETE
+PHASE 5  → ✅ COMPLETE
+PHASE 6  → ✅ COMPLETE
+PHASE 7  → ▶ NEXT
+PHASE 8  → 🔜 PENDING
+PHASE 9  → 🔜 PENDING
+PHASE 10 → 🔜 PENDING
 
-Use the official CORe50 session structure.
-
-Important dataset characteristics:
-
-- 50 domestic object identities
-- 10 object categories
-- 11 sessions
-- changing viewpoints
-- changing backgrounds
-- lighting variation
-- occlusions
-- sequential/session-based data
-
-Do NOT flatten the dataset into an ordinary random train/test
-dataset because the continual-learning structure is required.
-
-
-==============================================================
+=====================================================================
 PHASE 1 — PROJECT FOUNDATION
-==============================================================
+=====================================================================
 
-Create:
+STATUS: ✅ COMPLETE
 
-- project directory structure
+Completed:
+
+- Project directory structure
 - Python virtual environment
-- requirements
+- Requirements/dependencies
 - Git repository
 - .gitignore
 - README.md
 - AGENTS.md
 - PROJECT_PLAN.md
-- source package structure
-- tests structure
-- configuration structure
+- Source package structure
+- Tests structure
+- Configuration structure
+- Environment verification
+- Compilation
+- Basic tests
 
-Verify:
-
-- Python environment
-- dependencies
-- project compilation
-- basic tests
-- Git
-
-STATUS:
-✅ COMPLETE
-
-
-==============================================================
+=====================================================================
 PHASE 2 — CORe50 DATASET
-==============================================================
+=====================================================================
+
+STATUS: ✅ COMPLETE
 
 Tasks:
 
@@ -100,29 +107,43 @@ Verify:
 - files readable
 - dataset not corrupted
 
-STATUS:
-✅ COMPLETE
+IMPORTANT:
 
+Do NOT flatten the dataset into an ordinary random train/test
+dataset because the continual-learning structure is required.
 
-==============================================================
+=====================================================================
 PHASE 3 — CONTINUAL DATA PIPELINE
-==============================================================
+=====================================================================
 
-Build a session/experience-based data pipeline.
+STATUS: ✅ COMPLETE
 
-The data must be presented sequentially.
+PRIMARY OBJECTIVE:
 
-Support:
+Build a session/experience-based continual-learning data pipeline.
 
-1. NI — New Instances
-2. NC — New Classes
-3. NIC — New Instances + Classes
+Required:
 
-Use official CORe50 filelists/scenario definitions where practical.
+- Sequential experience loading
+- Official CORe50 scenario/filelist usage
+- NI support
+- NC support
+- NIC support
+- Official experience ordering
+- Training/evaluation separation
+- No future-data leakage
+- Reproducible scenario/run selection
+- Project-relative data references
+- No image duplication
 
-The model must receive experiences sequentially.
+PRIMARY FUTURE EXPERIMENT:
 
-Example:
+NIC
+
+NI and NC remain available through the pipeline but do not need separate
+large experiments.
+
+Experience flow:
 
 Experience 1
     ↓
@@ -132,282 +153,247 @@ Evaluate
     ↓
 Experience 2
     ↓
-Train from previous model
+Continue previous model
     ↓
 Evaluate
     ↓
 Experience 3
     ↓
 Continue
-
-Rules:
-
-- do not reset the model between experiences
-- do not train on future experiences early
-- do not leak test data
-- preserve experience ordering
-- make experiments reproducible
-
-STATUS:
-✅ COMPLETE
-
-
-==============================================================
-PHASE 4 — NAIVE CONTINUAL-LEARNING BASELINE
-==============================================================
-
-Implement the simplest continual-learning baseline.
-
-Method:
-
-Sequential training without replay.
-
-Example:
-
-Experience 1
-    ↓
-Train model
     ↓
 Evaluate
 
-Experience 2
-    ↓
-Continue training same model
-    ↓
-Evaluate old + new knowledge
+Rules:
 
-Experience 3
-    ↓
-Continue training
-    ↓
-Evaluate again
+- Do not reset model state between experiences.
+- Do not train on future experiences early.
+- Do not use test/evaluation samples for training.
+- Preserve official ordering.
+- Make experiments reproducible.
 
-Measure after each experience:
+=====================================================================
+PHASE 4 — NAIVE CONTINUAL LEARNING + EXPERIENCE REPLAY
+=====================================================================
 
-- overall accuracy
-- old-class accuracy
-- new-class accuracy
-- per-class accuracy
-- forgetting
+STATUS: ✅ COMPLETE
 
-This establishes the naive continual-learning baseline.
+PRIMARY OBJECTIVE:
 
-Do NOT train each experience from scratch.
+Implement the two continual-learning approaches required by the project.
 
-STATUS:
-✅ COMPLETE
+METHOD A — NAIVE CONTINUAL LEARNING
 
+- Sequential training
+- No replay
+- Persistent model state
+- No model reset between experiences
 
-==============================================================
-PHASE 5 — ANTI-FORGETTING METHOD
-==============================================================
+METHOD B — EXPERIENCE REPLAY
 
-Implement ONE practical anti-forgetting strategy.
+- Bounded replay memory
+- Current experience + previous samples
+- Replay memory contains training references only
+- Persistent replay state
+- Deterministic replay sampling
+- No future samples
+- No evaluation samples
 
-PRIMARY METHOD:
+Shared requirements:
 
-Experience Replay
+- Same model architecture
+- Configurable training
+- Persistent checkpoints
+- Resume support
+- Reusable trainer interface
+- No random dataset split
+- No additional anti-forgetting algorithms
 
-Concept:
+Only ONE anti-forgetting strategy:
 
-New experience
-      +
-memory of previous examples
-      ↓
-training
-      ↓
-updated model
+EXPERIENCE REPLAY
 
-Maintain a bounded replay memory.
+Do NOT implement:
 
-At every experience:
+- EWC
+- LwF
+- knowledge distillation
+- multiple replay methods
+- hyperparameter search
+- architecture search
 
-1. load current experience
-2. sample replay examples
-3. combine current + replay data
-4. train
-5. update replay memory
-6. evaluate old + new knowledge
-7. continue to next experience
+=====================================================================
+PHASE 5 — MAIN NIC CONTINUAL EXPERIMENT + EVALUATION
+=====================================================================
 
-Do not implement many continual-learning algorithms.
+STATUS: ✅ COMPLETE
 
-One strong method is enough.
-
-STATUS:
-✅ COMPLETE
-
-
-==============================================================
-PHASE 6 — CONTINUAL EXPERIMENT
-==============================================================
+PRIMARY OBJECTIVE:
 
 Run the actual continual-learning experiment.
 
 PRIMARY SCENARIO:
 
-NIC
+NIC — New Instances + New Classes
 
-New classes + new instances.
+Run TWO independent experiments:
 
-For every experience:
+A. Naive Continual Learning
 
-- train
-- evaluate
-- record metrics
-- update replay memory
-- continue
+B. Continual Learning + Experience Replay
 
-Important:
+Both must use:
 
-- model state must persist between experiences
-- future data must not leak backward
-- test data must remain isolated
-- training order must be documented
-- seed/configuration must be recorded
+- Same CORe50 scenario
+- Same official run
+- Same experience ordering
+- Same initial model state
+- Same general training configuration
+- Same seed policy
+- Same evaluation procedure
 
-Also run NI/NC when practical without causing unnecessary
-computational cost.
+For each experience:
 
+1. Train
+2. Evaluate
+3. Record metrics
+4. Continue from previous model
+5. Update replay memory for Replay
 
-==============================================================
-PHASE 7 — CONTINUAL EVALUATION
-==============================================================
+Measure:
 
-This is the main evaluation phase.
-
-Compare:
-
-NAIVE CONTINUAL LEARNING
-VS
-EXPERIENCE REPLAY
-
-After every experience record:
-
-- overall accuracy
-- old-class accuracy
-- new-class accuracy
-- per-class accuracy
-- average incremental accuracy
-- final accuracy
-- forgetting
+- Overall accuracy
+- Old-class accuracy
+- New-class accuracy
+- Per-class accuracy
+- Forgetting
+- Average incremental accuracy
 
 Generate:
 
-- accuracy vs experience plot
-- old-class accuracy vs experience
-- new-class accuracy vs experience
-- forgetting vs experience
-- comparison table
+- Results table
+- Overall accuracy plot
+- Old-class accuracy plot
+- New-class accuracy plot
+- Forgetting plot
+- Naive vs Replay comparison
 
-Example structure:
+IMPORTANT:
 
-                    Exp1   Exp2   Exp3   Exp4
-Naive Accuracy       ...    ...    ...    ...
-Replay Accuracy      ...    ...    ...    ...
+Do not run large NI/NC experiments unless explicitly required later.
 
-Naive Forgetting     ...    ...    ...    ...
-Replay Forgetting    ...    ...    ...    ...
+Do not claim Replay is better unless the actual measured results support it.
 
-Do not claim that replay is better unless the measured results
-support that conclusion.
+=====================================================================
+PHASE 6 — ERROR ANALYSIS + FINAL MODEL SELECTION
+=====================================================================
 
+STATUS: ✅ COMPLETE
 
-==============================================================
-PHASE 8 — FOCUSED ERROR + FORGETTING ANALYSIS
-==============================================================
+PRIMARY OBJECTIVE:
 
-Keep this phase practical.
+Analyze the actual Phase-5 results and freeze one final model.
 
 Analyze:
 
-- previously correct objects becoming incorrect
-- forgotten classes
-- difficult object identities
-- class confusion
-- viewpoint changes
-- lighting changes
-- background changes
-- occlusion
-- low-confidence predictions
+- Forgotten classes/object identities
+- Lowest-performing classes
+- Experiences with increased forgetting
+- Naive vs Replay differences
+- Representative failures
+- Representative successful predictions
+- Relevant session/environment differences when supported
 
-Answer:
+Keep error analysis focused.
 
-1. Which objects are forgotten?
-2. After which experience does forgetting increase?
-3. Which classes are hardest?
-4. Does replay reduce forgetting?
-5. What environmental changes cause failures?
+Do NOT perform a large research study.
 
-Generate representative failure examples.
-
-Do not turn this into a huge research thesis.
-
-
-==============================================================
-PHASE 9 — FINAL MODEL SELECTION
-==============================================================
-
-Do NOT automatically retrain.
-
-Use the models already produced in Phases 4–6.
+FINAL MODEL SELECTION:
 
 Compare:
 
-- naive continual model
-- replay continual model
+- Naive final checkpoint
+- Replay final checkpoint
 
-Select the final model using actual measured:
+Primary criteria:
 
-- accuracy
-- forgetting
-- old-class retention
-- new-class performance
-- model size
-- inference speed
+- Final accuracy
+- Forgetting
+- Old-knowledge retention
+- Average incremental performance
 
-Freeze the selected checkpoint.
+Optional:
 
-Additional training is OPTIONAL only when Phase 8 identifies a
-specific problem worth the computational cost.
+- Model size
+- Inference practicality
 
+Do NOT automatically retrain.
 
-==============================================================
-PHASE 10 — REUSABLE INFERENCE SYSTEM
-==============================================================
+Once selected:
 
-Build a lightweight reusable inference layer around the final model.
+FREEZE FINAL MODEL
+
+Create stable final model artifact:
+
+models/continual/final_model.pt
+
+Create portable metadata:
+
+models/continual/final_model.json
+
+Record:
+
+- selected method
+- source checkpoint
+- scenario
+- variant
+- run
+- seed
+- checksum
+- dataset
+
+=====================================================================
+PHASE 7 — INFERENCE SYSTEM + PHONE WEB APP
+=====================================================================
+
+STATUS: ▶ NEXT
+
+PRIMARY OBJECTIVE:
+
+Turn the frozen final model into a simple usable application.
+
+PART A — REUSABLE INFERENCE SYSTEM
 
 Support:
 
-- image input
-- camera frames
-- optional video frames
+- Image input
+- Camera frame input
 
 Output:
 
-- object name
-- confidence
-- bounding box where supported
-- object count where applicable
-- inference time
-- optional FPS
+- Object name
+- Confidence
+- Bounding box where supported
 
 Requirements:
 
-- load model once
-- configurable confidence threshold
-- portable paths
-- clean functions
-- error handling
-- reusable by the web application
+- Load model once
+- Portable paths
+- Clean inference API
+- Error handling
+- Reusable by web application
 
+Do NOT add unnecessary features such as:
 
-==============================================================
-PHASE 11 — PHONE-FIRST WEB APPLICATION
-==============================================================
+- Object-count dashboards
+- Video analytics
+- FPS dashboards
+- Complex preprocessing controls
 
-Build the simplest useful web application.
+PART B — PHONE-FIRST WEB APP
+
+Technology:
+
+Gradio
 
 PRIMARY FEATURE:
 
@@ -417,11 +403,7 @@ SECONDARY FEATURE:
 
 IMAGE UPLOAD
 
-Technology:
-
-Gradio
-
-Target architecture:
+Flow:
 
 PHONE
   ↓
@@ -439,111 +421,69 @@ OBJECT NAME + CONFIDENCE
   ↓
 PHONE SCREEN
 
-If detection mode is supported:
+Required:
 
-- bounding boxes
-- class labels
-- confidence
+- Live camera
+- Image upload fallback
+- Prediction
+- Name
+- Confidence
+- Bounding box where supported
+- Simple mobile-friendly UI
+- Clear errors
 
-Also include:
+NOT REQUIRED:
 
-- camera permission
-- live camera input
-- image upload fallback
-- clear errors
-- confidence control
-- simple mobile-friendly interface
+- Giant dashboards
+- Complex frontend
+- Multiple pages
+- Analytics portal
+- Fancy UI
 
-Do NOT build unnecessary dashboards or complex UI.
+=====================================================================
+PHASE 8 — PRACTICAL TESTING + HUGGING FACE DEPLOYMENT
+=====================================================================
 
+STATUS: 🔜 PENDING
 
-==============================================================
-PHASE 12 — PRACTICAL TESTING
-==============================================================
+PRIMARY OBJECTIVE:
 
-Test the actual final system.
+Test the actual final application and deploy it publicly.
 
 MODEL:
 
-- model loading
-- expected classes
-- prediction
-- confidence
-- invalid input
-- image input
+- Model loads
+- Class mapping correct
+- Prediction works
+- Confidence works
+- Invalid input handled
 
 CONTINUAL LEARNING:
 
-- sequential experience processing
-- model state persistence
-- no future-data leakage
-- replay memory behavior
-- forgetting calculation
+- Sequential experience logic remains functional
+- Final checkpoint loads
+- Replay memory/state artifacts remain valid
+- Forgetting results remain readable
 
 WEB:
 
-- application startup
-- image upload
-- camera input
-- result rendering
+- Application starts
+- Image upload works
+- Camera works
+- Results render
 
 PHONE:
 
-- public URL opens
-- camera permission works
-- camera frames arrive
-- predictions appear
-- labels are correct
-- confidence appears
-- bounding boxes appear where supported
+- Public URL opens
+- Camera permission works
+- Camera frames arrive
+- Prediction appears
+- Label is correct
+- Confidence appears
 
+DEPLOYMENT:
 
-==============================================================
-PHASE 13 — GITHUB
-==============================================================
-
-Prepare a professional but simple GitHub repository.
-
-README should explain:
-
-- problem
-- CORe50
-- continual learning
-- NI / NC / NIC
-- naive baseline
-- experience replay
-- evaluation
-- forgetting
-- final model
-- web app
-- phone demo
-- deployment
-- limitations
-
-Include:
-
-- architecture diagram
-- result plots
-- sample predictions
-- phone/app screenshot
-- setup instructions
-- reproduction instructions
-- public demo link
-
-DO NOT commit:
-
-- raw dataset
-- huge generated files
-- unnecessary caches
-- secrets
-- large model files unless explicitly required
-
-
-==============================================================
-PHASE 14 — DEPLOYMENT
-==============================================================
-
-Deploy the final application to:
+Deploy to:
 
 Hugging Face Spaces
 
@@ -561,63 +501,134 @@ FINAL CONTINUAL MODEL
        ↓
 OBJECT RECOGNITION
 
-Prepare:
-
-- application entry point
-- requirements
-- model loading
-- portable paths
-- model storage/download strategy
-- deployment configuration
-
-Verify:
-
-- desktop browser
-- phone browser
-- image upload
-- phone camera
-- model prediction
+IMPORTANT:
 
 Do not claim phone support until actually tested.
 
+=====================================================================
+PHASE 9 — GITHUB + FINAL PROJECT DOCUMENTATION
+=====================================================================
 
-==============================================================
-PHASE 15 — FINAL END-TO-END VERIFICATION
-==============================================================
+STATUS: 🔜 PENDING
 
-Perform one complete final audit.
+PRIMARY OBJECTIVE:
+
+Package the complete project professionally and write the final report.
+
+GITHUB README:
+
+Include:
+
+- Problem
+- CORe50
+- Continual recognition
+- Sequential learning
+- NIC scenario
+- Naive baseline
+- Experience Replay
+- Forgetting
+- Results
+- Final model
+- Inference
+- Web application
+- Phone demo
+- Deployment
+- Limitations
+
+Include only useful artifacts:
+
+- Simple architecture diagram
+- Main results table
+- Main accuracy plot
+- Forgetting plot
+- A few sample predictions
+- One or two app/phone screenshots
+- Setup instructions
+- Reproduction instructions
+- Public demo link
+
+Do NOT commit:
+
+- Raw dataset
+- ZIP archives
+- Huge generated files
+- Caches
+- Secrets
+- Unnecessary binaries
+- Large model files unless required by deployment strategy
+
+FINAL REPORT:
+
+1. Problem Statement
+2. Motivation
+3. CORe50 Dataset
+4. Dataset Structure
+5. Continual Learning
+6. Data Pipeline
+7. Naive Continual Learning
+8. Experience Replay
+9. Experimental Setup
+10. Incremental Results
+11. Accuracy Analysis
+12. Forgetting Analysis
+13. Focused Error Analysis
+14. Final Model
+15. Inference System
+16. Web Application
+17. Phone Demo
+18. Deployment
+19. Limitations
+20. Future Improvements
+
+Use actual measured results only.
+
+=====================================================================
+PHASE 10 — FINAL END-TO-END VERIFICATION + DEMONSTRATION
+=====================================================================
+
+STATUS: 🔜 PENDING
+
+PRIMARY OBJECTIVE:
+
+Perform ONE final end-to-end audit and prepare the demonstration.
 
 DATA:
 
 - CORe50 available
-- session structure preserved
-- mappings correct
+- Session structure preserved
+- Object mappings correct
 
 CONTINUAL LEARNING:
 
-- sequential learning works
-- naive baseline works
-- replay works
-- old knowledge evaluated
-- new knowledge evaluated
-- forgetting calculated
+- Sequential learning pipeline works
+- Naive method exists
+- Replay method exists
+- Old knowledge evaluated
+- New knowledge evaluated
+- Forgetting measured
+- Naive vs Replay comparison exists
 
-MODEL:
+FINAL MODEL:
 
-- final checkpoint loads
-- class mapping correct
+- Final checkpoint loads
+- Mapping is correct
+- Inference works
 
-WEB APP:
+WEB:
 
-- application starts
-- image upload works
-- camera works
+- App starts
+- Image upload works
+- Camera works
+- Results render
 
 PHONE:
 
-- public URL works
-- camera permission works
-- live recognition works
+- Public URL works
+- Camera permission works
+- Live recognition works
+- Name appears
+- Confidence appears
+- Bounding box appears where supported
 
 DEPLOYMENT:
 
@@ -626,89 +637,50 @@ DEPLOYMENT:
 GITHUB:
 
 - README correct
-- results correct
-- no secrets
-- no huge datasets/models tracked
+- Results correct
+- No secrets
+- No raw dataset
+- No unnecessary large files
 
-Only report capabilities that were actually tested.
+ONLY REPORT CAPABILITIES THAT WERE ACTUALLY TESTED.
 
-
-==============================================================
-PHASE 16 — FINAL PROJECT DOCUMENTATION
-==============================================================
-
-Create the final project report.
-
-Include:
-
-1. Problem Statement
-2. Motivation
-3. CORe50 Dataset
-4. Dataset Structure
-5. Continual Learning Scenarios
-6. Data Pipeline
-7. Naive Continual Learning
-8. Experience Replay
-9. Experimental Setup
-10. Incremental Results
-11. Accuracy Analysis
-12. Forgetting Analysis
-13. Error Analysis
-14. Final Model
-15. Inference System
-16. Web Application
-17. Phone Camera Demo
-18. Deployment
-19. Limitations
-20. Future Improvements
-
-Include actual:
-
-- result tables
-- accuracy plots
-- forgetting plots
-- example predictions
-- failure examples
-- application screenshots
-
-
-==============================================================
+=====================================================================
 FINAL CONTINUAL-LEARNING FLOW
-==============================================================
+=====================================================================
 
 CORe50
    ↓
-Session / Experience 1
+Official Sequential Experiences
    ↓
-Model learns
+Naive Continual Learning
    ↓
-Evaluate
+Evaluation
    ↓
-Experience 2
+Experience Replay
    ↓
-Continue learning
+Evaluation
    ↓
-Evaluate old + new
+Forgetting Measurement
    ↓
-Experience 3
+Naive vs Replay Comparison
    ↓
-Continue learning
+Focused Error Analysis
    ↓
-...
+Final Model Selection
    ↓
-Final continual model
+Frozen Final Model
    ↓
-Measure forgetting
+Reusable Inference
    ↓
-Compare:
-Naive vs Replay
+Gradio Web App
    ↓
-Freeze final model
+Hugging Face Space
+   ↓
+Phone Camera Demo
 
-
-==============================================================
+=====================================================================
 FINAL PHONE DEMO FLOW
-==============================================================
+=====================================================================
 
 Public HTTPS Link
        ↓
@@ -728,134 +700,164 @@ Confidence
        ↓
 Bounding Box where supported
 
-
-==============================================================
-FINAL DEMONSTRATION
-==============================================================
-
-PART A — CONTINUAL LEARNING
-
-1. Show CORe50.
-2. Show sequential experiences.
-3. Show naive continual learning.
-4. Show experience replay.
-5. Show accuracy after each experience.
-6. Show forgetting.
-7. Compare naive vs replay.
-
-PART B — REAL USER DEMO
-
-1. Open public link.
-2. Open it on phone.
-3. Allow camera permission.
-4. Point camera at a supported object.
-5. Show object name.
-6. Show confidence.
-7. Show bounding box where supported.
-8. Move to another supported object.
-9. Show live recognition continuing.
-
-
-==============================================================
-FINAL STACK
-==============================================================
-
-Python
-PyTorch
-CORe50
-Continual Learning
-Experience Replay
-OpenCV
-NumPy
-Pillow
-Matplotlib
-Gradio
-Git
-GitHub
-Hugging Face Spaces
-
-
-==============================================================
-IMPORTANT SCOPE RULE
-==============================================================
-
-The project does NOT need:
-
-- multiple anti-forgetting algorithms
-- automatic hyperparameter searches
-- repeated large training experiments
-- unnecessary model architectures
-- giant dashboards
-- excessive academic analysis
-- unnecessary second training runs
-- unnecessary UI complexity
-
-The core requirement is:
-
-CONTINUAL LEARNING
-+
-FORGETTING MEASUREMENT
-+
-ONE ANTI-FORGETTING METHOD
-+
-WORKING PHONE WEB DEMO
-
-
-==============================================================
-CURRENT STATUS
-==============================================================
-
-EXISTING COCO/YOLO PROTOTYPE:
-
-✅ Phase 1 project foundation
-✅ COCO dataset
-✅ COCO preparation
-✅ COCO analysis
-✅ COCO baseline
-✅ COCO custom YOLO training
-
-These remain available as prototype work.
-
-FINAL CORe50 ASSIGNMENT:
-
-✅ PHASE 2 — CORe50 Dataset
-✅ PHASE 3 — Continual Data Pipeline
-✅ PHASE 4 — Naive Continual Baseline
-✅ PHASE 5 — Experience Replay
-✅ PHASE 6 — Continual Experiment
-✅ PHASE 7 — Continual Evaluation
-✅ PHASE 8 — Focused Error/Forgetting Analysis
-✅ PHASE 9 — Final Model Selection
-▶ PHASE 10 — Inference System
-🔜 PHASE 11 — Phone Web App
-🔜 PHASE 12 — Practical Testing
-🔜 PHASE 13 — GitHub
-🔜 PHASE 14 — Deployment
-🔜 PHASE 15 — Final Verification
-🔜 PHASE 16 — Final Documentation
-
-
-==============================================================
+=====================================================================
 FINAL SUCCESS CRITERIA
-==============================================================
-
-The project is complete when it can demonstrate ALL of these:
+=====================================================================
 
 ✅ CORe50 used as the primary assignment dataset
+
+✅ CORe50 session structure preserved
+
 ✅ Sequential continual-learning experiences
+
 ✅ Naive continual-learning baseline
+
 ✅ Experience Replay anti-forgetting method
+
 ✅ Old knowledge evaluated after new learning
+
 ✅ New knowledge evaluated after each experience
+
 ✅ Forgetting measured
+
 ✅ Naive vs Replay comparison
+
 ✅ Final continual model selected
+
 ✅ Final model runs inference
+
 ✅ Public web application deployed
+
 ✅ Phone browser can open public link
+
 ✅ Phone camera can provide live input
+
 ✅ Supported household objects are recognized
+
 ✅ Object name and confidence displayed
+
 ✅ Bounding boxes shown where supported
+
 ✅ GitHub repository documented
+
 ✅ Final end-to-end demonstration works
+
+=====================================================================
+WHAT THIS PROJECT DOES NOT NEED
+=====================================================================
+
+DO NOT spend time on:
+
+- Multiple anti-forgetting algorithms
+- Automatic hyperparameter searches
+- Repeated large training experiments
+- Multiple unnecessary architectures
+- Giant dashboards
+- Complex UI
+- Large NI experiments
+- Large NC experiments
+- Optional video analytics
+- Object-count dashboards
+- FPS-focused benchmarking
+- Unnecessary retraining
+- Repeated full-dataset validation
+- Repeated final audits
+- Excessive academic analysis
+
+=====================================================================
+VALIDATION POLICY
+=====================================================================
+
+IMPORTANT:
+
+OpenCode is responsible for IMPLEMENTATION.
+
+OpenCode should perform only lightweight checks needed to avoid obvious
+implementation errors.
+
+AFTER EACH PHASE:
+
+Use a separate PowerShell post-verification.
+
+Do NOT put slow full-dataset validation inside OpenCode.
+
+Do NOT repeatedly run:
+
+scripts\validate_core50.py
+
+Do NOT repeatedly scan all 164,866 CORe50 images.
+
+Do NOT perform redundant verification loops.
+
+PowerShell verification should focus on:
+
+- Expected files
+- Artifacts
+- Tests
+- Compilation
+- Git status
+- Checkpoints
+- Result integrity
+- Phase-specific requirements
+
+=====================================================================
+ROADMAP LOCK — MANDATORY FOR OPENCODE
+=====================================================================
+
+The master roadmap is FIXED.
+
+OpenCode MUST NOT:
+
+- Change the number of phases
+- Renumber phases
+- Rename phases
+- Split phases
+- Merge phases
+- Reorder phases
+- Create additional phases
+- Delete phases
+- Replace the roadmap
+- Rewrite the core assignment
+- Change the primary dataset
+- Change Phase 2 wording
+- Create alternative roadmap documents
+
+OpenCode MAY:
+
+- Implement the current phase
+- Create/update files required by the current phase
+- Update the CURRENT PHASE STATUS only when explicitly required
+- Update phase-specific documentation required by the current phase
+
+OpenCode MUST NOT update future phase statuses.
+
+OpenCode MUST NOT mark future phases complete.
+
+The canonical roadmap is:
+
+10 PHASES ONLY.
+
+=====================================================================
+FINAL PROJECT POSITION
+=====================================================================
+
+Phase 1  ✅
+Phase 2  ✅
+Phase 3  ✅
+Phase 4  ✅
+Phase 5  ✅
+Phase 6  ✅
+Phase 7  ▶ NEXT
+Phase 8  🔜
+Phase 9  🔜
+Phase 10 🔜
+
+TOTAL PHASES:
+10
+
+REMAINING:
+4
+
+NEXT:
+PHASE 7 — INFERENCE SYSTEM + PHONE WEB APP
+=====================================================================

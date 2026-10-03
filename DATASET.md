@@ -22,7 +22,7 @@ Recognition** (Lomonaco & Maltoni, CoRL 2017).
 - **Official source:** <https://vlomonaco.github.io/core50/>
 - **Official repository:** <https://github.com/vlomonaco/core50>
 - **Licence:** CC BY 4.0 (official repository `LICENSE` and project page).
-- **Full dataset documentation:** [`data/raw/core50/DATASET_INFO.md`](data/raw/core50/DATASET_INFO.md)
+- **Full dataset documentation:** [`docs/dataset/core50/DATASET_INFO.md`](docs/dataset/core50/DATASET_INFO.md)
 - **Machine-readable verification:** `reports/phase2_core50_summary.json`
   (status **PASS**, 2026-10-02).
 

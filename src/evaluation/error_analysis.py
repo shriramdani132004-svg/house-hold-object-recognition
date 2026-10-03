@@ -24,9 +24,9 @@ from src.data.continual import SampleRecord
 NA = "N-A"
 
 # Session facts, transcribed from the repository's own dataset documentation
-# (data/raw/core50/DATASET_INFO.md). Only documented facts belong here.
+# (docs/dataset/core50/DATASET_INFO.md). Only documented facts belong here.
 SESSION_FACTS: dict[str, Any] = {
-    "source": "data/raw/core50/DATASET_INFO.md",
+    "source": "docs/dataset/core50/DATASET_INFO.md",
     "sessions_total": 11,
     "test_sessions": [3, 7, 10],
     "train_sessions": [1, 2, 4, 5, 6, 8, 9, 11],

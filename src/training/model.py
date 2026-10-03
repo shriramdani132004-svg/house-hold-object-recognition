@@ -1,7 +1,7 @@
 """Compact PyTorch classifier for CORe50 continual recognition.
 
 The continual assignment uses CORe50 for 50-class object-identity
-*classification* (see ``data/raw/core50/DATASET_INFO.md``); the Ultralytics
+*classification* (see ``docs/dataset/core50/DATASET_INFO.md``); the Ultralytics
 YOLO stack stays reserved for the untouched COCO detection prototype.
 ``SmallConvNet`` is deliberately small so Phase-5's full NIC experiment is
 practical on this CPU-only machine while remaining a real trainable model.

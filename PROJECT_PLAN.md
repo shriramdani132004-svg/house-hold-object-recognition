@@ -66,7 +66,7 @@ CORe50**:
 | 9 | **GitHub + Documentation** | Polished repo + final report | [ ] |
 | 10 | **Final Verification + Demonstration** | End-to-end checks, phone demo | [ ] |
 
-Phase 2 deliverables recorded: `data/raw/core50/DATASET_INFO.md`,
+Phase 2 deliverables recorded: `docs/dataset/core50/DATASET_INFO.md`,
 `DATASET.md` (CORe50 primary section), `reports/phase2_core50_summary.json`,
 `reports/phase2_core50_samples/`, `scripts/download_core50.py`,
 `scripts/extract_core50.py`, `scripts/validate_core50.py`,

@@ -15,7 +15,7 @@ scores.
   sequential sessions drive the NI/NC/NIC experience splits with
   test sessions s3/s7/s10.
 - **Full details** (license, size, classes, annotation format, acquisition
-  method, citation): see `data/raw/core50/DATASET_INFO.md` and
+  method, citation): see `docs/dataset/core50/DATASET_INFO.md` and
   [DATASET.md](DATASET.md).
 
 Acquired 2026-10-02 under `data/raw/core50/` (git-ignored) with SHA-256

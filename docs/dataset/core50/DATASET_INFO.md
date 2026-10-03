@@ -154,9 +154,12 @@ data/raw/core50/
 │   ├── bbox/s1…s11/CropC_oNN.txt  # official bounding boxes (550 files)
 │   ├── core50-official/           # official repository snapshot (reference)
 │   └── …                          # labels.pkl, LUP.pkl, paths.pkl (complete copies)
-├── DATASET_INFO.md                # this file
-└── README.md                      # short layout guide
+└── (no tracked files)             # dataset tree stays Git-ignored
 ```
+
+Documentation for this directory — `DATASET_INFO.md` (this file) and
+`README.md` — is tracked in `docs/dataset/core50/`, outside the ignored
+dataset tree.
 
 ## Continual Scenarios
 

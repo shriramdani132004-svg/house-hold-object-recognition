@@ -27,3 +27,13 @@ class NaiveContinualTrainer(BaseContinualTrainer):
     """
 
     method_name = "naive"
+
+
+class NaiveContinual(NaiveContinualTrainer):
+    """Public API name for the naive sequential method.
+
+    Subclasses :class:`NaiveContinualTrainer` without changing any
+    behaviour: ``NaiveContinual`` is the conventional public entry point
+    (``build_continual_trainer("naive")`` still returns a
+    ``NaiveContinualTrainer``; both names denote the same implementation).
+    """

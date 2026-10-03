@@ -574,26 +574,41 @@ def test_progress_eta_own_line_and_sample_wording() -> None:
     reason="Phase-5 reports/checkpoints or CORe50 filelists not present",
 )
 def test_phase6_driver_runs_end_to_end() -> None:
-    proc = subprocess.run(
-        [sys.executable, str(PROJECT_ROOT / "scripts" / "run_phase6_analysis.py")],
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=600,
-        cwd=str(PROJECT_ROOT),
-        check=False,
-    )
-    assert proc.returncode == 0, proc.stdout[-4000:] + proc.stderr[-4000:]
-    assert "PHASE 6 — ERROR ANALYSIS + FINAL MODEL SELECTION COMPLETE" in proc.stdout
-    assert "PHASE 6 BLOCKED" not in proc.stdout
+    """Driver runs end-to-end without leaving the working tree dirty.
 
-    summary = json.loads(
-        (ANALYSIS_DIR / "phase6_analysis.json").read_text(encoding="utf-8")
-    )
-    assert summary["status"] == "complete"
-    assert summary["selected_method"] == "replay"
-    assert all(
-        result["status"] in ("PASS", "PRESERVED")
-        for result in summary["integrity"].values()
-    )
+    The driver regenerates every committed Phase-6 report (fresh
+    ``generated_utc`` / ``elapsed_seconds``), so the original bytes are
+    restored afterwards: this test must never dirty ``git status``.
+    """
+    snapshot = {
+        path.name: path.read_bytes()
+        for path in ANALYSIS_DIR.iterdir()
+        if path.is_file()
+    }
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(PROJECT_ROOT / "scripts" / "run_phase6_analysis.py")],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=600,
+            cwd=str(PROJECT_ROOT),
+            check=False,
+        )
+        assert proc.returncode == 0, proc.stdout[-4000:] + proc.stderr[-4000:]
+        assert "PHASE 6 — ERROR ANALYSIS + FINAL MODEL SELECTION COMPLETE" in proc.stdout
+        assert "PHASE 6 BLOCKED" not in proc.stdout
+
+        summary = json.loads(
+            (ANALYSIS_DIR / "phase6_analysis.json").read_text(encoding="utf-8")
+        )
+        assert summary["status"] == "complete"
+        assert summary["selected_method"] == "replay"
+        assert all(
+            result["status"] in ("PASS", "PRESERVED")
+            for result in summary["integrity"].values()
+        )
+    finally:
+        for name, data in snapshot.items():
+            (ANALYSIS_DIR / name).write_bytes(data)

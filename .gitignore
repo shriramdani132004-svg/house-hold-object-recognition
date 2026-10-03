@@ -37,20 +37,13 @@ Desktop.ini
 .vscode/
 
 # --- Project artifacts (large / generated) ---
-# Datasets
+# Datasets: everything under data/raw + data/processed is acquired locally
+# (documentation lives in docs/dataset/ and DATASET.md; only data/splits
+# keeps a placeholder so the directory exists in a fresh clone).
 data/raw/*
 data/processed/*
 data/splits/*
-!data/raw/.gitkeep
-!data/raw/DATASET_INFO.txt
-!data/processed/.gitkeep
 !data/splits/.gitkeep
-
-# CORe50 (Phase 2): dataset itself stays ignored; track only its docs
-!data/raw/core50/
-data/raw/core50/*
-!data/raw/core50/DATASET_INFO.md
-!data/raw/core50/README.md
 
 # Models & checkpoints
 models/*
@@ -63,13 +56,16 @@ models/*
 *.engine
 *.ckpt
 
-# Generated outputs
+# Generated outputs (regenerable images stay local; their index/README
+# documents stay tracked)
 examples/output/*
 !examples/output/.gitkeep
 reports/figures/*
 !reports/figures/.gitkeep
-!reports/figures/phase4/
-!reports/figures/phase6/
+reports/baseline_samples/*.jpg
+reports/phase2_core50_samples/*.png
+reports/phase4_samples/*.jpg
+reports/phase5_nic/plots/*.png
 reports/phase3_samples/*
 !reports/phase3_samples/.gitkeep
 reports/phase6_analysis/examples/

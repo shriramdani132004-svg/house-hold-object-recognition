@@ -79,8 +79,8 @@ def test_phase2_sources_have_no_hardcoded_personal_paths() -> None:
 
 
 def test_core50_documentation_present() -> None:
-    info = PROJECT_ROOT / "data" / "raw" / "core50" / "DATASET_INFO.md"
-    readme = PROJECT_ROOT / "data" / "raw" / "core50" / "README.md"
+    info = PROJECT_ROOT / "docs" / "dataset" / "core50" / "DATASET_INFO.md"
+    readme = PROJECT_ROOT / "docs" / "dataset" / "core50" / "README.md"
     dataset_md = PROJECT_ROOT / "DATASET.md"
     for path in (info, readme, dataset_md):
         assert path.is_file(), f"Missing {path}"
@@ -227,7 +227,7 @@ def test_core50_dataset_is_git_ignored() -> None:
 
 
 def test_core50_docs_are_trackable() -> None:
-    for rel in ("data/raw/core50/DATASET_INFO.md", "data/raw/core50/README.md"):
+    for rel in ("docs/dataset/core50/DATASET_INFO.md", "docs/dataset/core50/README.md"):
         result = subprocess.run(
             ["git", "check-ignore", "-q", rel],
             cwd=PROJECT_ROOT,

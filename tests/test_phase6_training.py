@@ -327,9 +327,12 @@ def test_no_absolute_paths_in_committed_sources() -> None:
         assert "/home/" not in text, path
 
 
-def test_gitignore_allows_phase6_figures() -> None:
+def test_gitignore_keeps_phase6_figures_generated() -> None:
     text = (PROJECT_ROOT / ".gitignore").read_text(encoding="utf-8")
-    assert "!reports/figures/phase6/" in text
+    assert "!reports/figures/phase6/" not in text, (
+        "generated figures must stay Git-ignored (index/README stay tracked)"
+    )
+    assert "reports/figures/*" in text
 
 
 def test_training_artifacts_exist() -> None:
