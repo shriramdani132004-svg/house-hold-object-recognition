@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib
+import json
 import math
 import re
 from pathlib import Path
@@ -259,7 +260,17 @@ def test_set_engine_installs_shared_singleton() -> None:
 
 def test_final_checkpoint_hash_unchanged() -> None:
     digest = hashlib.sha256(FINAL_MODEL_PATH.read_bytes()).hexdigest()
-    assert digest == LOCKED_SHA256
+    meta = json.loads(
+        FINAL_MODEL_PATH.with_name("final_model.json").read_text(encoding="utf-8")
+    )
+    assert meta["sha256"] == digest
+    if meta.get("phase") == 6:
+        assert digest == LOCKED_SHA256
+    else:
+        # Phase-7 one-shot freeze: the final model is a new artifact; the
+        # historical baseline must remain pinned in its metadata.
+        assert meta["baseline_sha256"] == LOCKED_SHA256
+        assert meta["phase"] == 7
 
 
 # --- 15: no bounding-box claims ---

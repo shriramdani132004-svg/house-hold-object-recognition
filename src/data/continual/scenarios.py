@@ -229,8 +229,17 @@ def validate_reference(
     *,
     source: Path,
     line_number: int,
+    require_official_label_rule: bool = False,
 ) -> None:
-    """Reject unknown sessions, objects, or out-of-range official labels."""
+    """Reject unknown sessions, objects, or out-of-range official labels.
+
+    When ``require_official_label_rule`` is true (NI/NIC scenarios), the
+    filelist label must equal ``object_id - 1`` — the official CORe50
+    identity convention. A mismatch means the reference would train or
+    evaluate under the WRONG identity, so it fails loudly instead of
+    being silently accepted. NC scenario filelists use per-run remapped
+    labels and therefore do not apply this rule.
+    """
     if session_id not in core50.SESSION_IDS:
         raise SampleResolutionError(
             f"{source}:{line_number}: unknown session id {session_id} in {rel_path!r}"
@@ -245,4 +254,10 @@ def validate_reference(
         raise SampleResolutionError(
             f"{source}:{line_number}: label {label} outside official range "
             f"0..{max_label} in {rel_path!r}"
+        )
+    if require_official_label_rule and label != object_id - 1:
+        raise SampleResolutionError(
+            f"{source}:{line_number}: label {label} != object_id - 1 "
+            f"({object_id - 1}) for {rel_path!r} — the official identity "
+            "mapping is broken for this reference"
         )

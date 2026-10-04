@@ -19,6 +19,7 @@ from torch.utils.data import DataLoader, Dataset
 from src.data import preprocessing as base_preprocessing
 from src.data.continual import SampleRecord
 from src.data.preprocessing import decode_image_file, normalize_chw
+from src.training.tensor_cache import TensorCache
 
 MEAN = base_preprocessing.MEAN
 STD = base_preprocessing.STD
@@ -39,10 +40,12 @@ class ContinualImageDataset(Dataset):
         image_size: int,
         *,
         require_split: str | None = None,
+        cache: TensorCache | None = None,
     ) -> None:
         self.records = tuple(records)
         self.images_root = Path(images_root)
         self.image_size = int(image_size)
+        self.cache = cache
         if self.image_size < 8:
             raise ValueError(f"image_size must be >= 8, got {self.image_size}")
         if require_split is not None:
@@ -58,8 +61,14 @@ class ContinualImageDataset(Dataset):
         return len(self.records)
 
     def get_uint8(self, index: int) -> torch.Tensor:
-        """Decode record ``index`` to its raw post-resize ``uint8`` CHW tensor."""
+        """Decode record ``index`` to its raw post-resize ``uint8`` CHW tensor.
+
+        Served from the decoded tensor cache when present (identical pixels —
+        the cache stores the output of the same shared decode pipeline).
+        """
         record = self.records[index]
+        if self.cache is not None and record.relative_path in self.cache:
+            return self.cache.get(record.relative_path)
         path = self.images_root.joinpath(*record.relative_path.split("/"))
         try:
             return decode_image_file(path, self.image_size)

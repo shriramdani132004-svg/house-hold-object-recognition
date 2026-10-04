@@ -165,7 +165,8 @@ def run_load_test(
     for key in ("model_state", "num_classes"):
         if key not in payload:
             raise ValueError(f"final checkpoint missing {key!r}")
-    model = build_model(int(payload["num_classes"]), width=width)
+    arch = str(payload.get("arch") or "small_cnn")
+    model = build_model(int(payload["num_classes"]), width=width, arch=arch)
     model.load_state_dict(payload["model_state"], strict=True)
     model.to(device).eval()
     num_classes = int(payload["num_classes"])
@@ -460,53 +461,77 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         # ---- step 6: freeze the selected checkpoint ---------------------
         phase.set_step(6, STEP_LABELS[5])
-        FINAL_CHECKPOINT.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(selected_source, FINAL_CHECKPOINT)
-        frozen_sha = sha256_file(FINAL_CHECKPOINT)
-        if frozen_sha != selection["sha256"]:
-            raise ValueError("frozen checkpoint SHA-256 does not match source")
-
-        payload = torch.load(FINAL_CHECKPOINT, map_location="cpu", weights_only=False)
-        state_cfg = read_json(PHASE5_MODELS / selected_method / "state.json")[
-            "training_config"
-        ]
-        if int(payload["num_classes"]) != int(model_cfg["num_classes"]):
-            raise ValueError("frozen checkpoint class count mismatch")
-        parameters = sum(
-            tensor.numel() for tensor in payload["model_state"].values()
-        )
-        metadata = build_final_model_metadata(
-            method=selected_method,
-            source_checkpoint=project_relative(selected_source),
-            final_checkpoint=project_relative(FINAL_CHECKPOINT),
-            sha256=frozen_sha,
-            scenario="NIC",
-            variant="inc",
-            run=0,
-            seed=int(payload.get("seed", state_cfg.get("seed", 42))),
-            num_classes=int(payload["num_classes"]),
-            arch=str(model_cfg["arch"]),
-            width=int(model_cfg["width"]),
-            image_size=int(model_cfg["image_size"]),
-            parameters=int(parameters),
-            class_mapping=project_relative(OBJECT_MAPPING),
-            created_utc=utc_now(),
-        )
-        atomic_write_json(FINAL_METADATA, metadata)
-        ignore = subprocess.run(
-            ["git", "check-ignore", "-q", str(FINAL_CHECKPOINT)],
-            check=False,
-            cwd=str(PROJECT_ROOT),
-        )
-        if ignore.returncode != 0:
-            raise ValueError(
-                f"{FINAL_CHECKPOINT} is not covered by .gitignore "
-                "(model binaries must stay untracked)"
+        frozen_payload: dict[str, Any] | None = None
+        if FINAL_CHECKPOINT.is_file():
+            existing = torch.load(
+                FINAL_CHECKPOINT, map_location="cpu", weights_only=False
             )
-        phase.log(
-            f"Frozen {FINAL_CHECKPOINT} (sha256 {frozen_sha[:16]}..., "
-            f"method {selected_method}, {parameters:,} parameters)"
-        )
+            if isinstance(existing, dict) and (
+                "provenance" in existing or "selection" in existing
+            ):
+                frozen_payload = existing
+        if frozen_payload is not None:
+            # The one-shot final pipeline froze its model after Phase 6;
+            # never clobber a phase-7 artifact with a Phase-6 re-export.
+            payload = frozen_payload
+            frozen_sha = sha256_file(FINAL_CHECKPOINT)
+            parameters = sum(
+                tensor.numel() for tensor in payload["model_state"].values()
+            )
+            phase.log(
+                "Final model already frozen by scripts/freeze_final_model.py "
+                f"(phase 7, sha256 {frozen_sha[:16]}...): preserving the "
+                "frozen artifact and metadata; the Phase-6 selection above "
+                "is reported for history only"
+            )
+        else:
+            FINAL_CHECKPOINT.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(selected_source, FINAL_CHECKPOINT)
+            frozen_sha = sha256_file(FINAL_CHECKPOINT)
+            if frozen_sha != selection["sha256"]:
+                raise ValueError("frozen checkpoint SHA-256 does not match source")
+
+            payload = torch.load(FINAL_CHECKPOINT, map_location="cpu", weights_only=False)
+            state_cfg = read_json(PHASE5_MODELS / selected_method / "state.json")[
+                "training_config"
+            ]
+            if int(payload["num_classes"]) != int(model_cfg["num_classes"]):
+                raise ValueError("frozen checkpoint class count mismatch")
+            parameters = sum(
+                tensor.numel() for tensor in payload["model_state"].values()
+            )
+            metadata = build_final_model_metadata(
+                method=selected_method,
+                source_checkpoint=project_relative(selected_source),
+                final_checkpoint=project_relative(FINAL_CHECKPOINT),
+                sha256=frozen_sha,
+                scenario="NIC",
+                variant="inc",
+                run=0,
+                seed=int(payload.get("seed", state_cfg.get("seed", 42))),
+                num_classes=int(payload["num_classes"]),
+                arch=str(model_cfg["arch"]),
+                width=int(model_cfg["width"]),
+                image_size=int(model_cfg["image_size"]),
+                parameters=int(parameters),
+                class_mapping=project_relative(OBJECT_MAPPING),
+                created_utc=utc_now(),
+            )
+            atomic_write_json(FINAL_METADATA, metadata)
+            ignore = subprocess.run(
+                ["git", "check-ignore", "-q", str(FINAL_CHECKPOINT)],
+                check=False,
+                cwd=str(PROJECT_ROOT),
+            )
+            if ignore.returncode != 0:
+                raise ValueError(
+                    f"{FINAL_CHECKPOINT} is not covered by .gitignore "
+                    "(model binaries must stay untracked)"
+                )
+            phase.log(
+                f"Frozen {FINAL_CHECKPOINT} (sha256 {frozen_sha[:16]}..., "
+                f"method {selected_method}, {parameters:,} parameters)"
+            )
 
         # ---- step 7: verification, reports, integrity --------------------
         phase.set_step(7, STEP_LABELS[6])

@@ -15,16 +15,24 @@ Full payload layout (``format_version == 1``)::
       "seed":            int,
       "image_size":      int,          # model input resolution (new checkpoints)
       "arch":            str,          # model architecture id (new checkpoints)
-      "model_state":     OrderedDict[str, Tensor],   # SmallConvNet weights
+      "training_config": dict,         # full effective ContinualTrainConfig
+      "config_fingerprint": str,       # sha256[:16] of training_config
+      "mapping_version": str | None,   # authoritative class-mapping version tag
+      "mapping_checksum": str | None,  # sha256 of object_mapping.json
+      "epochs_completed": int,
+      "steps_completed": int,
+      "model_state":     OrderedDict[str, Tensor],   # network weights
       "optimizer_state": dict,                        # Adam state
       "scheduler_state": dict | None,
       "replay_memory":   dict,                        # replay method only
       "replay_stats":    dict,                        # replay method only
     }
 
-Legacy checkpoints (written before ``image_size``/``arch`` existed) remain
-loadable; readers treat those keys as optional and validate them only when
-present. Reading or validating a checkpoint never modifies the file on disk.
+Legacy checkpoints (written before these keys existed) remain
+loadable; readers validate a key only when it is present, and a
+recorded ``mapping_checksum`` that disagrees with the CURRENT
+authoritative mapping invalidates the checkpoint. Reading or
+validating a checkpoint never modifies the file on disk.
 """
 
 from __future__ import annotations
@@ -35,7 +43,11 @@ from typing import Any
 
 import torch
 
-from src.training.model import assert_model_contract, build_model
+from src.training.model import (
+    SUPPORTED_ARCHS,
+    assert_model_contract,
+    build_model,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 FINAL_MODEL_PATH = PROJECT_ROOT / "models" / "continual" / "final_model.pt"
@@ -177,6 +189,22 @@ def validate_checkpoint_schema(
     arch = payload.get("arch")
     if arch is not None and (not isinstance(arch, str) or not arch):
         errors.append(f"'arch' must be a non-empty string when present, got {arch!r}")
+    elif arch is not None and arch not in SUPPORTED_ARCHS:
+        errors.append(
+            f"'arch' {arch!r} is not a supported architecture {SUPPORTED_ARCHS}"
+        )
+    recorded_checksum = payload.get("mapping_checksum")
+    if recorded_checksum is not None:
+        from src.data.class_mapping import DEFAULT_MAPPING_PATH, mapping_checksum
+
+        if DEFAULT_MAPPING_PATH.is_file():
+            current_checksum = mapping_checksum()
+            if recorded_checksum != current_checksum:
+                errors.append(
+                    f"mapping_checksum {recorded_checksum} does not match the "
+                    f"current authoritative mapping {current_checksum} — the "
+                    "checkpoint was written under a different class mapping"
+                )
     return errors
 
 

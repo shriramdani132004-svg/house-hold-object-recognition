@@ -23,6 +23,7 @@ The mapping serialises back to the same payload shape (``objects`` +
 
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -31,7 +32,12 @@ from typing import Any, Sequence
 from src.data import core50
 
 DEFAULT_MAPPING_PATH: Path = core50.OBJECT_MAPPING_PATH
+OFFICIAL_LABELS_PATH: Path = (
+    core50.METADATA_DIR / "core50-official" / "extras" / "core50_labels.txt"
+)
 NUM_CLASSES: int = 50
+#: Version tag recorded in checkpoints/reports alongside the checksum.
+MAPPING_VERSION: str = "core50-object-mapping-v1"
 
 
 class ClassMappingError(ValueError):
@@ -187,8 +193,12 @@ def _validate(payload: Any, source: str) -> ClassMapping:
     wrong = {c: n for c, n in counts.items() if n != 5}
     if wrong:
         raise _fail(source, f"each category must own exactly 5 identities, got {wrong}")
-    if set(category_order) != set(core50.OFFICIAL_CATEGORY_ORDER):
-        raise _fail(source, "category_order disagrees with the official category order")
+    if category_order != tuple(core50.OFFICIAL_CATEGORY_ORDER):
+        raise _fail(
+            source,
+            "category_order disagrees with the official category order "
+            "(exact list, not merely the same set)",
+        )
 
     return ClassMapping(
         names=tuple(names),
@@ -205,7 +215,13 @@ def mapping_from_payload(payload: Any, *, source: str = "<payload>") -> ClassMap
 
 
 def load_class_mapping(path: str | Path | None = None) -> ClassMapping:
-    """Load and validate the authoritative mapping (defaults to official JSON)."""
+    """Load and validate the authoritative mapping (defaults to official JSON).
+
+    For the default official mapping the 50 names are additionally
+    compared byte-for-byte against the official repository's
+    ``extras/core50_labels.txt`` snapshot when that file is present, so a
+    hand-edited name list cannot silently become the class contract.
+    """
     mapping_path = Path(path) if path is not None else DEFAULT_MAPPING_PATH
     if not mapping_path.is_file():
         raise ClassMappingError(f"object mapping not found: {mapping_path}")
@@ -213,7 +229,49 @@ def load_class_mapping(path: str | Path | None = None) -> ClassMapping:
         payload = json.loads(mapping_path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
         raise ClassMappingError(f"object mapping unreadable ({mapping_path}): {exc}") from exc
-    return _validate(payload, str(mapping_path))
+    mapping = _validate(payload, str(mapping_path))
+    if mapping_path.resolve() == DEFAULT_MAPPING_PATH.resolve():
+        assert_matches_official_names(mapping)
+    return mapping
+
+
+def assert_matches_official_names(mapping: ClassMapping) -> None:
+    """Fail unless ``mapping.names`` equals official ``core50_labels.txt``.
+
+    Silently returns when the official snapshot is not installed (the
+    strict 50-class + category checks in :func:`load_class_mapping` still
+    apply); raises :class:`ClassMappingError` on any difference.
+    """
+    if not OFFICIAL_LABELS_PATH.is_file():
+        return
+    official = [
+        line.strip()
+        for line in OFFICIAL_LABELS_PATH.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    if official != list(mapping.names):
+        diffs = [
+            (i, expected, got)
+            for i, (expected, got) in enumerate(zip(official, mapping.names, strict=False))
+            if expected != got
+        ]
+        raise ClassMappingError(
+            f"mapping names disagree with official {OFFICIAL_LABELS_PATH} at "
+            f"{len(diffs)} position(s), first: {diffs[:3]!r}"
+            + (
+                f" (length {len(official)} vs {len(mapping.names)})"
+                if len(official) != len(mapping.names)
+                else ""
+            )
+        )
+
+
+def mapping_checksum(path: str | Path | None = None) -> str:
+    """SHA-256 of the mapping file bytes — recorded in checkpoints/reports."""
+    mapping_path = Path(path) if path is not None else DEFAULT_MAPPING_PATH
+    if not mapping_path.is_file():
+        raise ClassMappingError(f"object mapping not found: {mapping_path}")
+    return hashlib.sha256(mapping_path.read_bytes()).hexdigest()
 
 
 def load_class_names(path: str | Path | None = None) -> dict[str, str]:

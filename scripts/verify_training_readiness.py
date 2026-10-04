@@ -338,6 +338,8 @@ def check_nonfinite_guards() -> CheckOutcome:
 
 
 def check_baseline_checkpoint() -> CheckOutcome:
+    import torch
+
     from src.training.checkpoint_schema import (
         CheckpointSchemaError,
         load_final_model,
@@ -348,10 +350,49 @@ def check_baseline_checkpoint() -> CheckOutcome:
         return CheckOutcome("baseline_checkpoint", False, "final_model.pt missing")
     digest = hashlib.sha256(BASELINE_MODEL.read_bytes()).hexdigest()
     if digest != EXPECTED_BASELINE_SHA256:
+        # Post-freeze state: the final model is the frozen run's artifact;
+        # the historical baseline must live on in the preservation copy and
+        # be pinned by the frozen payload's provenance.
+        preserved = PROJECT_ROOT / "models/continual/baseline_replay_phase5.pt"
+        if not preserved.is_file():
+            return CheckOutcome(
+                "baseline_checkpoint",
+                False,
+                "final_model.pt no longer matches the pinned baseline and the "
+                "preservation copy baseline_replay_phase5.pt is missing",
+            )
+        preserved_digest = hashlib.sha256(preserved.read_bytes()).hexdigest()
+        if preserved_digest != EXPECTED_BASELINE_SHA256:
+            return CheckOutcome(
+                "baseline_checkpoint",
+                False,
+                "preservation copy changed: sha256="
+                f"{preserved_digest} expected {EXPECTED_BASELINE_SHA256}",
+            )
+        payload = torch.load(BASELINE_MODEL, map_location="cpu", weights_only=False)
+        provenance = payload.get("provenance") if isinstance(payload, dict) else None
+        pinned = provenance.get("baseline_sha256") if isinstance(provenance, dict) else None
+        if pinned != EXPECTED_BASELINE_SHA256:
+            return CheckOutcome(
+                "baseline_checkpoint",
+                False,
+                "frozen final_model.pt does not pin the historical baseline "
+                f"in provenance (got {pinned!r})",
+            )
+        problems = validate_checkpoint_schema(BASELINE_MODEL, expected_num_classes=50)
+        if problems:
+            return CheckOutcome("baseline_checkpoint", False, "; ".join(problems))
+        try:
+            model, schema = load_final_model()
+        except CheckpointSchemaError as exc:
+            return CheckOutcome("baseline_checkpoint", False, f"load failed: {exc}")
+        if int(schema.get("num_classes", 0)) != 50:
+            return CheckOutcome("baseline_checkpoint", False, "num_classes != 50 in schema")
         return CheckOutcome(
             "baseline_checkpoint",
-            False,
-            f"frozen baseline changed: sha256={digest} expected {EXPECTED_BASELINE_SHA256}",
+            True,
+            "frozen final model; baseline preserved at baseline_replay_phase5.pt "
+            f"({preserved_digest[:12]}); provenance pinned; schema+contract valid",
         )
     problems = validate_checkpoint_schema(BASELINE_MODEL, expected_num_classes=50)
     if problems:

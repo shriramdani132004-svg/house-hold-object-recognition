@@ -423,17 +423,30 @@ def test_frozen_checkpoint_matches_source_and_metadata() -> None:
     metadata = json.loads(FINAL_META.read_text(encoding="utf-8"))
     source = PROJECT_ROOT / metadata["source_checkpoint"]
     assert not Path(metadata["final_checkpoint"]).is_absolute()
-    assert metadata["phase"] == 6
+    assert metadata["phase"] in (6, 7)
     assert metadata["method"] in ("naive", "replay")
-    assert sha256_file(FINAL_CKPT) == metadata["sha256"] == sha256_file(source)
+    assert sha256_file(FINAL_CKPT) == metadata["sha256"]
     assert metadata["num_classes"] == 50
+    if metadata["phase"] == 6:
+        assert sha256_file(source) == metadata["sha256"]
+    else:
+        # Phase-7 freeze: the payload adds selection/provenance blocks, so
+        # it is not byte-identical to its source; both hashes must still be
+        # recorded and the historical baseline pinned.
+        assert source.is_file()
+        payload = torch.load(FINAL_CKPT, map_location="cpu", weights_only=False)
+        provenance = payload["provenance"]
+        assert provenance["source_sha256"] == sha256_file(source)
+        assert metadata["baseline_sha256"] == provenance["baseline_sha256"]
+        assert payload["selection"]["held_out_sessions_used"] is False
 
 
 @needs_final
 def test_final_model_loads_with_full_class_mapping() -> None:
     metadata = json.loads(FINAL_META.read_text(encoding="utf-8"))
     payload = torch.load(FINAL_CKPT, map_location="cpu", weights_only=False)
-    model = build_model(int(payload["num_classes"]), width=int(metadata["width"]))
+    arch = str(metadata.get("arch", "small_cnn"))
+    model = build_model(int(payload["num_classes"]), width=int(metadata["width"]), arch=arch)
     model.load_state_dict(payload["model_state"], strict=True)
     model.eval()
     with torch.inference_mode():

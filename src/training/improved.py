@@ -6,8 +6,8 @@ Adds, without touching the Phase-5 defaults:
   from a decoded :class:`~src.training.tensor_cache.TensorCache` (all pixel
   work delegates to the ONE authoritative :mod:`src.data.preprocessing`
   implementation), with optional light, semantically safe augmentation
-  (horizontal flip, small translation, mild brightness/contrast) applied
-  only during training.
+  (horizontal flip, small rotation/translation, mild brightness/contrast,
+  gaussian noise) applied only during training.
 - :class:`ImprovedReplayTrainer` — the standard
   :class:`~src.training.replay.ReplayContinualTrainer` plus
   development-validation early stopping with EXPLICIT best-epoch
@@ -30,6 +30,7 @@ model configuration vary between candidates.
 """
 from __future__ import annotations
 
+import math
 import time
 from pathlib import Path
 from typing import Any, Callable, Sequence
@@ -51,7 +52,12 @@ BEST_CHECKPOINT_VERSION = 1
 
 
 def _augment(image: torch.Tensor) -> torch.Tensor:
-    """Light, semantically safe augmentation on a normalized CHW tensor."""
+    """Light, semantically safe augmentation on a normalized CHW tensor.
+
+    Horizontal flip, sub-3-degree rotation (±3°), translation up to 2 px,
+    mild brightness/contrast, and additive gaussian noise (sigma 0.02) —
+    every transform preserves the object identity of the CORe50 scenes.
+    """
     size = image.shape[-1]
     if torch.rand(()) < 0.5:
         image = torch.flip(image, dims=[2])
@@ -62,9 +68,27 @@ def _augment(image: torch.Tensor) -> torch.Tensor:
         top = 2 - dy
         left = 2 - dx
         image = padded[0, :, top : top + size, left : left + size]
+    if torch.rand(()) < 0.5:
+        angle = math.radians(3.0) * (2.0 * float(torch.rand(())) - 1.0)
+        cos_a = math.cos(angle)
+        sin_a = math.sin(angle)
+        theta = torch.tensor(
+            [[cos_a, -sin_a, 0.0], [sin_a, cos_a, 0.0]], dtype=image.dtype
+        ).unsqueeze(0)
+        grid = F.affine_grid(theta, (1, *image.shape), align_corners=False)
+        image = F.grid_sample(
+            image.unsqueeze(0),
+            grid,
+            mode="bilinear",
+            padding_mode="reflection",
+            align_corners=False,
+        )[0]
     contrast = 1.0 + 0.2 * (float(torch.rand(())) - 0.5)
     brightness = 0.1 * (float(torch.rand(())) - 0.5)
-    return (image * contrast + brightness).clamp_(-1.0, 1.0)
+    image = image * contrast + brightness
+    if torch.rand(()) < 0.5:
+        image = image + 0.02 * torch.randn_like(image)
+    return image.clamp_(-1.0, 1.0)
 
 
 class AugmentedCachedDataset(Dataset):
@@ -133,8 +157,7 @@ class ImprovedReplayTrainer(ReplayContinualTrainer):
         dev_provider: DevProvider | None = None,
         best_checkpoint_path: str | Path | None = None,
     ) -> None:
-        super().__init__(config, on_progress=on_progress)
-        self._cache = cache
+        super().__init__(config, on_progress=on_progress, cache=cache)
         self._dev_provider = dev_provider
         self._stoppers: dict[int, EarlyStopping] = {}
         self._exp_best_state: dict[str, torch.Tensor] | None = None

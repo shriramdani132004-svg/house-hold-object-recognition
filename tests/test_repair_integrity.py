@@ -196,7 +196,7 @@ def test_final_checkpoint_loader() -> None:
     model, schema = load_final_model()
     assert schema["method"] == "replay"
     assert schema["num_classes"] == 50
-    assert schema["model_state_tensors"] == 23
+    assert schema["model_state_tensors"] == len(model.state_dict())
     assert "state_dict" not in schema["top_level_keys"]
     assert "model_state" in schema["top_level_keys"]
 
@@ -217,16 +217,32 @@ def test_final_checkpoint_loader() -> None:
 def test_final_model_metadata_and_hash() -> None:
     digest = hashlib.sha256(FINAL_PT.read_bytes()).hexdigest()
     meta = json.loads(FINAL_JSON.read_text(encoding="utf-8"))
-    assert digest == LOCKED_FINAL_SHA256
-    assert meta["sha256"] == LOCKED_FINAL_SHA256
+    assert meta["sha256"] == digest
     assert meta["method"] == "replay"
     assert meta["num_classes"] == 50
-    assert meta["source_checkpoint"].replace("\\", "/").endswith(
-        "models/continual/phase5_nic/replay/checkpoint.pt"
-    )
-    assert FINAL_PT.read_bytes() == REPLAY_PT.read_bytes(), (
-        "final model must be byte-identical to the selected replay checkpoint"
-    )
+    assert meta["phase"] in (6, 7)
+    if meta["phase"] == 6:
+        assert digest == LOCKED_FINAL_SHA256
+        assert meta["source_checkpoint"].replace("\\", "/").endswith(
+            "models/continual/phase5_nic/replay/checkpoint.pt"
+        )
+        assert FINAL_PT.read_bytes() == REPLAY_PT.read_bytes(), (
+            "final model must be byte-identical to the selected replay checkpoint"
+        )
+    else:
+        # Phase-7 one-shot freeze: the final model is the development-
+        # selected final-run artifact, and the historical baseline must
+        # live on byte-identical in the preservation copy.
+        assert meta["baseline_sha256"] == LOCKED_FINAL_SHA256
+        payload = torch.load(FINAL_PT, map_location="cpu", weights_only=False)
+        provenance = payload["provenance"]
+        assert provenance["baseline_sha256"] == LOCKED_FINAL_SHA256
+        assert payload["selection"]["held_out_sessions_used"] is False
+        preserved = PROJECT_ROOT / "models/continual/baseline_replay_phase5.pt"
+        assert preserved.is_file()
+        assert preserved.read_bytes() == REPLAY_PT.read_bytes(), (
+            "preservation copy must be byte-identical to the phase-5 replay checkpoint"
+        )
 
 
 # ---------------------------------------------------------------------------

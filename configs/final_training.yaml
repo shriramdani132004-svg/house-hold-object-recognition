@@ -1,0 +1,59 @@
+# ONE-SHOT FINAL training configuration (Phase 35).
+#
+# Selected by the pre-launch engineering review; every value is justified
+# (reports/model_diagnostics/maximum_accuracy_engineering_final.md):
+#
+#   - compact_resnet (GroupNorm residual): removes the diagnosed BatchNorm
+#     running-statistic drift that mis-normalized old classes at inference;
+#   - 64x64 input: the development signal already reaches dev_top1 0.3763
+#     at 64px (C1); the 96px alternative measured ~2.2x slower end-to-end
+#     (~20h+ wall) for uncertain gains, so resolution stays at 64px
+#     (native 128px deferred as future work);
+#   - reservoir replay 10000 / ratio 32: replaces the diagnosed FIFO-2000
+#     class starvation (only 7/50 classes resident in memory);
+#   - AdamW lr 1e-3 wd 1e-4 + label_smoothing 0.1 + light augmentation:
+#     mild, accuracy-directed regularization;
+#   - development-excluded training with per-experience development
+#     evaluation and global best-checkpoint selection, so the development
+#     data used for selection stays honest;
+#   - seed 42 fixed; torch_threads pinned to 8 (measured fastest on this
+#     hybrid-CPU topology; the default thread-per-core setting thrashes).
+#
+# Experience Replay is the ONLY anti-forgetting method. The official
+# held-out sessions s3/s7/s10 are never read during training.
+
+id: final_full_nic
+description: >
+  One-shot final maximum-accuracy Experience Replay run on NIC-inc-0.
+
+method: replay
+model_arch: compact_resnet
+model_width: 32
+image_size: 64
+batch_size: 64
+optimizer: adamw
+learning_rate: 0.001
+weight_decay: 0.0001
+scheduler: none
+label_smoothing: 0.1
+augment: true
+epochs: 12
+early_stop_patience: 5
+seed: 42
+device: cpu
+workers: 0
+torch_threads: 8
+
+replay_policy: reservoir
+replay_capacity: 10000
+replay_batch_size: 32
+
+# Data inputs (accepted and ignored by ContinualTrainConfig; the driver
+# consumes manifest/cache_dir directly and loads NIC-inc-0 via the shared
+# scenario loader).
+scenario: NIC
+variant: inc
+run: 0
+manifest: data/splits/nic_inc_run0_dev10_seed42.json
+cache_dir: models/continual/candidates/cache
+checkpoint_root: models/continual

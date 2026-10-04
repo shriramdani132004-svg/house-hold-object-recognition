@@ -21,6 +21,11 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
 
+from src.data.class_mapping import (
+    DEFAULT_MAPPING_PATH,
+    MAPPING_VERSION,
+    mapping_checksum,
+)
 from src.data.continual import ContinualExperience, ContinualScenario
 from src.training.config import (
     ContinualTrainConfig,
@@ -71,6 +76,9 @@ class BaseContinualTrainer:
                 f"got {config.method!r} (use build_continual_trainer to select a method)"
             )
         self.config = config
+        # Pinned intra-op thread count (measured faster than the default
+        # thread-per-core setting on hybrid CPU topologies).
+        torch.set_num_threads(config.torch_threads)
         self.on_progress = on_progress
         self.on_train_metrics: TrainMetricsCallback | None = None
         self.device = resolve_device(config.device)
@@ -288,6 +296,18 @@ class BaseContinualTrainer:
             "num_classes": int(getattr(self._model, "num_classes", 0)),
             "image_size": int(self.config.image_size),
             "arch": self.config.model_arch,
+            "training_config": self.config.to_dict(),
+            "config_fingerprint": config_fingerprint(self.config),
+            # Recorded only when the official mapping is installed (the
+            # dataset itself cannot load without it; tests may run on
+            # metadata-free fixtures, where these become null and the
+            # mapping check is skipped on restore).
+            "mapping_version": MAPPING_VERSION if DEFAULT_MAPPING_PATH.is_file() else None,
+            "mapping_checksum": (
+                mapping_checksum() if DEFAULT_MAPPING_PATH.is_file() else None
+            ),
+            "epochs_completed": int(state.epochs_completed),
+            "steps_completed": int(state.steps_completed),
         }
         payload.update(self._extra_payload())
         return payload
@@ -297,6 +317,33 @@ class BaseContinualTrainer:
             raise StateCompatibilityError(
                 f"Checkpoint was written by method {payload.get('method')!r}, "
                 f"but this trainer is {self.method_name!r}"
+            )
+        payload_arch = payload.get("arch")
+        if payload_arch is not None and payload_arch != self.config.model_arch:
+            raise StateCompatibilityError(
+                f"Checkpoint architecture {payload_arch!r} does not match the "
+                f"configured architecture {self.config.model_arch!r}"
+            )
+        payload_classes = payload.get("num_classes")
+        expected_classes = int(getattr(self._model, "num_classes", 0)) if self._model else 0
+        if payload_classes is not None and expected_classes and payload_classes != expected_classes:
+            raise StateCompatibilityError(
+                f"Checkpoint num_classes {payload_classes} does not match the "
+                f"model's {expected_classes}"
+            )
+        payload_checksum = payload.get("mapping_checksum")
+        current_checksum = mapping_checksum() if DEFAULT_MAPPING_PATH.is_file() else None
+        if (
+            payload_checksum is not None
+            and current_checksum is not None
+            and payload_checksum != current_checksum
+        ):
+            raise StateCompatibilityError(
+                f"Checkpoint was written under class mapping "
+                f"{payload.get('mapping_version')!r} checksum "
+                f"{payload_checksum}, but the current authoritative mapping "
+                f"checksum is {current_checksum} — refusing to resume under "
+                "a different mapping"
             )
         assert self._model is not None
         self._model.load_state_dict(payload["model_state"])
@@ -477,7 +524,7 @@ class BaseContinualTrainer:
                 limit = min(limit, cfg.max_steps_per_epoch)
             assert self._model is not None
             self._model.train()
-            criterion = nn.CrossEntropyLoss()
+            criterion = nn.CrossEntropyLoss(label_smoothing=cfg.label_smoothing)
             epoch_loss_sum = 0.0
             epoch_correct = 0
             epoch_seen = 0

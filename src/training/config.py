@@ -20,7 +20,8 @@ run time by hidden magic defaults. The explicit inputs are:
   ``epochs``, ``early_stop_patience``, ``augment``, ``max_steps_per_epoch``;
 - replay: ``replay_enabled``, ``replay_capacity``, ``replay_policy``,
   ``replay_batch_size`` (the replay ratio), ``replay_seed``;
-- runtime: ``device``, ``workers``, ``checkpoint_root``, ``method``.
+- runtime: ``device``, ``workers``, ``torch_threads``,
+  ``checkpoint_root``, ``method``.
 
 Each field below carries its documented default and is re-validated in
 ``ContinualTrainConfig.__post_init__`` with a message naming the offending
@@ -50,6 +51,7 @@ _PASSTHROUGH_KEYS = frozenset(
         "images_root",
         "object_mapping",
         "manifest",
+        "cache_dir",
         "check_paths_exist",
     }
 )
@@ -106,6 +108,7 @@ class ContinualTrainConfig:
     batch_size: int = 64
     learning_rate: float = 1e-3
     weight_decay: float = 0.0
+    label_smoothing: float = 0.0
     optimizer: str = "adam"
     momentum: float = 0.9
     scheduler: str = "none"
@@ -114,6 +117,7 @@ class ContinualTrainConfig:
     seed: int = 42
     device: str = "auto"
     workers: int = 0
+    torch_threads: int = 8
     image_size: int = 64
     model_width: int = 32
     model_arch: str = "small_cnn"
@@ -149,6 +153,11 @@ class ContinualTrainConfig:
             f"training.weight_decay must be >= 0, got {self.weight_decay!r}",
         )
         _require(
+            isinstance(self.label_smoothing, (int, float))
+            and 0.0 <= self.label_smoothing < 1.0,
+            f"training.label_smoothing must be in [0, 1), got {self.label_smoothing!r}",
+        )
+        _require(
             self.optimizer in SUPPORTED_OPTIMIZERS,
             f"Unknown optimizer {self.optimizer!r}; supported: {', '.join(SUPPORTED_OPTIMIZERS)}",
         )
@@ -179,6 +188,11 @@ class ContinualTrainConfig:
         _require(
             isinstance(self.workers, int) and self.workers >= 0,
             f"training.workers must be an integer >= 0, got {self.workers!r}",
+        )
+        _require(
+            isinstance(self.torch_threads, int) and 1 <= self.torch_threads <= 64,
+            f"training.torch_threads must be an integer in [1, 64], "
+            f"got {self.torch_threads!r}",
         )
         _require(
             isinstance(self.image_size, int) and self.image_size >= 8,

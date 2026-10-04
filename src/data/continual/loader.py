@@ -55,6 +55,8 @@ def _parse_evaluation_set(
     path: Path,
     mapping: dict[int, dict[str, Any]],
     rel_sources: str,
+    *,
+    require_official_label_rule: bool = False,
 ) -> tuple[SampleRecord, ...]:
     records: list[SampleRecord] = []
     seen: dict[str, SampleRecord] = {}
@@ -67,6 +69,7 @@ def _parse_evaluation_set(
             mapping,
             source=path,
             line_number=line_number,
+            require_official_label_rule=require_official_label_rule,
         )
         existing = seen.get(rel_path)
         if existing is not None:
@@ -106,6 +109,8 @@ def _load_batch_train_samples(
     flyweight: dict[str, SampleRecord],
     rel_source: str,
     experience_id: int,
+    *,
+    require_official_label_rule: bool = False,
 ) -> tuple[SampleRecord, ...]:
     samples: list[SampleRecord] = []
     for line_number, rel_path, label, session_id, object_id in iter_filelist(batch_path):
@@ -117,6 +122,7 @@ def _load_batch_train_samples(
             mapping,
             source=batch_path,
             line_number=line_number,
+            require_official_label_rule=require_official_label_rule,
         )
         record = flyweight.get(rel_path)
         if record is None:
@@ -172,11 +178,18 @@ def load_scenario(
     batch_files = list_batch_files(run_dir)
     eval_source = project_relative(test_filelist_path(run_dir))
     mapping = _load_object_mapping(mapping_path)
+    # NI/NIC filelists use the official identity convention
+    # label == object_id - 1; enforce it so a broken reference fails the
+    # load instead of silently training under the wrong identity.
+    official_label_rule = resolved.scenario_type in ("NI", "NIC")
 
     if on_progress:
         on_progress("evaluation", 0, len(batch_files) + 1)
     evaluation_samples = _parse_evaluation_set(
-        test_filelist_path(run_dir), mapping, eval_source
+        test_filelist_path(run_dir),
+        mapping,
+        eval_source,
+        require_official_label_rule=official_label_rule,
     )
 
     flyweight: dict[str, SampleRecord] = {}
@@ -189,7 +202,12 @@ def load_scenario(
     for experience_id, batch_path in enumerate(batch_files):
         rel_source = project_relative(batch_path)
         train_samples = _load_batch_train_samples(
-            batch_path, mapping, flyweight, rel_source, experience_id
+            batch_path,
+            mapping,
+            flyweight,
+            rel_source,
+            experience_id,
+            require_official_label_rule=official_label_rule,
         )
         classes_here = {record.label for record in train_samples}
         objects_here = {record.object_id for record in train_samples}

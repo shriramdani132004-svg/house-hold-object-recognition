@@ -275,11 +275,14 @@ class ReplayContinualTrainer(BaseContinualTrainer):
 
     method_name = "replay"
 
-    def __init__(self, config=None, *, on_progress=None) -> None:
+    def __init__(self, config=None, *, on_progress=None, cache=None) -> None:
         super().__init__(config, on_progress=on_progress)
         self._memory: ReplayMemory | None = None
         self._replay_steps = 0
         self._replay_samples_used = 0
+        # Decoded tensor cache shared with the main training dataset so
+        # replay samples are read from RAM instead of re-decoded per step.
+        self._cache = cache
 
     # ------------------------------------------------------------------
     # persistent extras
@@ -358,6 +361,7 @@ class ReplayContinualTrainer(BaseContinualTrainer):
             self._scenario.images_root,
             self.config.image_size,
             require_split="train",
+            cache=self._cache,
         )
         images = torch.stack([dataset[i][0] for i in range(len(dataset))])
         labels = torch.tensor(

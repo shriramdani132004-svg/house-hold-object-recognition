@@ -1,14 +1,21 @@
-"""Candidate training driver for the model-improvement work package (Steps 3-11).
+"""Candidate / final training driver for the continual pipeline.
 
 Trains Experience Replay candidates on the official NIC ordering using a
-train-only development validation split for early stopping and model
-selection. The official held-out sessions (s3/s7/s10) are never read.
+train-only development validation split for early stopping, model
+selection, and per-experience records. The official held-out sessions
+(s3/s7/s10) are never read.
+
+``--final`` runs the ONE final training run from a dedicated config file
+(``configs/final_training.yaml``): the same dev-excluded training loop as
+candidates (development records stay honest for best-checkpoint
+selection), with the recipe/config supplying every hyper-parameter.
 
 Usage:
     python scripts/train_candidates.py --list
     python scripts/train_candidates.py --candidate c1_corrected_baseline
     python scripts/train_candidates.py --all
     python scripts/train_candidates.py --smoke c1_corrected_baseline --max-experiences 2
+    python scripts/train_candidates.py --final --config configs/final_training.yaml
     python scripts/train_candidates.py --final --from c2_replay_strong --epochs 12
 """
 from __future__ import annotations
@@ -57,15 +64,24 @@ def load_recipes() -> dict:
     return {"global": payload, "recipes": recipes}
 
 
-def build_config(recipe: dict, *, method: str, final: bool, epochs_override: int | None):
-    flat = {k: v for k, v in recipe.items() if k not in _META_KEYS and k != "method"}
-    if final:
-        flat["early_stop_patience"] = None
-        if epochs_override is not None:
-            flat["epochs"] = int(epochs_override)
-    if epochs_override is not None and not final:
+def load_config_source(config_path: Path | None, recipe: dict | None) -> dict:
+    """Return the raw mapping a run's config is built from (file wins)."""
+    if config_path is not None:
+        if not config_path.is_file():
+            raise SystemExit(f"config file missing: {config_path}")
+        payload = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+        if not isinstance(payload, dict):
+            raise SystemExit(f"config file must contain a mapping: {config_path}")
+        return payload
+    assert recipe is not None
+    return recipe
+
+
+def build_config(source: dict, *, epochs_override: int | None):
+    flat = {k: v for k, v in source.items() if k not in _META_KEYS}
+    if epochs_override is not None:
         flat["epochs"] = int(epochs_override)
-    flat["method"] = recipe.get("method", "replay")
+    flat.setdefault("method", "replay")
     return ContinualTrainConfig.from_dict(flat)
 
 
@@ -87,27 +103,38 @@ def dev_manifest_paths(manifest_path: Path) -> tuple[list[set[str]], str]:
 class CandidateRunner:
     def __init__(
         self,
-        recipe: dict,
+        recipe: dict | None,
         *,
         recipe_index: int,
         recipe_total: int,
         final: bool,
+        config_path: Path | None,
         epochs_override: int | None,
         max_experiences: int | None,
         smoke: bool,
     ) -> None:
-        self.recipe = recipe
-        self.candidate_id = recipe["id"] + ("_final" if final else "")
+        self.recipe = recipe or {}
+        source = load_config_source(config_path, recipe)
+        base_id = source.get("id") or "final"
+        if final and config_path is None:
+            base_id += "_final"
+        self.candidate_id = base_id
         self.final = final
         self.max_experiences = max_experiences
         self.started = time.monotonic()
         self.last_validation: float | None = None
         self.recipe_index = recipe_index
         self.recipe_total = recipe_total
+        self.label = (
+            "FINAL RUN" if final else f"CANDIDATE {recipe_index}/{recipe_total}"
+        )
+        self.config_path = config_path
 
         global_cfg = load_recipes()["global"]
-        self.manifest_path = PROJECT_ROOT / global_cfg["manifest"]
-        self.cache_dir = PROJECT_ROOT / global_cfg["cache_dir"]
+        manifest_rel = source.get("manifest", global_cfg["manifest"])
+        cache_rel = source.get("cache_dir", global_cfg["cache_dir"])
+        self.manifest_path = PROJECT_ROOT / manifest_rel
+        self.cache_dir = PROJECT_ROOT / cache_rel
 
         suffix = "_smoke" if smoke else ""
         self.ckpt_dir = PROJECT_ROOT / "models/continual/candidates" / f"{self.candidate_id}{suffix}"
@@ -128,12 +155,8 @@ class CandidateRunner:
             )
         self.images_root = self.scenario.images_root
         self.logger = get_logger("train_candidates", log_file=LOG_PATH)
-        self.config = build_config(
-            recipe,
-            method=recipe.get("method", "replay"),
-            final=final,
-            epochs_override=epochs_override,
-        )
+        self.config = build_config(source, epochs_override=epochs_override)
+        self.description = str(source.get("description", "")).strip()
 
     # ------------------------------------------------------------------
     def _banner(self, event: str, current: int, total: int) -> None:
@@ -155,9 +178,7 @@ class CandidateRunner:
         remaining = max(0, 79 - done)
         eta = (elapsed / max(1, done + 1)) * remaining
         progress = 100.0 * done / 79
-        header = (
-            f"[CANDIDATE {self.recipe_index}/{self.recipe_total}] {self.candidate_id}"
-        )
+        header = f"[{self.label}] {self.candidate_id}"
         validation = (
             f"{self.last_validation:.4f}" if self.last_validation is not None else "-"
         )
@@ -175,11 +196,7 @@ class CandidateRunner:
     # ------------------------------------------------------------------
     def run(self) -> dict:
         cfg = self.config
-        print(
-            f"[CANDIDATE {self.recipe_index}/{self.recipe_total}] {self.candidate_id}: "
-            f"{self.recipe.get('description', '').strip()}",
-            flush=True,
-        )
+        print(f"[{self.label}] {self.candidate_id}: {self.description}", flush=True)
         print(
             f"config: arch={cfg.model_arch} w={cfg.model_width} size={cfg.image_size} "
             f"opt={cfg.optimizer} lr={cfg.learning_rate} wd={cfg.weight_decay} "
@@ -234,19 +251,15 @@ class CandidateRunner:
             f"({len(subset_paths)} paths)",
             flush=True,
         )
-        dev_dataset = None
-        if not self.final:
-            dev_dataset = AugmentedCachedDataset(
-                dev_records, self.images_root, cfg.image_size,
-                cache=cache, augment=False, require_split="train",
-            )
-            print(
-                f"train refs {len(all_train_records) - len(dev_records)} | "
-                f"dev refs {len(dev_records)}",
-                flush=True,
-            )
-        else:
-            print(f"training on ALL {len(all_train_records)} references (final run)", flush=True)
+        dev_dataset = AugmentedCachedDataset(
+            dev_records, self.images_root, cfg.image_size,
+            cache=cache, augment=False, require_split="train",
+        )
+        print(
+            f"train refs {len(all_train_records) - len(dev_records)} | "
+            f"dev refs {len(dev_records)} (dev excluded from training)",
+            flush=True,
+        )
 
         def dev_provider(experience_id: int):
             seen = set(self.scenario.get_experience(experience_id).classes_seen)
@@ -258,7 +271,7 @@ class CandidateRunner:
             cfg,
             on_progress=self._banner,
             cache=cache,
-            dev_provider=None if self.final else dev_provider,
+            dev_provider=dev_provider,
             best_checkpoint_path=self.ckpt_dir / "best_model.pt",
         )
         log_event(
@@ -329,14 +342,11 @@ class CandidateRunner:
             if exp.experience_id >= stop_id:
                 break
 
-            if self.final:
-                filtered = exp
-            else:
-                dev_set = self.dev_sets[exp.experience_id]
-                train_samples = tuple(
-                    r for r in exp.train_samples if r.relative_path not in dev_set
-                )
-                filtered = replace(exp, train_samples=train_samples)
+            dev_set = self.dev_sets[exp.experience_id]
+            train_samples = tuple(
+                r for r in exp.train_samples if r.relative_path not in dev_set
+            )
+            filtered = replace(exp, train_samples=train_samples)
 
             self._print_block(exp.experience_id, None, None)
             epoch_state["losses"].clear()
@@ -348,9 +358,6 @@ class CandidateRunner:
             train_seconds = time.monotonic() - t0
             epochs_run = state.epochs_completed - prev_epochs
             steps_run = state.steps_completed - prev_steps
-
-            if self.final:
-                continue
 
             eval_t0 = time.monotonic()
             eval_result = evaluate_dataset(
@@ -426,6 +433,11 @@ class CandidateRunner:
         return {
             "candidate": self.candidate_id,
             "recipe": {k: v for k, v in self.recipe.items()},
+            "config_source": (
+                str(self.config_path.relative_to(PROJECT_ROOT))
+                if self.config_path is not None
+                else None
+            ),
             "final_run": self.final,
             "manifest": str(self.manifest_path.relative_to(PROJECT_ROOT)),
             "manifest_sha256": self.manifest_sha,
@@ -451,6 +463,7 @@ def main() -> int:
     parser.add_argument("--max-experiences", type=int, default=None)
     parser.add_argument("--final", action="store_true", help="final full training run")
     parser.add_argument("--from", dest="from_recipe", help="recipe id for --final")
+    parser.add_argument("--config", help="config YAML for --final (e.g. configs/final_training.yaml)")
     parser.add_argument("--epochs", type=int, default=None, help="override epoch budget")
     args = parser.parse_args()
 
@@ -460,11 +473,27 @@ def main() -> int:
             print(rid)
         return 0
 
+    config_path: Path | None = None
+    if args.config and not args.final:
+        print("--config is only valid together with --final", file=sys.stderr)
+        return 2
     if args.final:
-        if not args.from_recipe or args.from_recipe not in recipes:
-            print("--final requires --from <recipe-id>", file=sys.stderr)
+        if args.config and args.from_recipe:
+            print("--final accepts only one of --config / --from", file=sys.stderr)
             return 2
-        selected = [args.from_recipe]
+        if args.config:
+            config_path = Path(args.config)
+            if not config_path.is_absolute():
+                config_path = PROJECT_ROOT / config_path
+            if not config_path.is_file():
+                print(f"config file not found: {args.config}", file=sys.stderr)
+                return 2
+            selected = [None]
+        elif args.from_recipe and args.from_recipe in recipes:
+            selected = [args.from_recipe]
+        else:
+            print("--final requires --config <yaml> or --from <recipe-id>", file=sys.stderr)
+            return 2
         final = True
     elif args.smoke:
         if args.smoke not in recipes:
@@ -488,10 +517,11 @@ def main() -> int:
     summaries = []
     for index, candidate_id in enumerate(selected, start=1):
         runner = CandidateRunner(
-            recipes[candidate_id],
+            recipes[candidate_id] if candidate_id else None,
             recipe_index=index,
             recipe_total=len(selected),
             final=final,
+            config_path=config_path,
             epochs_override=args.epochs,
             max_experiences=(
                 args.max_experiences
