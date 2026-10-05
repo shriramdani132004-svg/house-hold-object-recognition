@@ -1,10 +1,11 @@
-﻿services:
+services:
   - type: web
     name: core50-object-recognition
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: python app.py
+    autoDeployTrigger: commit
+    buildCommand: "pip install -r requirements.txt && python scripts/restore_authoritative_mapping.py"
+    startCommand: "python scripts/restore_authoritative_mapping.py && python app.py"
     healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION
